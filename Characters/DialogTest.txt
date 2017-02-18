@@ -1,0 +1,11 @@
+*if has-found-chickens
+	Thank you for finding my chickens
+*else if finding-chickens
+	Have you found my chickens yet?
+*else
+	Please find my chickens
+		*choose Yes
+			Thank You!
+			*set finding-chickens true
+		*choose No
+			You suck
