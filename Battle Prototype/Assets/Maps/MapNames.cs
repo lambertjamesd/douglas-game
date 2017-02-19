@@ -1,7 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+[System.Serializable]
 public class MapPath {
+    public MapPath(string mapName, string portalName) {
+        this.mapName = mapName;
+        this.portalName = portalName;
+    }
+
 	public string mapName;
 	public string portalName;
 }
@@ -12,7 +24,48 @@ public class MapEntry {
 	public Tiled2Unity.TiledMap tiled;
 }
 
-[System.Serializable]
-public class MapNames {
+public class MapNames : ScriptableObject {
 	public MapEntry[] maps;
+    private Dictionary<string, MapEntry> mapping = null;
+
+    private void CheckInitialized() {
+        if (mapping == null) {
+            mapping = new Dictionary<string, MapEntry>();
+
+            foreach (MapEntry entry in maps) {
+                mapping[entry.name] = entry;
+            }
+        }
+    }
+
+    public MapEntry GetEntry(string name) {
+        this.CheckInitialized();
+        return this.mapping[name];
+    }
+
+#if UNITY_EDITOR
+    [MenuItem ("Assets/Create/MapNames")]
+    static void CreateFont()
+    {
+        MapNames mapNames = ScriptableObject.CreateInstance<MapNames>();
+        
+        string path = AssetDatabase.GetAssetPath(Selection.activeObject);
+        if (path == "")
+        {
+            
+        }
+        else if (Path.GetExtension(path) != "")
+        {
+            path = path.Replace(Path.GetFileName(AssetDatabase.GetAssetPath(Selection.activeObject)), "");
+        }
+        
+        string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath (path + "/New MapNames.asset");
+        
+        AssetDatabase.CreateAsset(mapNames, assetPathAndName);
+        AssetDatabase.SaveAssets();
+        EditorUtility.FocusProjectWindow();
+        Selection.activeObject = mapNames;
+    }
+#endif
+
 }
