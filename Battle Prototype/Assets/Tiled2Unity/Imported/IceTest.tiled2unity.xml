@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 2/13/2017 8:53:29 PM-->
+<!--Last exported: 2/19/2017 3:35:25 PM-->
 <Tiled2Unity version="1.0.9.5">
   <AssignMaterial mesh="mesh_0001" material="Snow" />
   <AssignMaterial mesh="mesh_0002" material="Snow" />
   <Prefab name="IceTest" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="2" numTilesWide="24" numTilesHigh="18" tileWidth="32" tileHeight="32" exportScale="0.03125" mapWidthInPixels="768" mapHeightInPixels="576" backgroundColor="#808080">
+    <Property name="LeftMap" value="field" />
     <GameObject name="Lower" x="0" y="0" z="0">
       <TileLayer offsetX="0" offsetY="0" />
       <GameObject name="Snow" copy="mesh_0001" sortingLayerName="" sortingOrder="0" opacity="1" />
@@ -47,8 +48,8 @@
     </GameObject>
     <GameObject name="Portals" x="0" y="0" z="0">
       <ObjectLayer offsetX="0" offsetY="0" color="#ff808080" />
-      <GameObject name="Portal" x="6" y="-5" rotation="0" layer="">
-        <Property name="LinkTo" value="Testing" />
+      <GameObject name="Lake Portal" x="2" y="-11" rotation="0" layer="L1: Barrier">
+        <Property name="PortalTo" value="default:defaut" />
         <BoxCollider2D width="1" height="1" />
       </GameObject>
     </GameObject>

@@ -1,18 +1,51 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class WorldController : MonoBehaviour {
 	private Bounds worldBounds = new Bounds(Vector3.zero, Vector3.zero);
+	private MapAttachements currentAttachement = null;
 	public int PixelsPerUnit = 32;
 	public MapNames mapNames;
 	public MapPath startingLocation = new MapPath("default", "default");
 	public GameObject player;
 	public FollowCamera followCamera;
+	public List<Tiled2Unity.TiledMap> currentMaps = new List<Tiled2Unity.TiledMap>();
+
+	private static Vector2[] currentBoundsAnchor = new Vector2[]{
+		new Vector2(0.0f, 1.0f),
+		new Vector2(1.0f, 1.0f),
+		new Vector2(0.0f, 0.0f),
+		new Vector2(0.0f, 1.0f),
+	};
+
+	private static Vector2[] newBoundAnchor = new Vector2[]{
+		new Vector2(0.0f, 1.0f),
+		new Vector2(0.0f, 0.0f),
+		new Vector2(0.0f, 0.0f),
+		new Vector2(-1.0f, 0.0f),
+	};
+
+	private static Vector2[] mapDirection = new Vector2[]{
+		new Vector2(0.0f, 1.0f),
+		new Vector2(1.0f, 0.0f),
+		new Vector2(0.0f, -1.0f),
+		new Vector2(-1.0f, 0.0f),
+	};
+
+	Vector2 MapSize(Tiled2Unity.TiledMap from) {
+		return new Vector2(
+			from.NumTilesWide * from.TileWidth / PixelsPerUnit, 
+			from.NumTilesHigh * from.TileHeight / PixelsPerUnit
+		);
+	}
 
 	Vector3 LerpMap(Tiled2Unity.TiledMap from, Vector2 lerp) {
+		Vector2 mapSize = MapSize(from);
+
 		Vector3 localPosition = new Vector3(
-			from.NumTilesWide * from.TileWidth / PixelsPerUnit * lerp.x, 
-			-from.NumTilesHigh * from.TileHeight / PixelsPerUnit * lerp.y,
+			mapSize.x * lerp.x, 
+			-mapSize.y * lerp.y,
 			0.0f
 		);
 
@@ -20,26 +53,33 @@ public class WorldController : MonoBehaviour {
 	}
 
 	public void AttachTilemap(Tiled2Unity.TiledMap from, Tiled2Unity.TiledMap tilemap, Vector3 direction) {
-
+	
 	}
 
 	public void Reset() {
-		worldBounds = new Bounds(Vector3.zero, Vector3.zero);
+		foreach (Tiled2Unity.TiledMap map in currentMaps) {
+			Destroy(map.gameObject);
+		}
+		currentMaps = new List<Tiled2Unity.TiledMap>();
 	}
 
 	public Tiled2Unity.TiledMap SpawnTilemap(Tiled2Unity.TiledMap from, Vector3 origin) {
 		Tiled2Unity.TiledMap result = Instantiate(from);
+		currentMaps.Add(result);
 		result.transform.position = origin;
+		result.transform.parent = transform;
 
 		var min = LerpMap(result, Vector2.zero);
 		var max = LerpMap(result, Vector2.one);
 
-		worldBounds.min = Vector3.Min(worldBounds.min, Vector3.Min(min, max));
-		worldBounds.max = Vector3.Max(worldBounds.max, Vector3.Max(min, max));
+		worldBounds.min = Vector3.Min(min, max);
+		worldBounds.max = Vector3.Max(min, max);
 
 		if (followCamera != null) {
 			followCamera.bounds = worldBounds;
 		}
+
+		currentAttachement = result.gameObject.GetComponent<MapAttachements>();
 
 		return result;
 	}
@@ -54,7 +94,32 @@ public class WorldController : MonoBehaviour {
 		}
 	}
 
+	public void Update() {
+		if (currentAttachement != null && player != null) {
+			Vector3 playerPos = player.transform.position;
+			Vector2 minOffset = playerPos - worldBounds.min;
+			Vector2 maxOffset = playerPos - worldBounds.max;
+
+			for (int i = 0; i < mapDirection.Length; ++i) {
+				if (currentAttachement.attachments[i] != null && Vector2.Dot(minOffset, mapDirection[i]) > 0 && Vector2.Dot(maxOffset, mapDirection[i]) > 0) {
+					Reset();
+					var map = mapNames.GetEntry(currentAttachement.attachments[i]);
+					Vector2 mapSize = MapSize(map.tiled);
+					SpawnTilemap(map.tiled,
+						new Vector3(
+							Mathf.Lerp(worldBounds.min.x, worldBounds.max.x, currentBoundsAnchor[i].x) + mapSize.x * newBoundAnchor[i].x,
+							Mathf.Lerp(worldBounds.min.y, worldBounds.max.y, currentBoundsAnchor[i].y) + mapSize.y * newBoundAnchor[i].y,
+							0.0f
+						)
+					);
+					break;
+				}
+			}
+		}
+	}
+
 	public void Goto(MapPath location) {
+		Reset();
 		var mapEntry = mapNames.GetEntry(location.mapName);
 		var map = SpawnTilemap(mapEntry.tiled, Vector3.zero);
 
