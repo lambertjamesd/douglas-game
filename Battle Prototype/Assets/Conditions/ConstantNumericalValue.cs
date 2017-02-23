@@ -6,7 +6,7 @@ public abstract class ConstantNumericalValue : NumericalValue {
         this.constantValue = constantValue;
     }
 
-    public double evaluate(GameState state) {
+    public override double evaluate(GameState state) {
         return constantValue;
     }
 }

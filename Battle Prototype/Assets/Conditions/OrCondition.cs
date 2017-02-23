@@ -7,7 +7,7 @@ public class OrCondition : Condition {
         this.subConditions = subConditions;
     }
 
-    public bool evaluate(GameState state) {
+    public override bool evaluate(GameState state) {
         return subConditions.Any(subCondition => subCondition.evaluate(state));
     }
 }

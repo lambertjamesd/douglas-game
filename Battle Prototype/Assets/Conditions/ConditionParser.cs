@@ -1,5 +1,5 @@
-using System.Collection;
-using System.Collection.Generic;
+using System.Collections;
+using System.Collections.Generic;
 
 public enum OperatorPrecedence {
     And,
@@ -67,11 +67,11 @@ public class ConditionParser {
     }
 
     public Condition parseCondition() {
-
+        return null;
     }
 
     public Condition parseBinaryCondition(OperatorPrecedence precendence = OperatorPrecedence.Max) {
-
+        return null;
     }
 
     public Condition parseUnaryCondition() {
@@ -95,12 +95,13 @@ public class ConditionParser {
         } else if (isCompareNext()) {
             var left = parseNumberValue();
 
+            return null;
         } else {
             return new BooleanCondition(next());
         }
     }
 
     public NumericalValue parseNumberValue() {
-
+        return null;
     }
 }

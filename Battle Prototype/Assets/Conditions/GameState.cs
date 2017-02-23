@@ -19,7 +19,7 @@ public class GameState {
         if (numberTypes.ContainsKey(name)) {
             return numberTypes[name];
         } else {
-            return false;
+            return 0.0;
         }
     }
 }

@@ -10,7 +10,7 @@ using UnityEditor;
 [System.Serializable]
 public class PrefabEntry {
 	public string name;
-	public GameObject tiled;
+	public GameObject prefab;
 }
 
 public class PrefabNames : ScriptableObject {

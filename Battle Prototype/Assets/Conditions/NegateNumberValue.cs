@@ -1,11 +1,11 @@
 public class NegateNumberValue : NumericalValue {
     private NumericalValue ofValue;
 
-    public LessThanCondition(NumericalValue ofValue) {
+    public NegateNumberValue(NumericalValue ofValue) {
         this.ofValue = ofValue;
     }
 
-    public double evaluate(GameState state) {
+    public override double evaluate(GameState state) {
         return -ofValue.evaluate(state);
     }
 }

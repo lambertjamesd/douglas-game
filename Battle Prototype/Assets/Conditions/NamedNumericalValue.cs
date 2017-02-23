@@ -6,7 +6,7 @@ public abstract class NamedNumericalValue : NumericalValue {
         this.name = name;
     }
 
-    public double evaluate(GameState state) {
+    public override double evaluate(GameState state) {
         return state.getNumber(name);
     }
 }

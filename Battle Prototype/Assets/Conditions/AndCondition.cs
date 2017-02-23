@@ -7,7 +7,7 @@ public class AndCondition : Condition {
         this.subConditions = subConditions;
     }
 
-    public bool evaluate(GameState state) {
+    public override bool evaluate(GameState state) {
         return subConditions.All(subCondition => subCondition.evaluate(state));
     }
 }

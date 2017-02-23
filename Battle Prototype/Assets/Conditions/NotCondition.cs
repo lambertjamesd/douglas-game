@@ -7,7 +7,7 @@ public class NotCondition : Condition {
         this.subCondition = subCondition;
     }
 
-    public bool evaluate(GameState state) {
+    public override bool evaluate(GameState state) {
         return !subCondition.evaluate(state);
     }
 }

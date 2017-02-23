@@ -7,7 +7,7 @@ public class LessThanCondition : Condition {
         this.right = right;
     }
 
-    public bool evaluate(GameState state) {
+    public override bool evaluate(GameState state) {
         return left.evaluate(state) < right.evaluate(state);
     }
 }
