@@ -1,5 +1,5 @@
 
-public abstract class NamedNumericalValue : NumericalValue {
+public class NamedNumericalValue : NumericalValue {
     private string name;
 
     public NamedNumericalValue(string name) {

@@ -22,4 +22,8 @@ public class GameState {
             return 0.0;
         }
     }
+
+    public static GameState getGameState(GameObject forObject) {
+        return new GameState();
+    }
 }
