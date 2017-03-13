@@ -21,12 +21,10 @@ public class GameScript {
 
     public IEnumerator run(ExecutionContext context) {
         if (commands != null) {
-            foreach (ScriptCommand command in commands) {
-                var current = command.execute(context);
+            var iter = commands.run(context);
 
-                while (current.MoveNext()) {
-                    yield return null;
-                }
+            while (iter != null && iter.MoveNext()) {
+                yield return null;
             }
         }
     }

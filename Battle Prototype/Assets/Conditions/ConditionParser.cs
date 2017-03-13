@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 public enum OperatorPrecedence {
-    And,
+    Min,
     Or,
+    And,
     Compare,
     Add,
     Max,
@@ -30,7 +31,13 @@ class StringValue : TreeNode {
     }
 
     public override Condition buildCondition() {
-        return new BooleanCondition(stringValue);
+        if (stringValue == "true") {
+            return new ConstantBoolean(true);
+        } else if (stringValue == "false") {
+            return new ConstantBoolean(false);
+        } else {
+            return new BooleanCondition(stringValue);
+        }
     }
 
     public override NumericalValue buildNumberValue() {
@@ -172,7 +179,7 @@ public class ConditionParser {
         return operatorPrecedence.ContainsKey(this.peek());
     }
 
-    private TreeNode parseBinaryOperator(OperatorPrecedence minPrecedence = OperatorPrecedence.Max) {
+    private TreeNode parseBinaryOperator(OperatorPrecedence minPrecedence = OperatorPrecedence.Min) {
         TreeNode result = parseUnaryOperator();
 
         while (isBinaryOperator()) {
