@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 public class PlayerMovement : State {
 	public float speed = 2.0f;
@@ -8,6 +9,8 @@ public class PlayerMovement : State {
 	public BreakerBow breakerBow;
 	public Transform direction;
 	public float bowSpeed = 2.0f;
+    public float interactDistance = 0.5f;
+    public float interactRadius = 0.5f;
 
 	public Animator animator;
 
@@ -23,7 +26,7 @@ public class PlayerMovement : State {
 		movement = GetComponent<DefaultMovement>();
 	}
 	
-	public override State UpdateState(float deltaTime) {
+	public override IState UpdateState(float deltaTime) {
 		float horz = Input.GetAxisRaw("Horizontal");
 		float vert = Input.GetAxisRaw("Vertical");
 
@@ -36,6 +39,20 @@ public class PlayerMovement : State {
 		if (Input.GetButtonDown("Fire2")){
 			StartCoroutine(SwingSword());
 		}
+
+        if (Input.GetButtonDown("Submit"))
+        {
+            var overlaps = Physics2D.OverlapCircleAll(direction.TransformPoint(Vector3.down * interactDistance), interactRadius);
+
+            ScriptInteraction interaction = overlaps.Select(collider => collider.gameObject.GetComponent<ScriptInteraction>())
+                .Where(value => value != null)
+                .FirstOrDefault(x => true);
+
+            if (interaction != null)
+            {
+                return new Interact(this, interaction.interact());
+            }
+        }
 
 		return null;
 	}

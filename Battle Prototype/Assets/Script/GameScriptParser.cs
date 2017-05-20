@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 class StackPosition {
     public string whitespace;
@@ -106,49 +107,69 @@ public class GameScriptParser {
         ++currentLine;
     }
 
-    private void parseBlock(ScriptBlock block) {
+    private void parseBlock(ScriptBlock block)
+    {
         StackPosition last = getTop();
         string expectedPreSpace = last == null ? null : last.whitespace;
         StackPosition current = new StackPosition(null, block);
         stackPositions.Push(current);
 
-        while (this.hasNext()) {
+        int i = 0;
+
+        while (this.hasNext() && i < 10)
+        {
             var next = peekNextLine();
 
             // ignore full whitespace lines
-            if (next.hasContent()) {
+            if (next.hasContent())
+            {
                 var leadingSpace = next.getLeadingSpace();
 
-                if (current.whitespace == null) {
+                if (current.whitespace == null)
+                {
                     if (expectedPreSpace == null ||
-                        expectedPreSpace.Length < leadingSpace.Length && leadingSpace.Substring(0, expectedPreSpace.Length) == leadingSpace
-                    ) {
+                        expectedPreSpace.Length < leadingSpace.Length && leadingSpace.Substring(0, expectedPreSpace.Length) == expectedPreSpace
+                    )
+                    {
                         current.whitespace = leadingSpace;
-                    } else {
+                    }
+                    else
+                    {
                         throw new GameScriptParseError("Expected indentation but none found", currentLine);
                     }
                 }
 
-                if (leadingSpace != current.whitespace) {
-                    if (leadingSpace.Length < current.whitespace.Length && current.whitespace.Substring(0, leadingSpace.Length) == leadingSpace) {
+                if (leadingSpace != current.whitespace)
+                {
+                    if (leadingSpace.Length < current.whitespace.Length && current.whitespace.Substring(0, leadingSpace.Length) == leadingSpace)
+                    {
                         break;
-                    } else {
+                    }
+                    else
+                    {
                         throw new GameScriptParseError("Bad whitespace", currentLine);
                     }
-                } else {
+                }
+                else
+                {
                     var command = next.getCommand();
                     moveNext();
 
-                    if (command != null) {
-                        if (command == "if") {
+                    if (command != null)
+                    {
+                        if (command == "if")
+                        {
                             var ifBlock = new ScriptBlock(); 
                             parseBlock(ifBlock);
                             IfCommand result = new IfCommand(ConditionParser.parseCondition(next.getCommandParameters()), ifBlock);
+                            block.addCommand(result);
 
                             var nextLine = peekNextLine();
 
                             while (leadingSpace == nextLine.getLeadingSpace() && 
-                                nextLine.getCommand() == "elseif") {
+                                nextLine.getCommand() == "elseif")
+                            {
+                                moveNext();
                                 var nextBlock = new ScriptBlock();
                                 parseBlock(nextBlock);
                                 var nextIf = new IfCommand(ConditionParser.parseCondition(nextLine.getCommandParameters()), nextBlock);
@@ -158,30 +179,76 @@ public class GameScriptParser {
                             }
 
                             if (leadingSpace == nextLine.getLeadingSpace() &&
-                                nextLine.getCommand() == "else") {
+                                nextLine.getCommand() == "else")
+                            {
+                                moveNext();
                                 var elseBlock = new ScriptBlock();
+                                parseBlock(elseBlock);
                                 result.setElseBlock(elseBlock);
                             }
                         }
-                    } else {
+                        else if (command == "set")
+                        {
+                            var parts = next.getCommandParameters().Split(null, 3);
+
+                            if (parts.Length != 3)
+                            {
+                                throw new GameScriptParseError("set expects 3 parameters", currentLine);
+                            }
+                            else
+                            {
+                                var type = parts[0];
+                                var name = parts[1];
+                                var value = parts[2];
+                                if (type == "bool")
+                                {
+                                    block.addCommand(new SetBooleanCommand(name, ConditionParser.parseCondition(value)));
+                                }
+                                else if (type == "number")
+                                {
+                                    block.addCommand(new SetNumberCommand(name, ConditionParser.parseNumerValue(value)));
+                                }
+                                else if (type == "string")
+                                {
+                                    block.addCommand(new SetStringCommand(name, value));
+                                }
+                                else
+                                {
+                                    throw new GameScriptParseError("set expects first parameter to be bool, number, or string", currentLine);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
                         block.addCommand(new TextCommand(next.getContent()));
                     }
                 }
             }
+            else
+            {
+                moveNext();
+            }
+
+            ++i;
         }
 
         stackPositions.Pop();
     }
 
-    private GameScript parse() {
+    private GameScript parse()
+    {
         var block = new ScriptBlock();
         GameScript result = new GameScript(block);
+
+        parseBlock(block);
 
         return result;
 
     }
 
-    public static GameScript parse(string source) {
+    public static GameScript parse(string source)
+    {
         return new GameScriptParser(source).parse();
     }
 }

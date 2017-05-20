@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Text;
 
 public class IfCommand : ScriptCommand {
     private Condition condition;
@@ -24,5 +25,32 @@ public class IfCommand : ScriptCommand {
                 yield return null;
             }
         }
+    }
+
+    public override string ToString(int depth)
+    {
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < depth; ++i)
+        {
+            result.Append("    ");
+        }
+
+        result.Append("if\n");
+
+        result.Append(ifBlock.ToString(depth + 1));
+
+        if (elseBlock != null)
+        {
+            for (int i = 0; i < depth; ++i)
+            {
+                result.Append("    ");
+            }
+
+            result.Append("else\n");
+            result.Append(elseBlock.ToString(depth + 1));
+        }
+
+        return result.ToString();
     }
 }

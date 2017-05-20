@@ -10,6 +10,7 @@ public interface ExecutionContext {
 
 public abstract class ScriptCommand {
     public abstract IEnumerator execute(ExecutionContext context);
+    public abstract string ToString(int depth);
 }
 
 public class GameScript {
@@ -27,5 +28,10 @@ public class GameScript {
                 yield return null;
             }
         }
+    }
+
+    public override string ToString()
+    {
+        return commands.ToString();
     }
 }

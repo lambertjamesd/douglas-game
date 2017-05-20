@@ -1,0 +1,6 @@
+(if not has-talked-to-one)
+	Hello, good job talking to me first
+	(set bool has-talked-to-one true)
+(else)
+	You already talked to me, now talk to the other guy
+	

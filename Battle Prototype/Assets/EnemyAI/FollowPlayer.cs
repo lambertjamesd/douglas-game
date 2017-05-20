@@ -17,7 +17,7 @@ public class FollowPlayer : State {
 		movement = GetComponent<DefaultMovement>();
 	}
 	
-	public override State UpdateState(float deltaTime) {
+	public override IState UpdateState(float deltaTime) {
 		if(sight == null) {
 			return null;
 		}

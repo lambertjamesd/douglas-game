@@ -3,7 +3,7 @@ using System.Collections;
 
 public interface IState {
 	void StateBegin();
-	State UpdateState(float deltaTime);
+    IState UpdateState(float deltaTime);
 }
 
 public class State : MonoBehaviour, IState {
@@ -11,7 +11,7 @@ public class State : MonoBehaviour, IState {
 
 	}
 
-	public virtual State UpdateState(float deltaTime) {
+	public virtual IState UpdateState(float deltaTime) {
 		return null;
 	}
 }

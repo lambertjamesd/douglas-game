@@ -14,7 +14,7 @@ public class MoveBy : State {
 		timer = offset.magnitude / moveSpeed;
 	}
 	
-	public override State UpdateState(float deltaTime) {
+	public override IState UpdateState(float deltaTime) {
 		if (timer >= 0.0) {
 			timer -= deltaTime;
 			return null;

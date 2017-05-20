@@ -18,7 +18,7 @@ public class BreakerBow : State {
 	private float currentTime = 0.0f;
 	private Flasher currentFlasher = null;
 	
-	public override State UpdateState(float deltaTime) {
+	public override IState UpdateState(float deltaTime) {
 		float horz = Input.GetAxisRaw("Horizontal");
 		float vert = Input.GetAxisRaw("Vertical");
 

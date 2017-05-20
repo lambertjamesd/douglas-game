@@ -7,6 +7,18 @@ public class GameState {
     private Dictionary<string, double> numberTypes = new Dictionary<string, double>();
     private Dictionary<string, string> stringTypes = new Dictionary<string, string>();
 
+    public GameState()
+    {
+
+    }
+
+    public GameState(Dictionary<string, bool> booleanTypes, Dictionary<string, double> numberTypes, Dictionary<string, string> stringTypes)
+    {
+        this.booleanTypes = booleanTypes;
+        this.numberTypes = numberTypes;
+        this.stringTypes = stringTypes;
+    }
+
     public void setBoolean(string name, bool boolValue) {
         booleanTypes[name] = boolValue;
     }
@@ -28,6 +40,23 @@ public class GameState {
             return numberTypes[name];
         } else {
             return 0.0;
+        }
+    }
+
+    public void setString(string name, string stringValue)
+    {
+        stringTypes[name] = stringValue;
+    }
+
+    public string getString(string name)
+    {
+        if (stringTypes.ContainsKey(name))
+        {
+            return stringTypes[name];
+        }
+        else
+        {
+            return "";
         }
     }
 

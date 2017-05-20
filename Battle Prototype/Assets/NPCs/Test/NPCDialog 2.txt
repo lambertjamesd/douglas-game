@@ -1,0 +1,5 @@
+(if not has-talked-to-one)
+	You should talk to the other guy first
+(else)
+	Good job, you talked to me second
+	

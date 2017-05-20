@@ -18,7 +18,7 @@ public class Patrol : State {
 
 	private float currentTime = 0.0f;
 
-	public override State UpdateState(float deltaTime) {
+	public override IState UpdateState(float deltaTime) {
 		if (currentPatrol == null) {
 			if (leftProbability.GenerateValue()) {
 				direction = new Vector2(direction.y, -direction.x);

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 public class ScriptBlock : IEnumerable<ScriptCommand> {
     private List<ScriptCommand> commands = new List<ScriptCommand>();
@@ -36,5 +37,27 @@ public class ScriptBlock : IEnumerable<ScriptCommand> {
                 }
             }
         }
+    }
+
+    public string ToString(int depth)
+    {
+        StringBuilder result = new StringBuilder();
+
+        foreach (var command in commands)
+        {
+            for (int i = 0; i < depth; ++i)
+            {
+                result.Append("    ");
+            }
+            result.Append(command.ToString(depth));
+            result.Append("\n");
+        }
+
+        return result.ToString();
+    }
+
+    public override string ToString()
+    {
+        return ToString(0);
     }
 }
