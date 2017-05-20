@@ -6,14 +6,12 @@ using UnityEngine;
 public class UnityExecutionContext : MonoBehaviour, ExecutionContext
 {
     private GameState gameState = new GameState();
-    public CustomFontRenderer fontRenderer;
     public Transform textLocation;
 
     public IEnumerator emitText(string text)
     {
         while (!Input.GetButtonDown("Submit"))
         {
-            fontRenderer.DrawMultilineText(textLocation.position, 10.0f, text);
             yield return null;
         }
     }
