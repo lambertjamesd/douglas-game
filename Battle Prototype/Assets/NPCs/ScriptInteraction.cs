@@ -29,17 +29,63 @@ public class ScriptInteraction : MonoBehaviour {
                 story.ChoosePathString("start", new string[] { });
             }
 
-            while (story.canContinue)
+            do
             {
-                string[] parts = prefabInstance.SplitSections(story.Continue());
+                string storyText = story.Continue();
+                List<Choice> choices = story.currentChoices;
+                string[] parts = prefabInstance.SplitSections(storyText, choices.Count);
+
+                prefabInstance.Reset();
 
                 foreach (string part in parts)
                 {
                     prefabInstance.text.text = part;
 
+                    if (choices.Count > 0 && part != parts[parts.Length -1])
+                    {
+                        while (!Input.GetButtonDown("Submit"))
+                        {
+                            yield return null;
+                        }
+
+                        while (!Input.GetButtonUp("Submit"))
+                        {
+                            yield return null;
+                        }
+                    }
+                }
+
+                if (choices.Count > 0)
+                {
+                    prefabInstance.ShowOptions(choices);
+
+                    int currentSelection = 0;
+
                     while (!Input.GetButtonDown("Submit"))
                     {
+                        if (Input.GetButtonDown("Next") && currentSelection < choices.Count - 1)
+                        {
+                            currentSelection++;
+                        }
+
+                        if (Input.GetButtonDown("Previous") && currentSelection > 0)
+                        {
+                            currentSelection--;
+                        }
+
+                        prefabInstance.Select(currentSelection);
+
+
                         yield return null;
+                    }
+
+                    if (currentSelection < choices.Count)
+                    {
+                        story.ChooseChoiceIndex(choices[currentSelection].index);
+                        if (story.canContinue)
+                        {
+                            story.Continue();
+                        }
                     }
 
                     while (!Input.GetButtonUp("Submit"))
@@ -48,6 +94,7 @@ public class ScriptInteraction : MonoBehaviour {
                     }
                 }
             }
+            while (story.canContinue);
 
             Destroy(prefabInstance.gameObject);
         }
