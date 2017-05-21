@@ -1,33 +1,55 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Ink.Runtime;
 
 public class ScriptInteraction : MonoBehaviour {
-
-    public UnityExecutionContext executionContext;
+    
     public TextAsset scriptSource;
-    private GameScript script;
+    public TextDialog textPrefab;
+    private TextDialog prefabInstance;
+    private Story story;
 
 	// Use this for initialization
 	void Start () {
-        executionContext = executionContext ?? gameObject.GetComponentInParent<UnityExecutionContext>();
-
         if (scriptSource != null)
         {
-            script = GameScriptParser.parse(scriptSource.text);
+            story = new Story(scriptSource.text);
         } 
 	}
 
     public IEnumerator interact()
     {
-        if (script != null)
+        if (story != null)
         {
-            var result = script.run(executionContext);
+            prefabInstance = Instantiate<TextDialog>(textPrefab);
 
-            while (result != null && result.MoveNext())
+            if (!story.canContinue)
             {
-                yield return null;
+                story.ChoosePathString("start", new string[] { });
             }
+
+            while (story.canContinue)
+            {
+                string[] parts = prefabInstance.SplitSections(story.Continue());
+
+                foreach (string part in parts)
+                {
+                    prefabInstance.text.text = part;
+
+                    while (!Input.GetButtonDown("Submit"))
+                    {
+                        yield return null;
+                    }
+
+                    while (!Input.GetButtonUp("Submit"))
+                    {
+                        yield return null;
+                    }
+                }
+            }
+
+            Destroy(prefabInstance.gameObject);
         }
         else
         {
