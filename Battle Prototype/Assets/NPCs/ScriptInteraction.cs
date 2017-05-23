@@ -5,35 +5,27 @@ using Ink.Runtime;
 
 public class ScriptInteraction : MonoBehaviour {
     
-    public TextAsset scriptSource;
+    public string storyEntryPoint;
     public TextDialog textPrefab;
     private TextDialog prefabInstance;
-    private Story story;
-
-	// Use this for initialization
-	void Start () {
-        if (scriptSource != null)
-        {
-            story = new Story(scriptSource.text);
-        } 
-	}
 
     public IEnumerator interact()
     {
-        if (story != null)
+        if (storyEntryPoint != null)
         {
             prefabInstance = Instantiate<TextDialog>(textPrefab);
 
-            if (!story.canContinue)
-            {
-                story.ChoosePathString("start", new string[] { });
-            }
+            Story story = StoryManager.GetSingleton().GetStory();
+
+            story.ChoosePathString(storyEntryPoint, new string[]{});
 
             do
             {
                 string storyText = story.Continue();
                 List<Choice> choices = story.currentChoices;
                 string[] parts = prefabInstance.SplitSections(storyText, choices.Count);
+
+                Debug.Log(storyText);
 
                 prefabInstance.Reset();
 
