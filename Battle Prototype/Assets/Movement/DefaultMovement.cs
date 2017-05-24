@@ -111,7 +111,10 @@ public class DefaultMovement : MonoBehaviour {
 				
 				if (direction != null && dir != Vector3.zero) {
 					direction.localRotation = Quaternion.LookRotation(Vector3.forward, Vector3.Cross(Vector3.forward, dir));
-				}
+                    Vector3 localPos = direction.localPosition;
+                    localPos.z = dir.x + dir.y;
+                    direction.localPosition = localPos;
+                }
 			}
 			
 			if (moveAnimator != null) {

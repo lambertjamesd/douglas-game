@@ -46,7 +46,9 @@ You move towards the lake to float in water that is so still it perfectly reflec
 ->adult_mallard 
 
 = adult_mallard
-In this isolated place, you do not see a human being until you begin to fly, learning migration patterns that pass through populated cities. In your second year, you learn about hunters as one of your fellows is shot from the sky with a sound like the earth is cracking open. 
-In your first breeding year, you are unsuccessful at pairing with a mate. A group af bachelors forms, you one among many unsuccessfuls.  
+In this isolated place, you do not see a human being until you begin to fly, learning migration patterns that pass through populated cities. In your first year, you are fed bread by childen while you float on an urban pond. In your second year, you learn about hunters as one of your fellows is shot from the sky with a sound like the earth is cracking open.  
+In your first breeding year, you attempt to find a mate. A tawny brown female catches your eye. 
+*   Court the female
 
+you pair with a tawny brown female. You keep close to her, your mate. The two of you are closely bonded. You stay with her until she lays her eggs
 

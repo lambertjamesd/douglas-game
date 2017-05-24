@@ -42,7 +42,7 @@ public class PlayerMovement : State {
 
         if (Input.GetButtonDown("Submit"))
         {
-            var overlaps = Physics2D.OverlapCircleAll(direction.TransformPoint(Vector3.down * interactDistance), interactRadius);
+            var overlaps = Physics2D.OverlapCircleAll(direction.TransformPoint(Vector3.right * interactDistance), interactRadius);
 
             ScriptInteraction interaction = overlaps.Select(collider => collider.gameObject.GetComponent<ScriptInteraction>())
                 .Where(value => value != null)

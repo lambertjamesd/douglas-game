@@ -33,7 +33,7 @@ public class ScriptInteraction : MonoBehaviour {
                 {
                     prefabInstance.text.text = part;
 
-                    if (choices.Count > 0 && part != parts[parts.Length -1])
+                    if (choices.Count > 0 && part != parts[parts.Length -1] || choices.Count == 0)
                     {
                         while (!Input.GetButtonDown("Submit"))
                         {
