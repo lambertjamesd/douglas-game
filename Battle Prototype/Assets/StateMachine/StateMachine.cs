@@ -10,9 +10,15 @@ public class StateMachine : MonoBehaviour {
 	}
 
 	void SetCurrentState(IState next) {
-		if (next != null) {
+		if (next != null && next != currentState) {
 			next.StateBegin();
+            IState prevState = currentState;
 			currentState = next;
+
+            if (prevState != null)
+            {
+                prevState.StateEnd();
+            }
 		}
 	}
 

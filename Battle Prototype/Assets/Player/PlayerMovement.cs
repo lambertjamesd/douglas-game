@@ -31,9 +31,11 @@ public class PlayerMovement : State {
 
 		movement.TargetVelocity = new Vector2(horz, vert).normalized * speed;
 
-		if (Input.GetButtonDown("Fire1"))
+        State maybeResult = inventory.checkUseItems();
+
+        if (maybeResult != null)
         {
-			return inventory.usePrimaryItem();
+            return maybeResult;
 		}
 
 		if (Input.GetButtonDown("Fire2"))

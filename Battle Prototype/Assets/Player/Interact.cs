@@ -19,6 +19,11 @@ public class Interact : IState
 
     }
 
+    public void StateEnd()
+    {
+
+    }
+
     public IState UpdateState(float deltaTime)
     {
         if (script != null && script.MoveNext())
