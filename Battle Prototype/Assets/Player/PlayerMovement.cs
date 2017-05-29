@@ -5,8 +5,7 @@ using System.Linq;
 public class PlayerMovement : State {
 	public float speed = 2.0f;
 	public SwordSwing sword;
-	public Bow bow;
-	public BreakerBow breakerBow;
+    public ReloadGun reload;
 	public Transform direction;
 	public float bowSpeed = 2.0f;
     public float interactDistance = 0.5f;
@@ -32,13 +31,20 @@ public class PlayerMovement : State {
 
 		movement.TargetVelocity = new Vector2(horz, vert).normalized * speed;
 
-		if (Input.GetButtonDown("Fire1")) {
+		if (Input.GetButtonDown("Fire1"))
+        {
 			return inventory.usePrimaryItem();
 		}
 
-		if (Input.GetButtonDown("Fire2")){
+		if (Input.GetButtonDown("Fire2"))
+        {
 			StartCoroutine(SwingSword());
 		}
+
+        if (Input.GetButtonDown("Reload"))
+        {
+            return reload;
+        }
 
         if (Input.GetButtonDown("Submit"))
         {

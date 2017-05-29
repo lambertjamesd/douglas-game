@@ -7,7 +7,6 @@ public class BowItem : InventoryItem {
 	}
 
 	public override State useItem (Inventory inventory) {
-		inventory.arrows -= 1;
 		return state;
 	}
 }
