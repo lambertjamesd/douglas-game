@@ -8,7 +8,7 @@ public class PlayerHUD : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		transform.parent = null;
+		transform.SetParent(null, false);
 	}
 
 	void Update () {
