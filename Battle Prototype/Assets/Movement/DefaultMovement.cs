@@ -108,13 +108,8 @@ public class DefaultMovement : MonoBehaviour {
 				if (moveAnimator != null && facing != -1) {
 					moveAnimator.SetInteger("Direction", facing);
 				}
-				
-				if (direction != null && dir != Vector3.zero) {
-					direction.localRotation = Quaternion.LookRotation(Vector3.forward, Vector3.Cross(Vector3.forward, dir));
-                    Vector3 localPos = direction.localPosition;
-                    localPos.z = dir.x + dir.y;
-                    direction.localPosition = localPos;
-                }
+
+                SetDirection(dir);
 			}
 			
 			if (moveAnimator != null) {
@@ -136,6 +131,17 @@ public class DefaultMovement : MonoBehaviour {
 			forBody.velocity = value;
 		}
 	}
+
+    public void SetDirection(Vector2 target)
+    {
+        if (direction != null && target != Vector2.zero)
+        {
+            direction.localRotation = Quaternion.LookRotation(Vector3.forward, Vector3.Cross(Vector3.forward, target));
+            Vector3 localPos = direction.localPosition;
+            localPos.z = target.x + target.y;
+            direction.localPosition = localPos;
+        }
+    }
 
 	public bool Knockback(Vector2 offset) {
 		if (canKnockback) {
