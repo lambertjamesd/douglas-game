@@ -37,6 +37,8 @@ public class LineUpShot : State {
                 Vector2 moveDirection = (Mathf.Abs(offset.x) > Mathf.Abs(offset.y)) ?
                     new Vector2(0.0f, Mathf.Sign(offset.y)) :
                     new Vector2(Mathf.Sign(offset.x), 0.0f);
+
+                movement.SetDirection(offset);
                
                 if (Vector2.Dot(moveDirection, offset) < targetOffset)
                 {

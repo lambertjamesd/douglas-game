@@ -136,6 +136,15 @@ public class DefaultMovement : MonoBehaviour {
     {
         if (direction != null && target != Vector2.zero)
         {
+            if (Mathf.Abs(target.x) > Mathf.Abs(target.y))
+            {
+                target = new Vector2(Mathf.Sign(target.x), 0.0f);
+            }
+            else
+            {
+                target = new Vector2(0.0f, Mathf.Sign(target.y));
+            }
+
             direction.localRotation = Quaternion.LookRotation(Vector3.forward, Vector3.Cross(Vector3.forward, target));
             Vector3 localPos = direction.localPosition;
             localPos.z = target.x + target.y;

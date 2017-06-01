@@ -9,7 +9,7 @@ public class StateMachine : MonoBehaviour {
 		SetCurrentState(startingState);
 	}
 
-	void SetCurrentState(IState next) {
+	public void SetCurrentState(IState next) {
 		if (next != null && next != currentState) {
 			next.StateBegin();
             IState prevState = currentState;
