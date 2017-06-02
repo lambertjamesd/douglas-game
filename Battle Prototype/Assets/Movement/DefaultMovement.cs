@@ -89,27 +89,7 @@ public class DefaultMovement : MonoBehaviour {
 			targetVelocity = value;
 
 			if (lockRotation == 0) {
-				Vector3 dir;
-				Vector3 currentDir = direction != null ? direction.TransformDirection(Vector3.right) : Vector3.right;
-				int facing = -1;
-				
-				if (Mathf.Abs(value.x) >= Mathf.Abs(value.y)) {
-					if (value.x == 0.0f || Mathf.Abs(value.x) == Mathf.Abs(value.y) && Vector3.Dot(currentDir, new Vector3(value.x, value.y, 0.0f)) > 0.0f) {
-						dir = Vector3.zero;
-					} else {
-						dir = new Vector3(Mathf.Sign(value.x), 0.0f);
-						facing = value.x > 0 ? 3 : 1;
-					}
-				} else {
-					dir = new Vector3(0.0f, Mathf.Sign(value.y));
-					facing = value.y > 0 ? 2 : 0;
-				}
-
-				if (moveAnimator != null && facing != -1) {
-					moveAnimator.SetInteger("Direction", facing);
-				}
-
-                SetDirection(dir);
+                SetDirection(value);
 			}
 			
 			if (moveAnimator != null) {
@@ -134,20 +114,38 @@ public class DefaultMovement : MonoBehaviour {
 
     public void SetDirection(Vector2 target)
     {
-        if (direction != null && target != Vector2.zero)
+        Vector2 dir;
+        Vector3 currentDir = direction != null ? direction.TransformDirection(Vector3.right) : Vector3.right;
+        int facing = -1;
+
+        if (Mathf.Abs(target.x) >= Mathf.Abs(target.y))
         {
-            if (Mathf.Abs(target.x) > Mathf.Abs(target.y))
+            if (target.x == 0.0f || Mathf.Abs(target.x) == Mathf.Abs(target.y) && Vector3.Dot(currentDir, new Vector3(target.x, target.y, 0.0f)) > 0.0f)
             {
-                target = new Vector2(Mathf.Sign(target.x), 0.0f);
+                dir = Vector2.zero;
             }
             else
             {
-                target = new Vector2(0.0f, Mathf.Sign(target.y));
+                dir = new Vector2(Mathf.Sign(target.x), 0.0f);
+                facing = target.x > 0 ? 3 : 1;
             }
+        }
+        else
+        {
+            dir = new Vector2(0.0f, Mathf.Sign(target.y));
+            facing = target.y > 0 ? 2 : 0;
+        }
 
-            direction.localRotation = Quaternion.LookRotation(Vector3.forward, Vector3.Cross(Vector3.forward, target));
+        if (moveAnimator != null && facing != -1)
+        {
+            moveAnimator.SetInteger("Direction", facing);
+        }
+
+        if (direction != null && dir != Vector2.zero)
+        {
+            direction.localRotation = Quaternion.LookRotation(Vector3.forward, Vector3.Cross(Vector3.forward, dir));
             Vector3 localPos = direction.localPosition;
-            localPos.z = target.x + target.y;
+            localPos.z = dir.x + dir.y;
             direction.localPosition = localPos;
         }
     }
