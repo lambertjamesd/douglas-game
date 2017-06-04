@@ -1,14 +1,46 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
-[System.Serializable]
-public class GunStats
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+public class GunStats : ScriptableObject
 {
     public float speed;
     public int capacity;
     public float reloadDelay;
     public float reloadBulletDuration;
+    public ReloadAnimation reloadAnimation;
+    public Projectile round;
+
+
+#if UNITY_EDITOR
+    [MenuItem("Assets/Create/Gun")]
+    static void CreateFont()
+    {
+        GunStats gunStats = ScriptableObject.CreateInstance<GunStats>();
+
+        string path = AssetDatabase.GetAssetPath(Selection.activeObject);
+        if (path == "")
+        {
+
+        }
+        else if (Path.GetExtension(path) != "")
+        {
+            path = path.Replace(Path.GetFileName(AssetDatabase.GetAssetPath(Selection.activeObject)), "");
+        }
+
+        string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(path + "/New Gun.asset");
+
+        AssetDatabase.CreateAsset(gunStats, assetPathAndName);
+        AssetDatabase.SaveAssets();
+        EditorUtility.FocusProjectWindow();
+        Selection.activeObject = gunStats;
+    }
+#endif
 }
 
 public class Gun : State
@@ -22,6 +54,7 @@ public class Gun : State
     {
         if (shotsLeft > 0)
         {
+            bow.LoadProjectile(gunStats.round);
             bow.Fire(gunStats.speed);
             --shotsLeft;
         }

@@ -6,24 +6,32 @@ public class ReloadGun : State
 {
     public State nextState;
     public Gun forGun;
-    public ReloadAnimation currentAnimation;
+    public Transform animationCLocation;
+    private ReloadAnimation currentReloadAnimation;
     private float currentTimer = 0.0f;
     public DefaultMovement movement;
     public float moveSpeed;
     public int showCount = 0;
     public InventorySlot inventory;
+    public bool isPlayer = true;
 
     public override void StateBegin()
     {
-        currentAnimation.gameObject.SetActive(true);
-        currentAnimation.SetShotCount(forGun.shotsLeft);
+        if (currentReloadAnimation != null)
+        {
+            Destroy(currentReloadAnimation.gameObject);
+        }
+
+        currentReloadAnimation = Instantiate<ReloadAnimation>(forGun.gunStats.reloadAnimation);
+        currentReloadAnimation.transform.SetParent(animationCLocation, false);
+        currentReloadAnimation.transform.localPosition = Vector3.zero;
+        currentReloadAnimation.SetShotCount(forGun.shotsLeft);
         currentTimer = forGun.gunStats.reloadDelay;
-        ++showCount;
     }
 
     public override IState UpdateState(float deltaTime)
     {
-        State useItem = inventory.checkUseItems();
+        State useItem = isPlayer ? inventory.checkUseItems() : null;
 
         if (useItem != null)
         {
@@ -31,10 +39,13 @@ public class ReloadGun : State
         }
         else if (forGun.shotsLeft < forGun.gunStats.capacity && inventory.inventory.arrows > 0)
         {
-            float horz = Input.GetAxisRaw("Horizontal");
-            float vert = Input.GetAxisRaw("Vertical");
+            if (isPlayer)
+            {
+                float horz = Input.GetAxisRaw("Horizontal");
+                float vert = Input.GetAxisRaw("Vertical");
 
-            movement.TargetVelocity = new Vector2(horz, vert).normalized * moveSpeed;
+                movement.TargetVelocity = new Vector2(horz, vert).normalized * moveSpeed;
+            }
 
             if (currentTimer > 0.0f)
             {
@@ -44,7 +55,7 @@ public class ReloadGun : State
             {
                 ++forGun.shotsLeft;
                 --inventory.inventory.arrows;
-                currentAnimation.SetShotCount(forGun.shotsLeft);
+                currentReloadAnimation.SetShotCount(forGun.shotsLeft);
                 currentTimer = forGun.gunStats.reloadBulletDuration;
             }
 
@@ -58,25 +69,24 @@ public class ReloadGun : State
 
     public override void StateEnd()
     {
-        StartCoroutine(HideReloadAnimation());
+        StartCoroutine(HideReloadAnimation(currentReloadAnimation));
+        currentReloadAnimation = null;
     }
 
-    IEnumerator HideReloadAnimation()
+    IEnumerator HideReloadAnimation(ReloadAnimation animation)
     {
         float timer = 0.5f;
 
-        while (timer > 0.0f)
+        while (timer > 0.0f && animation != null)
         {
-            yield return null;
-            currentAnimation.SetShotCount(forGun.shotsLeft);
+            animation.SetShotCount(forGun.shotsLeft);
             timer -= Time.deltaTime;
+            yield return null;
         }
-
-        --showCount;
-
-        if (showCount == 0)
+        
+        if (animation != null)
         {
-            currentAnimation.gameObject.SetActive(false);
+            Destroy(animation.gameObject);
         }
     }
 }
