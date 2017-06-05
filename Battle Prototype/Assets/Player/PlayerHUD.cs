@@ -12,6 +12,6 @@ public class PlayerHUD : MonoBehaviour {
 	}
 
 	void Update () {
-		textMesh.text = inventory.inventory.arrows.ToString();
+		textMesh.text = inventory.GetAmmoCount(AmmoType.Colt45).ToString();
 	}
 }

@@ -7,14 +7,21 @@ using System.IO;
 using UnityEditor;
 #endif
 
+public enum AmmoType
+{
+    Colt45,
+}
+
 public class GunStats : ScriptableObject
 {
+    public string gunName;
     public float speed;
     public int capacity;
     public float reloadDelay;
     public float reloadBulletDuration;
     public ReloadAnimation reloadAnimation;
     public Projectile round;
+    public AmmoType type = AmmoType.Colt45;
 
 
 #if UNITY_EDITOR

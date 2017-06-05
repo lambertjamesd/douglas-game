@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class InventorySlot : MonoBehaviour 
+public abstract class InventorySlot : MonoBehaviour 
 {
-	public Inventory inventory;
 	public InventoryItem primaryItem;
+
+    public abstract int GetAmmoCount(AmmoType type);
+    public abstract void GiveAmmo(AmmoType type, int amount);
 
 	public State usePrimaryItem() 
     {
-		if (primaryItem != null && primaryItem.canUse(inventory)) {
-			return primaryItem.useItem(inventory);
+		if (primaryItem != null && primaryItem.canUse(this)) {
+			return primaryItem.useItem(this);
 		} else {
 			return null;
 		}
@@ -26,9 +28,4 @@ public class InventorySlot : MonoBehaviour
 
         return result;
     }
-
-	public void GiveArrows(int count) 
-    {
-		inventory.arrows += count;
-	}
 }

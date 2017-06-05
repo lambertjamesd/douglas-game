@@ -4,11 +4,11 @@ using System.Collections;
 public class BowItem : InventoryItem {
     public Gun gun;
 
-	public override bool canUse (Inventory inventory) {
-		return inventory.arrows > 0 || gun.shotsLeft > 0;
+	public override bool canUse (InventorySlot inventory) {
+		return inventory.GetAmmoCount(gun.gunStats.type) > 0 || gun.shotsLeft > 0;
 	}
 
-	public override State useItem (Inventory inventory) {
+	public override State useItem (InventorySlot inventory) {
 		return state;
 	}
 }

@@ -37,7 +37,7 @@ public class ReloadGun : State
         {
             return useItem;
         }
-        else if (forGun.shotsLeft < forGun.gunStats.capacity && inventory.inventory.arrows > 0)
+        else if (forGun.shotsLeft < forGun.gunStats.capacity && inventory.GetAmmoCount(forGun.gunStats.type) > 0)
         {
             if (isPlayer)
             {
@@ -54,7 +54,7 @@ public class ReloadGun : State
             else
             {
                 ++forGun.shotsLeft;
-                --inventory.inventory.arrows;
+                inventory.GiveAmmo(forGun.gunStats.type, -1);
                 currentReloadAnimation.SetShotCount(forGun.shotsLeft);
                 currentTimer = forGun.gunStats.reloadBulletDuration;
             }

@@ -6,7 +6,7 @@ public class StoryLoader : MonoBehaviour {
 
     public TextAsset story;
 
-	void Start () {
+	void Awake () {
         StoryManager.GetSingleton().SetStory(story);
 	}
 }
