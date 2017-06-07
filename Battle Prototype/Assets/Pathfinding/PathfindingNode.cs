@@ -1,16 +1,44 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+public class PathfindingEdge
+{
+    public PathfindingNode to;
+    public Rect edge;
+
+    public PathfindingEdge(PathfindingNode to, Rect edge)
+    {
+        this.to = to;
+        this.edge = edge;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return to.Equals(obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return to.GetHashCode();
+    }
+}
 
 public class PathfindingNode {
     private Vector2 cellSize;
     private Rect area;
-    private HashSet<PathfindingNode> adjacentNodes = new HashSet<PathfindingNode>();
+    private HashSet<PathfindingEdge> adjacentNodes = new HashSet<PathfindingEdge>();
 
     public PathfindingNode(Vector2 cellSize, Rect area)
     {
         this.cellSize = cellSize;
         this.area = area;
+    }
+
+    public HashSet<PathfindingEdge> GetAdjacentNodes()
+    {
+        return adjacentNodes;
     }
 
     public Rect Area
@@ -68,6 +96,11 @@ public class PathfindingNode {
         }
     }
 
+    public static Rect Intersection(Rect a, Rect b)
+    {
+        return a;
+    }
+
     public void FindConnections(PathfindingGrid grid)
     {
         foreach (Vector2 pos in AdjacentCells())
@@ -76,7 +109,7 @@ public class PathfindingNode {
             
             if (test != null)
             {
-                adjacentNodes.Add(test);
+                adjacentNodes.Add(new PathfindingEdge(test, Intersection(Area, test.Area)));
             }
         }
     }
