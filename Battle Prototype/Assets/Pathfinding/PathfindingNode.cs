@@ -98,7 +98,11 @@ public class PathfindingNode {
 
     public static Rect Intersection(Rect a, Rect b)
     {
-        return a;
+        float minX = Mathf.Max(a.xMin, b.xMin);
+        float maxX = Mathf.Min(a.xMax, b.xMax);
+        float minY = Mathf.Max(a.yMin, b.yMin);
+        float maxY = Mathf.Min(a.yMax, b.yMax);
+        return new Rect(new Vector2(minX, minY), new Vector2(Mathf.Max(0.0f, maxX - minX), Mathf.Max(0.0f, maxY - minY)));
     }
 
     public void FindConnections(PathfindingGrid grid)

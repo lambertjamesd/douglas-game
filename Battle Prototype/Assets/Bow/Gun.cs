@@ -48,6 +48,16 @@ public class GunStats : ScriptableObject
         Selection.activeObject = gunStats;
     }
 #endif
+
+    public int GetShotsLeft(VariableStore store)
+    {
+        return store.GetInt(gunName + "_shots");
+    }
+
+    public void SetShotsLeft(VariableStore store, int value)
+    {
+        store.SetInt(gunName + "_shots", value);
+    }
 }
 
 public class Gun : State
@@ -55,15 +65,25 @@ public class Gun : State
     public State nextState;
     public Bow bow;
     public GunStats gunStats;
-    public int shotsLeft;
+    public VariableStore stateStore;
+
+    public int GetShotsLeft()
+    {
+        return gunStats.GetShotsLeft(stateStore);
+    }
+
+    public void SetShotsLeft(int value)
+    {
+        gunStats.SetShotsLeft(stateStore, value);
+    }
 
     public override IState UpdateState(float deltaTime)
     {
-        if (shotsLeft > 0)
+        if (GetShotsLeft() > 0)
         {
             bow.LoadProjectile(gunStats.round);
             bow.Fire(gunStats.speed);
-            --shotsLeft;
+            SetShotsLeft(GetShotsLeft() - 1);
         }
         return nextState;
     }

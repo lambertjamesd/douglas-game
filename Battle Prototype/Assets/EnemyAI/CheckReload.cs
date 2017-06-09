@@ -9,7 +9,7 @@ public class CheckReload : State {
 
     public override IState UpdateState(float deltaTime)
     {
-        if (gunState.shotsLeft == 0)
+        if (gunState.GetShotsLeft() == 0)
         {
             return reloadState;
         }

@@ -22,7 +22,7 @@ public class PathfindSearchNodeComparator : IComparer<PathfindingSearchNode>
     }
 }
 
-public class PathfindingSearchNode
+public class PathfindingSearchNode : IComparable<PathfindingSearchNode>
 {
     public PathfindingNode node;
     public Vector2 startPoint;
@@ -35,6 +35,22 @@ public class PathfindingSearchNode
         this.startPoint = startPoint;
         this.backNode = backNode;
         this.currentDistance = currentDistance;
+    }
+
+    public int CompareTo(PathfindingSearchNode other)
+    {
+        if (currentDistance < other.currentDistance)
+        {
+            return -1;
+        }
+        else if (currentDistance > other.currentDistance)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
     }
 }
 
@@ -90,7 +106,7 @@ public class PathfindingState
         {
             PathfindingSearchNode next = ExpandNext();
 
-            if (next.node == endNode)
+            if (next != null && next.node == endNode)
             {
                 return BuildPath(end, next);
             }
@@ -117,6 +133,11 @@ public class PathfindingState
     public PathfindingSearchNode ExpandNext()
     {
         PathfindingSearchNode next = nextNodes.Dequeue();
+
+        if (expandedNodes.Contains(next.node))
+        {
+            return null;
+        }
 
         expandedNodes.Add(next.node);
 

@@ -27,7 +27,8 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 	public void HandleCustomProperties(GameObject gameObject,
 	                                   IDictionary<string, string> keyValuePairs)
 	{
-		if (keyValuePairs.ContainsKey("PortalTo")) {
+		if (keyValuePairs.ContainsKey("PortalTo"))
+        {
 			MapPortal portal = gameObject.AddComponent<MapPortal>();
 			string[] parts = keyValuePairs["PortalTo"].Split(new char[]{':'}, 2);
 			portal.target = new MapPath(parts[0], parts.Length > 1 ? parts[1] : "default");
@@ -35,15 +36,18 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 			gameObject.GetComponent<Collider2D>().isTrigger = true;
 		}
 		
-		if (keyValuePairs.ContainsKey("PortalFrom")) {
+		if (keyValuePairs.ContainsKey("PortalFrom"))
+        {
 			StartingPoint portal = gameObject.AddComponent<StartingPoint>();
 			portal.locationName = keyValuePairs["PortalFrom"];
 		}
 
-		if (keyValuePairs.ContainsKey("ObjectName")) {
+		if (keyValuePairs.ContainsKey("ObjectName"))
+        {
 			PrefabSpawner spawner = gameObject.AddComponent<PrefabSpawner>();
 			PrefabNames names = getPrefabMapping();
-			if (names != null) {
+			if (names != null)
+            {
 				spawner.toSpawn = names.GetEntry(keyValuePairs["ObjectName"]).prefab;
 				spawner.condition = keyValuePairs.ContainsKey("When") ? keyValuePairs["When"] : "";
 			}
@@ -63,6 +67,11 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 				}
 			}).ToArray();
 		}
+
+        if (gameObject.GetComponent<Tiled2Unity.TiledMap>() != null)
+        {
+            gameObject.AddComponent<Pathfinding>();
+        }
 	}
 	
 	public void CustomizePrefab(GameObject prefab)

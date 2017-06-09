@@ -7,6 +7,12 @@ public class PathfindingGrid {
     private int width;
     private int height;
     private Vector2 cellSize;
+    private HashSet<PathfindingNode> allNodes = new HashSet<PathfindingNode>();
+
+    public HashSet<PathfindingNode> GetAllNodes()
+    {
+        return allNodes;
+    }
 
     private void CombineCells()
     {
@@ -47,17 +53,15 @@ public class PathfindingGrid {
 
     private void BuildConnections()
     {
-        HashSet<PathfindingNode> joined = new HashSet<PathfindingNode>();
-
         for (int y = 0; y < height; ++y)
         {
             for (int x = 0; x < width; ++x)
             {
                 PathfindingNode test = nodes[x, y];
 
-                if (test != null && !joined.Contains(test))
+                if (test != null && !allNodes.Contains(test))
                 {
-                    joined.Add(test);
+                    allNodes.Add(test);
                     test.FindConnections(this);
                 }
             }
@@ -102,5 +106,10 @@ public class PathfindingGrid {
         {
             nodes[x, y] = node;
         }
+    }
+
+    public void MarkPassible(int x, int y)
+    {
+        nodes[x, y] = new PathfindingNode(cellSize, new Rect(x * cellSize.x, y * cellSize.y, cellSize.x, cellSize.y));
     }
 }

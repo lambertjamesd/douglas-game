@@ -25,7 +25,7 @@ public class ReloadGun : State
         currentReloadAnimation = Instantiate<ReloadAnimation>(forGun.gunStats.reloadAnimation);
         currentReloadAnimation.transform.SetParent(animationCLocation, false);
         currentReloadAnimation.transform.localPosition = Vector3.zero;
-        currentReloadAnimation.SetShotCount(forGun.shotsLeft);
+        currentReloadAnimation.SetShotCount(forGun.GetShotsLeft());
         currentTimer = forGun.gunStats.reloadDelay;
     }
 
@@ -37,7 +37,7 @@ public class ReloadGun : State
         {
             return useItem;
         }
-        else if (forGun.shotsLeft < forGun.gunStats.capacity && inventory.GetAmmoCount(forGun.gunStats.type) > 0)
+        else if (forGun.GetShotsLeft() < forGun.gunStats.capacity && inventory.GetAmmoCount(forGun.gunStats.type) > 0)
         {
             if (isPlayer)
             {
@@ -53,9 +53,9 @@ public class ReloadGun : State
             }
             else
             {
-                ++forGun.shotsLeft;
+                forGun.SetShotsLeft(forGun.GetShotsLeft() + 1);
                 inventory.GiveAmmo(forGun.gunStats.type, -1);
-                currentReloadAnimation.SetShotCount(forGun.shotsLeft);
+                currentReloadAnimation.SetShotCount(forGun.GetShotsLeft());
                 currentTimer = forGun.gunStats.reloadBulletDuration;
             }
 
@@ -79,7 +79,7 @@ public class ReloadGun : State
 
         while (timer > 0.0f && animation != null)
         {
-            animation.SetShotCount(forGun.shotsLeft);
+            animation.SetShotCount(forGun.GetShotsLeft());
             timer -= Time.deltaTime;
             yield return null;
         }
