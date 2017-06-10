@@ -1,10 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class InventorySlot : MonoBehaviour 
 {
 	public InventoryItem primaryItem;
     public VariableStore variableStore;
+    public Arsenal usableWeapons;
+    public int currentGunIndex = -1;
+
+    public GunStats GetCurrentGun()
+    {
+        if (currentGunIndex == -1)
+        {
+            return null;
+        }
+        else
+        {
+            return usableWeapons.guns[currentGunIndex];
+        }
+    }
 
     public int GetAmmoCount(AmmoType type)
     {

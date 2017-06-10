@@ -66,6 +66,7 @@ public class Gun : State
     public Bow bow;
     public GunStats gunStats;
     public VariableStore stateStore;
+    public InventorySlot inventory;
 
     public int GetShotsLeft()
     {
@@ -75,6 +76,11 @@ public class Gun : State
     public void SetShotsLeft(int value)
     {
         gunStats.SetShotsLeft(stateStore, value);
+    }
+
+    public override void StateBegin()
+    {
+        gunStats = inventory.GetCurrentGun() ?? gunStats;
     }
 
     public override IState UpdateState(float deltaTime)

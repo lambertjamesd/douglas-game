@@ -21,4 +21,20 @@ public class StoryVariableStore : VariableStore {
     {
         StoryManager.GetSingleton().GetStory().variablesState[prefix + name] = value;
     }
+
+    public override bool GetBool(string name)
+    {
+        object result = StoryManager.GetSingleton().GetStory().variablesState[prefix + name];
+        if (result == null)
+        {
+            return false;
+        }
+
+        return (bool)result;
+    }
+
+    public override void SetBool(string name, bool value)
+    {
+        StoryManager.GetSingleton().GetStory().variablesState[prefix + name] = value;
+    }
 }
