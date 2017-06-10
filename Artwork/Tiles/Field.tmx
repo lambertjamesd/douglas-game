@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="18" tilewidth="32" tileheight="32" nextobjectid="8">
  <properties>
+  <property name="Name" value="field"/>
   <property name="RightMap" value="default"/>
  </properties>
  <tileset firstgid="1" name="Snow" tilewidth="32" tileheight="32" tilecount="256" columns="16">

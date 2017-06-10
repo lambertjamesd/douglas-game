@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -20,12 +21,18 @@ public class MapPath {
 
 [System.Serializable]
 public class MapEntry {
+    public MapEntry(string name, Tiled2Unity.TiledMap tiled)
+    {
+        this.name = name;
+        this.tiled = tiled;
+    }
+
 	public string name;
 	public Tiled2Unity.TiledMap tiled;
 }
 
 public class MapNames : ScriptableObject {
-	public MapEntry[] maps;
+	public List<MapEntry> maps = new List<MapEntry>();
     private Dictionary<string, MapEntry> mapping = null;
 
     private void CheckInitialized() {
@@ -41,6 +48,12 @@ public class MapNames : ScriptableObject {
     public MapEntry GetEntry(string name) {
         this.CheckInitialized();
         return this.mapping[name];
+    }
+
+    public void AddEntry(MapEntry entry)
+    {
+        maps.RemoveAll((otherEntry) => otherEntry.name == entry.name);
+        maps.Add(entry);
     }
 
 #if UNITY_EDITOR

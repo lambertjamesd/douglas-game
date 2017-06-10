@@ -5,6 +5,23 @@ using System.Linq;
 
 [Tiled2Unity.CustomTiledImporter]
 public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
+    private MapNames maps;
+
+    private MapNames GetMapNames()
+    {
+        if (maps == null)
+        {
+            maps = UnityEditor.AssetDatabase.LoadAssetAtPath<MapNames>("Assets/Maps/WorldMaps.asset");
+        }
+
+        return maps;
+    }
+
+    private void SaveMapNames()
+    {
+        UnityEditor.AssetDatabase.SaveAssets();
+    }
+
 	private static string[] sideAttributes = new string[]{
 		"TopMap",
 		"RightMap",
@@ -23,11 +40,12 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 	}
 
 	private static string PrefabNamesPath = "PrefabNames";
+    private string mapName = null;
 
 	public void HandleCustomProperties(GameObject gameObject,
 	                                   IDictionary<string, string> keyValuePairs)
 	{
-		if (keyValuePairs.ContainsKey("PortalTo"))
+        if (keyValuePairs.ContainsKey("PortalTo"))
         {
 			MapPortal portal = gameObject.AddComponent<MapPortal>();
 			string[] parts = keyValuePairs["PortalTo"].Split(new char[]{':'}, 2);
@@ -68,14 +86,30 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 			}).ToArray();
 		}
 
-        if (gameObject.GetComponent<Tiled2Unity.TiledMap>() != null)
+        Tiled2Unity.TiledMap map = gameObject.GetComponent<Tiled2Unity.TiledMap>();
+
+        if (map != null)
         {
-            gameObject.AddComponent<Pathfinding>();
+            if (keyValuePairs.ContainsKey("Name"))
+            {
+                mapName = keyValuePairs["Name"];
+            }
+            else
+            {
+                mapName = null;
+            }
+            Pathfinding pathfinding = gameObject.AddComponent<Pathfinding>();
+            pathfinding.width = map.NumTilesWide;
+            pathfinding.height = map.NumTilesWide;
+            pathfinding.tileSize = new Vector2(map.TileWidth, map.TileHeight);
         }
 	}
 	
 	public void CustomizePrefab(GameObject prefab)
 	{
-
+        if (mapName != null)
+        {
+            GetMapNames().AddEntry(new MapEntry(mapName, prefab.GetComponent<Tiled2Unity.TiledMap>()));
+        }
 	}
 }
