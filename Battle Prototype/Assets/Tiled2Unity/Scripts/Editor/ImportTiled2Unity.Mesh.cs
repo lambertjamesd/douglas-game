@@ -41,27 +41,30 @@ namespace Tiled2Unity
 
         private void ImportAllMeshes(Tiled2Unity.ImportBehaviour importComponent)
         {
-            foreach (var xmlMesh in importComponent.XmlDocument.Root.Elements("ImportMesh"))
+            if (importComponent.XmlDocument != null)
             {
-                // We're going to create/write a file that contains our mesh data as a Wavefront Obj file
-                // The actual mesh will be imported from this Obj file
-                string file = ImportUtils.GetAttributeAsString(xmlMesh, "filename");
-                string data = xmlMesh.Value;
-
-                // Keep track of mesh we're going to import
-                if (!importComponent.ImportWait_Meshes.Contains(file))
+                foreach (var xmlMesh in importComponent.XmlDocument.Root.Elements("ImportMesh"))
                 {
-                    importComponent.ImportWait_Meshes.Add(file);
+                    // We're going to create/write a file that contains our mesh data as a Wavefront Obj file
+                    // The actual mesh will be imported from this Obj file
+                    string file = ImportUtils.GetAttributeAsString(xmlMesh, "filename");
+                    string data = xmlMesh.Value;
+
+                    // Keep track of mesh we're going to import
+                    if (!importComponent.ImportWait_Meshes.Contains(file))
+                    {
+                        importComponent.ImportWait_Meshes.Add(file);
+                    }
+
+                    // The data is in base64 format. We need it as a raw string.
+                    string raw = ImportUtils.Base64ToString(data);
+
+                    // Save and import the asset
+                    string pathToMesh = GetMeshAssetPath(file);
+                    ImportUtils.ReadyToWrite(pathToMesh);
+                    File.WriteAllText(pathToMesh, raw, Encoding.UTF8);
+                    importComponent.ImportTiled2UnityAsset(pathToMesh);
                 }
-
-                // The data is in base64 format. We need it as a raw string.
-                string raw = ImportUtils.Base64ToString(data);
-
-                // Save and import the asset
-                string pathToMesh = GetMeshAssetPath(file);
-                ImportUtils.ReadyToWrite(pathToMesh);
-                File.WriteAllText(pathToMesh, raw, Encoding.UTF8);
-                importComponent.ImportTiled2UnityAsset(pathToMesh);
             }
 
             // If we have no meshes to import then go to next stage

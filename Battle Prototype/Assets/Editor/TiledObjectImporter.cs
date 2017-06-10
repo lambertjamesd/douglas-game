@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -107,9 +108,15 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 	
 	public void CustomizePrefab(GameObject prefab)
 	{
+
+	}
+
+    public void HandleFinalPrefab(UnityEngine.Object prefab)
+    {
         if (mapName != null)
         {
-            GetMapNames().AddEntry(new MapEntry(mapName, prefab.GetComponent<Tiled2Unity.TiledMap>()));
+            Debug.Log(prefab);
+            GetMapNames().AddEntry(new MapEntry(mapName, ((GameObject)prefab).GetComponent<Tiled2Unity.TiledMap>()));
         }
-	}
+    }
 }
