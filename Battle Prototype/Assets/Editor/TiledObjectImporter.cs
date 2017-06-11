@@ -101,8 +101,8 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
             }
             Pathfinding pathfinding = gameObject.AddComponent<Pathfinding>();
             pathfinding.width = map.NumTilesWide;
-            pathfinding.height = map.NumTilesWide;
-            pathfinding.tileSize = new Vector2(map.TileWidth, map.TileHeight);
+            pathfinding.height = map.NumTilesHigh;
+            pathfinding.tileSize = new Vector2(map.TileWidth, map.TileHeight) * map.ExportScale;
         }
 	}
 	
@@ -115,8 +115,8 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
     {
         if (mapName != null)
         {
-            Debug.Log(prefab);
             GetMapNames().AddEntry(new MapEntry(mapName, ((GameObject)prefab).GetComponent<Tiled2Unity.TiledMap>()));
+            SaveMapNames();
         }
     }
 }

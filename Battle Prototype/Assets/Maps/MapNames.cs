@@ -47,7 +47,17 @@ public class MapNames : ScriptableObject {
 
     public MapEntry GetEntry(string name) {
         this.CheckInitialized();
-        return this.mapping[name];
+
+        if (this.mapping.ContainsKey(name))
+        {
+            return this.mapping[name];
+        }
+        else
+        {
+            string message = "Entry named " + name + " does not exits";
+            Debug.LogError(message, this);
+            throw new System.Exception("message");
+        }
     }
 
     public void AddEntry(MapEntry entry)
