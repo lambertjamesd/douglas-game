@@ -20,6 +20,8 @@ public class GunStats : ScriptableObject
     public float reloadDelay;
     public float reloadBulletDuration;
     public ReloadAnimation reloadAnimation;
+    public Sprite smallIcon;
+    public Sprite fullSize;
     public Projectile round;
     public AmmoType type = AmmoType.Colt45;
 

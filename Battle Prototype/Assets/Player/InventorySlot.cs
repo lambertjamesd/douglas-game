@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class InventorySlot : MonoBehaviour 
 {
@@ -19,6 +20,54 @@ public class InventorySlot : MonoBehaviour
         {
             return usableWeapons.guns[currentGunIndex];
         }
+    }
+
+    public void GiveGun(string name)
+    {
+        variableStore.SetBool("has_" + name, true);
+
+        if (currentGunIndex == -1)
+        {
+            currentGunIndex = usableWeapons.guns.FindIndex((item) => item.gunName == name);
+        }
+    }
+
+    public bool HasGun(string name)
+    {
+        return variableStore.GetBool("has_" + name);
+    }
+
+    public void NextGun()
+    {
+        for (int i = 1; i <= usableWeapons.guns.Count; ++i)
+        {
+            int finalIndex = (currentGunIndex + i) % usableWeapons.guns.Count;
+
+            if (HasGun(usableWeapons.guns[finalIndex].gunName))
+            {
+                currentGunIndex = finalIndex;
+                break;
+            }
+        }
+    }
+
+    public void PrevGun()
+    {
+        for (int i = 1; i <= usableWeapons.guns.Count; ++i)
+        {
+            int finalIndex = (usableWeapons.guns.Count * 2 + currentGunIndex - i) % usableWeapons.guns.Count;
+
+            if (HasGun(usableWeapons.guns[finalIndex].gunName))
+            {
+                currentGunIndex = finalIndex;
+                break;
+            }
+        }
+    }
+
+    public GunStats[] GetAvailableGuns()
+    {
+        return usableWeapons.guns.Where((gun) => HasGun(gun.gunName)).ToArray();
     }
 
     public int GetAmmoCount(AmmoType type)

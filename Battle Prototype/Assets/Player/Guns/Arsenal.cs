@@ -9,7 +9,7 @@ using UnityEditor;
 
 public class Arsenal : ScriptableObject
 {
-    public GunStats[] guns;
+    public List<GunStats> guns;
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/Arsenal")]

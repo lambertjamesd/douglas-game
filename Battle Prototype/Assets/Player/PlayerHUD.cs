@@ -5,6 +5,7 @@ using System.Collections;
 public class PlayerHUD : MonoBehaviour {
 	public Text textMesh;
 	public InventorySlot inventory;
+    public Image gunIcon;
 
 	// Use this for initialization
 	void Start () {
@@ -12,6 +13,13 @@ public class PlayerHUD : MonoBehaviour {
 	}
 
 	void Update () {
-		textMesh.text = inventory.GetAmmoCount(AmmoType.Colt45).ToString();
-	}
+        GunStats currentGun = inventory.GetCurrentGun();
+
+        if (currentGun != null)
+        {
+            textMesh.text = inventory.GetAmmoCount(currentGun.type).ToString();
+            gunIcon.sprite = currentGun.smallIcon;
+        }
+
+    }
 }
