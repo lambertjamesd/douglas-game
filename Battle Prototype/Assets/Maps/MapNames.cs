@@ -48,13 +48,15 @@ public class MapNames : ScriptableObject {
     public MapEntry GetEntry(string name) {
         this.CheckInitialized();
 
+        Debug.Log(name);
+
         if (this.mapping.ContainsKey(name))
         {
             return this.mapping[name];
         }
         else
         {
-            string message = "Entry named " + name + " does not exits";
+            string message = "Entry named '" + name + "' does not exits";
             Debug.LogError(message, this);
             throw new System.Exception("message");
         }

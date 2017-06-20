@@ -2,11 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public enum MapDirections
+{
+    Top,
+    Right,
+    Bottom,
+    Left,
+    Dead,
+    Living,
+}
+
 public class WorldController : MonoBehaviour {
 	private Bounds worldBounds = new Bounds(Vector3.zero, Vector3.zero);
 	private MapAttachements currentAttachement = null;
 	public int PixelsPerUnit = 32;
 	public MapNames mapNames;
+    public TextAsset story;
 	public MapPath startingLocation = new MapPath("default", "default");
 	public GameObject player;
 	public FollowCamera followCamera;
@@ -17,6 +28,8 @@ public class WorldController : MonoBehaviour {
 		new Vector2(1.0f, 1.0f),
 		new Vector2(0.0f, 0.0f),
 		new Vector2(0.0f, 1.0f),
+        new Vector2(0.0f, 0.0f),
+        new Vector2(0.0f, 0.0f),
 	};
 
 	private static Vector2[] newBoundAnchor = new Vector2[]{
@@ -24,6 +37,8 @@ public class WorldController : MonoBehaviour {
 		new Vector2(0.0f, 0.0f),
 		new Vector2(0.0f, 0.0f),
 		new Vector2(-1.0f, 0.0f),
+        new Vector2(0.0f, 0.0f),
+        new Vector2(0.0f, 0.0f),
 	};
 
 	private static Vector2[] mapDirection = new Vector2[]{
@@ -31,6 +46,8 @@ public class WorldController : MonoBehaviour {
 		new Vector2(1.0f, 0.0f),
 		new Vector2(0.0f, -1.0f),
 		new Vector2(-1.0f, 0.0f),
+        new Vector2(0.0f, 0.0f),
+        new Vector2(0.0f, 0.0f),
 	};
 
 	Vector2 MapSize(Tiled2Unity.TiledMap from) {
@@ -89,19 +106,30 @@ public class WorldController : MonoBehaviour {
 			followCamera.target = player.transform;
 		}
 
+        if (story != null)
+        {
+            StoryManager.GetSingleton().SetStory(story);
+        }
+
 		if (startingLocation != null) {
 			Goto(startingLocation);
 		}
 	}
 
-	public void Update() {
-		if (currentAttachement != null && player != null) {
+
+
+	public void Update()
+    {
+		if (currentAttachement != null && player != null)
+        {
 			Vector3 playerPos = player.transform.position;
 			Vector2 minOffset = playerPos - worldBounds.min;
 			Vector2 maxOffset = playerPos - worldBounds.max;
 
-			for (int i = 0; i < mapDirection.Length; ++i) {
-				if (currentAttachement.attachments[i] != null && Vector2.Dot(minOffset, mapDirection[i]) > 0 && Vector2.Dot(maxOffset, mapDirection[i]) > 0) {
+			for (int i = 0; i < mapDirection.Length; ++i)
+            {
+				if (currentAttachement.attachments[i] != null && Vector2.Dot(minOffset, mapDirection[i]) > 0 && Vector2.Dot(maxOffset, mapDirection[i]) > 0)
+                {
 					Reset();
 					var map = mapNames.GetEntry(currentAttachement.attachments[i]);
 					Vector2 mapSize = MapSize(map.tiled);
@@ -117,6 +145,20 @@ public class WorldController : MonoBehaviour {
 			}
 		}
 	}
+
+    public void SwitchTo(MapDirections direction)
+    {
+        int directionAsInt = (int)direction;
+        if (currentAttachement != null && directionAsInt < currentAttachement.attachments.Length && currentAttachement.attachments[directionAsInt] != null)
+        {
+            var map = mapNames.GetEntry(currentAttachement.attachments[directionAsInt]);
+            SpawnTilemap(map.tiled, new Vector3(
+                worldBounds.min.x,
+                worldBounds.max.y,
+                0.0f
+            ));
+        }
+    }
 
 	public void Goto(MapPath location) {
 		Reset();

@@ -27,7 +27,9 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 		"TopMap",
 		"RightMap",
 		"BottomMap",
-		"LeftMap"
+		"LeftMap",
+        "DeadMap",
+        "LivingMap"
 	};
 
 	private static PrefabNames prefabMapping = null;
@@ -113,7 +115,7 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 
     public void HandleFinalPrefab(UnityEngine.Object prefab)
     {
-        if (mapName != null)
+        if (mapName != null && prefab is GameObject)
         {
             GetMapNames().AddEntry(new MapEntry(mapName, ((GameObject)prefab).GetComponent<Tiled2Unity.TiledMap>()));
             SaveMapNames();

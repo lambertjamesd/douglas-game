@@ -18,33 +18,47 @@ public class Damageable : MonoBehaviour {
 		currentHealth = maxHealth;
 	}
 
-	public float CurrentHealth {
-		get {
+	public float CurrentHealth 
+    {
+		get 
+        {
 			return currentHealth;
 		}
+        set
+        {
+            currentHealth = value;
+        }
 	}
 
-	public float MaxHealth {
-		get {
+	public float MaxHealth 
+    {
+		get 
+        {
 			return maxHealth;
 		}
 	}
 
-	public bool Damage(DamageSource source) {
+	public bool Damage(DamageSource source) 
+    {
 		bool result = false;
 
-		if ((source.DamageBitmask & damageBitmask) != 0) {
-			for (int i = 0; i < damageFilters.Count && source != null; ++i) {
+		if ((source.DamageBitmask & damageBitmask) != 0) 
+        {
+			for (int i = 0; i < damageFilters.Count && source != null; ++i) 
+            {
 				source = damageFilters[i](source, this);
 			}
 
-			if (source != null) {
+			if (source != null) 
+            {
 				currentHealth -= source.Amount;
 				result = true;
 			}
 
-			if (currentHealth <= 0.0f && !immortal) {
-				for (int i = 0; i < deathListeners.Count; ++i) {
+			if (currentHealth <= 0.0f && !immortal) 
+            {
+				for (int i = 0; i < deathListeners.Count; ++i) 
+                {
 					deathListeners[i](this);
 				}
 
