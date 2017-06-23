@@ -35,8 +35,9 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 	private static PrefabNames prefabMapping = null;
 
 	private static PrefabNames getPrefabMapping() {
-		if (prefabMapping == null) {
-			prefabMapping = Resources.Load(PrefabNamesPath) as PrefabNames;
+        if (prefabMapping == null)
+        {
+            prefabMapping = UnityEditor.AssetDatabase.LoadAssetAtPath<PrefabNames>("Assets/Maps/PrefabNames.asset");
 		}
 
 		return prefabMapping;
@@ -74,8 +75,25 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 			}
 
 			BoxCollider2D collider = gameObject.GetComponent<BoxCollider2D>();
-			gameObject.transform.position = gameObject.transform.position + new Vector3(collider.offset.x, collider.offset.y, 0.0f);
-			Object.DestroyImmediate(collider);
+
+            if (collider != null)
+            {
+			    gameObject.transform.position = gameObject.transform.position + new Vector3(collider.offset.x, collider.offset.y, 0.0f);
+			    Object.DestroyImmediate(collider);
+            }
+
+            Tiled2Unity.TileObject tileObject = gameObject.GetComponent<Tiled2Unity.TileObject>();
+
+            if (tileObject != null)
+            {
+                gameObject.transform.position += new Vector3(tileObject.TileWidth * 0.5f, tileObject.TileHeight * 0.5f, 0.0f);
+                Object.DestroyImmediate(tileObject);
+            }
+
+            while (gameObject.transform.childCount > 0)
+            {
+                Object.DestroyImmediate(gameObject.transform.GetChild(0).gameObject);
+            }
 		}
 
 		if (sideAttributes.Any((key) => keyValuePairs.ContainsKey(key))) {
