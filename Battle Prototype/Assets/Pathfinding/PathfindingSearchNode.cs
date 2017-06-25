@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class PathfindSearchNodeComparator : IComparer<PathfindingSearchNode>
 {
@@ -108,6 +109,47 @@ public class PathfindingState
 
             if (next != null && next.node == endNode)
             {
+                return BuildPath(end, next);
+            }
+        }
+
+        return null;
+    }
+
+    public Vector2[] PathToNearest(IEnumerable<Vector2> ends)
+    {
+        Dictionary<PathfindingNode, List<Vector2>> endNodeMapping = new Dictionary<PathfindingNode, List<Vector2>>();
+ 
+        foreach (Vector2 end in ends)
+        {
+            PathfindingNode endNode = grid.CellAt(end);
+
+            if (!endNodeMapping.ContainsKey(endNode))
+            {
+                endNodeMapping[endNode] = new List<Vector2>();
+            }
+
+            endNodeMapping[endNode].Add(end);
+        }
+
+        while (nextNodes.Count > 0)
+        {
+            PathfindingSearchNode next = ExpandNext();
+
+            if (next != null && endNodeMapping.ContainsKey(next.node))
+            {
+                Vector2 end = endNodeMapping[next.node].Aggregate((shortest, nextTest) =>
+                {
+                    if (Distance(nextTest, next.startPoint) < Distance(shortest, next.startPoint))
+                    {
+                        return nextTest;
+                    }
+                    else
+                    {
+                        return shortest;
+                    }
+                });
+
                 return BuildPath(end, next);
             }
         }

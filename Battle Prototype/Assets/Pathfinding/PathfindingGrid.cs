@@ -86,14 +86,38 @@ public class PathfindingGrid {
     {
         int x = Mathf.FloorToInt(position.x / cellSize.x);
         int y = Mathf.FloorToInt(position.y / cellSize.y);
-        
+        return GetCell(x, y);
+    }
+
+    public Vector2 CellCenter(int x, int y)
+    {
+        return new Vector2((x + 0.5f) * cellSize.x, (y + 0.5f) * cellSize.y);
+    }
+
+    public int GetWidth()
+    {
+        return width;
+    }
+
+    public int GetHeight()
+    {
+        return height;
+    }
+
+    public Vector2 GetCellSize()
+    {
+        return cellSize;
+    }
+
+    public PathfindingNode GetCell(int x, int y)
+    {
         if (x < 0 || y < 0 || x >= width || y >= height)
         {
             return null;
         }
         else
         {
-            return nodes[x,y];
+            return nodes[x, y];
         }
     }
 

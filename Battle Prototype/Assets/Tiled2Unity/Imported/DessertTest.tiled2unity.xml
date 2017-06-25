@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 6/22/2017 9:19:34 PM-->
+<!--Last exported: 6/24/2017 9:43:05 PM-->
 <Tiled2Unity version="1.0.9.5">
   <AssignMaterial mesh="mesh_0001" material="Dessert" />
   <AssignMaterial mesh="mesh_0002" material="Dessert" />
   <AssignMaterial mesh="mesh_tile_0257" material="PlaceObjects" />
   <Prefab name="DessertTest" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="2" numTilesWide="24" numTilesHigh="18" tileWidth="32" tileHeight="32" exportScale="0.03125" mapWidthInPixels="768" mapHeightInPixels="576" backgroundColor="#808080">
     <Property name="DeadMap" value="DessertTestSpirit" />
+    <Property name="LeftMap" value="LeftDessert" />
     <Property name="Name" value="DessertTest" />
     <GameObject name="Tile Layer 1" x="0" y="0" z="0">
       <TileLayer offsetX="0" offsetY="0" />
@@ -19,7 +20,7 @@
     </GameObject>
     <GameObject name="Objects" x="0" y="0.03125" z="0">
       <ObjectLayer offsetX="0" offsetY="-1" color="#ff808080" />
-      <GameObject name="TileObject" x="16" y="-6" rotation="0" layer="" scaleX="1" scaleY="1">
+      <GameObject name="ShootOnSight" x="16" y="-6" rotation="0" layer="" scaleX="1" scaleY="1">
         <Property name="ObjectName" value="ShootOnSight" />
         <TileObjectComponent width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">

@@ -8,6 +8,7 @@ public class Pathfinder : MonoBehaviour
     public DefaultMovement movement;
     public float moveSpeed = 1.0f;
     public float radius = 0.5f;
+    public PathingTypes layerName = PathingTypes.Walking;
 
     private Vector3[] currentWaypoints;
     private int currentWaypointIndex;
@@ -16,8 +17,25 @@ public class Pathfinder : MonoBehaviour
     {
         if (pathfinding != null)
         {
-            currentWaypoints = pathfinding.FindPath(transform.position, position);
+            currentWaypoints = pathfinding.FindPath(layerName, transform.position, position);
             currentWaypointIndex = 0;
+        }
+    }
+
+    public void PathToNearest(IEnumerable<Vector3> position)
+    {
+        if (pathfinding != null)
+        {
+            currentWaypoints = pathfinding.FindPath(layerName, transform.position, position);
+            currentWaypointIndex = 0;
+        }
+    }
+
+    void Start()
+    {
+        if (pathfinding == null)
+        {
+            pathfinding = gameObject.GetComponentInHeirarchy<Pathfinding>();
         }
     }
 
