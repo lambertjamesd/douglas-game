@@ -25,6 +25,36 @@ public class LineUpShot : State {
         }
     }
 
+    public static IEnumerator LineUp(Transform target, Transform from, DefaultMovement movement, Sight sight, float targetOffset, float moveSpeed)
+    {
+        do
+        {
+            movement.TargetVelocity = TargetVelocity(target, from, movement, targetOffset) * moveSpeed;
+            yield return null;
+        }
+        while (sight.canSeeObject(target.gameObject) && (movement.TargetVelocity != Vector2.zero || movement.Velocity != Vector2.zero));
+    }
+
+    public static Vector2 TargetVelocity(Transform target, Transform from, DefaultMovement movement, float targetOffset)
+    {
+        Vector2 offset = target.transform.position - from.position;
+
+        Vector2 moveDirection = (Mathf.Abs(offset.x) > Mathf.Abs(offset.y)) ?
+            new Vector2(0.0f, Mathf.Sign(offset.y)) :
+            new Vector2(Mathf.Sign(offset.x), 0.0f);
+
+        movement.SetDirection(offset);
+
+        if (Vector2.Dot(moveDirection, offset) < targetOffset)
+        {
+            return Vector2.zero;
+        }
+        else
+        {
+            return moveDirection;
+        }
+    }
+
     public override IState UpdateState(float deltaTime)
     {
         if (target != null)
@@ -34,27 +64,19 @@ public class LineUpShot : State {
 
             if (hit2D != null)
             {
-                Vector2 moveDirection = (Mathf.Abs(offset.x) > Mathf.Abs(offset.y)) ?
-                    new Vector2(0.0f, Mathf.Sign(offset.y)) :
-                    new Vector2(Mathf.Sign(offset.x), 0.0f);
+                Vector2 targetVelocity = TargetVelocity(target, transform, movement, targetOffset) * moveSpeed;
+                movement.TargetVelocity = targetVelocity;
 
-                movement.SetDirection(offset);
-               
-                if (Vector2.Dot(moveDirection, offset) < targetOffset)
+                if (targetVelocity == Vector2.zero && movement.Velocity == Vector2.zero)
                 {
-                    movement.TargetVelocity = Vector2.zero;
-
-                    if (movement.Velocity == Vector2.zero)
-                    {
-                        return shootState;
-                    }
-                }
-                else
-                {
-                    movement.TargetVelocity = moveDirection * moveSpeed;
+                    return shootState;
                 }
 
                 return null;
+            }
+            else
+            {
+                target = null;
             }
         }
 

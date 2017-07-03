@@ -36,8 +36,6 @@ public class TextDialog : MonoBehaviour {
         {
             string reverseString = new string(input.ToCharArray().Reverse().ToArray());
             Vector2 smallSize = text.rectTransform.rect.size - new Vector2(0.0f, optionPrefab.text.rectTransform.rect.size.y * optionCount);
-            Debug.Log(reverseString);
-            Debug.Log(smallSize);
             textGenerator.Populate(reverseString, text.GetGenerationSettings(smallSize));
 
             lastLine = input.Substring(input.Length - textGenerator.characterCountVisible);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="18" tilewidth="32" tileheight="32" nextobjectid="8">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="18" tilewidth="32" tileheight="32" nextobjectid="9">
  <properties>
   <property name="LeftMap" value="anotherField"/>
   <property name="Name" value="field"/>
@@ -527,6 +527,14 @@
    </objectgroup>
   </tile>
  </tileset>
+ <tileset firstgid="257" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">
+  <image source="PlaceObjects.png" width="128" height="128"/>
+  <tile id="0">
+   <properties>
+    <property name="ObjectName" value="ShootOnSight"/>
+   </properties>
+  </tile>
+ </tileset>
  <layer name="Lower" width="24" height="18">
   <data encoding="csv">
 165,165,165,165,165,165,165,165,181,149,149,214,149,152,149,214,214,214,214,149,180,165,166,210,
@@ -571,5 +579,11 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="Portals" offsetx="0" offsety="-1"/>
+ <objectgroup name="Portals" offsetx="0" offsety="-1">
+  <object id="8" name="ShootOnSight" gid="257" x="639" y="64" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="ShootOnSight"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

@@ -109,15 +109,20 @@ public class PathfindingGrid {
         return cellSize;
     }
 
+    public bool IsInside(int x, int y)
+    {
+        return x >= 0 && y >= 0 && x < width && y < height;
+    }
+
     public PathfindingNode GetCell(int x, int y)
     {
-        if (x < 0 || y < 0 || x >= width || y >= height)
+        if (IsInside(x, y))
         {
-            return null;
+            return nodes[x, y];
         }
         else
         {
-            return nodes[x, y];
+            return null;
         }
     }
 

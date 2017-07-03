@@ -25,8 +25,6 @@ public class ScriptInteraction : MonoBehaviour {
                 List<Choice> choices = story.currentChoices;
                 string[] parts = prefabInstance.SplitSections(storyText, choices.Count);
 
-                Debug.Log(storyText);
-
                 prefabInstance.Reset();
 
                 foreach (string part in parts)

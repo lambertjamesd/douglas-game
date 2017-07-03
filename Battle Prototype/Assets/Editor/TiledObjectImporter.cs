@@ -124,8 +124,8 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
             pathfinding.height = map.NumTilesHigh;
             pathfinding.tileSize = new Vector2(map.TileWidth, map.TileHeight) * map.ExportScale;
             pathfinding.layers = new List<PathfindingLayer>{
-                new PathfindingLayer(PathingTypes.Walking, (int)LayerMask.NameToLayer("L1: Barrier") | (int)LayerMask.NameToLayer("L1: ProjectilePassible") | (int)LayerMask.NameToLayer("L1: Water")),
-                new PathfindingLayer(PathingTypes.Flying, LayerMask.NameToLayer("L1: Barrier")),
+                new PathfindingLayer(PathingTypes.Walking, (1 << LayerMask.NameToLayer("L1: Barrier")) | (1 << LayerMask.NameToLayer("L1: ProjectilePassible")) | (1 << LayerMask.NameToLayer("L1: Water"))),
+                new PathfindingLayer(PathingTypes.Flying, 1 << LayerMask.NameToLayer("L1: Barrier")),
             };
         }
 	}

@@ -71,7 +71,6 @@ public class Pathfinding : MonoBehaviour
         Vector2 fromLocal = WorldToLocal(from);
         foreach (ProjectileCover cover in coverOptions)
         {
-            Debug.Log(cover.V1 - fromLocal);
             if (Vector2.Dot(cover.V1 - fromLocal, cover.Normal) > 0.0f)
             {
                 yield return LocalToWorld(cover.GetCover(radius));
@@ -81,6 +80,8 @@ public class Pathfinding : MonoBehaviour
 
     public void Start()
     {
+        Vector3 position = transform.position;
+
         foreach (PathfindingLayer layer in layers)
         {
             PathfindingGrid grid = new PathfindingGrid(width, height, tileSize);
@@ -89,7 +90,7 @@ public class Pathfinding : MonoBehaviour
             {
                 for (int y = 0; y < height; ++y)
                 {
-                    Vector2 origin = new Vector2(x * tileSize.x, (y - height) * tileSize.y);
+                    Vector2 origin = new Vector2(x * tileSize.x + position.x, (y - height) * tileSize.y + position.y);
                     if (Physics2D.OverlapArea(origin, origin + tileSize, layer.collisionMask) == null)
                     {
                         grid.MarkPassible(x, y);
@@ -102,7 +103,6 @@ public class Pathfinding : MonoBehaviour
 
         if (grids.ContainsKey(PathingTypes.Walking) && grids.ContainsKey(PathingTypes.Flying))
         {
-            Debug.Log("Finding Cover");
             coverOptions = CoverFinder.FindCover(grids[PathingTypes.Walking], grids[PathingTypes.Flying]);
         }
     }
@@ -138,6 +138,14 @@ public class Pathfinding : MonoBehaviour
                 }
             }
             Gizmos.color = last;
+        }
+
+        foreach (ProjectileCover cover in coverOptions)
+        {
+            Vector3 a = LocalToWorld(cover.V1 + cover.Normal * 0.25f);
+            Vector3 b = LocalToWorld(cover.V2 + cover.Normal * 0.25f);
+
+            Gizmos.DrawLine(a, b);
         }
     }
 }

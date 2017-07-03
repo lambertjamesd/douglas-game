@@ -15,28 +15,35 @@ public class Pathfinder : MonoBehaviour
 
     public void PathTo(Vector3 position)
     {
-        if (pathfinding != null)
-        {
-            currentWaypoints = pathfinding.FindPath(layerName, transform.position, position);
-            currentWaypointIndex = 0;
-        }
+        currentWaypoints = GetPathFinding().FindPath(layerName, transform.position, position);
+        currentWaypointIndex = 0;
     }
 
-    public void PathToNearest(IEnumerable<Vector3> position)
+    public bool PathToNearest(IEnumerable<Vector3> position)
     {
-        if (pathfinding != null)
-        {
-            currentWaypoints = pathfinding.FindPath(layerName, transform.position, position);
-            currentWaypointIndex = 0;
-        }
+        currentWaypoints = GetPathFinding().FindPath(layerName, transform.position, position);
+        currentWaypointIndex = 0;
+
+        return currentWaypoints != null;
     }
 
-    void Start()
+    public Pathfinding GetPathFinding()
     {
         if (pathfinding == null)
         {
             pathfinding = gameObject.GetComponentInHeirarchy<Pathfinding>();
+
+            if (pathfinding == null)
+            {
+                Debug.LogError("Could not find pathfinding");
+            }
         }
+
+        return pathfinding;
+    }
+
+    void Start()
+    {
     }
 
     void Update()

@@ -46,6 +46,10 @@ public class ReloadGun : State
 
                 movement.TargetVelocity = new Vector2(horz, vert).normalized * moveSpeed;
             }
+            else
+            {
+                movement.TargetVelocity = Vector2.zero;
+            }
 
             if (currentTimer > 0.0f)
             {
@@ -88,5 +92,26 @@ public class ReloadGun : State
         {
             Destroy(animation.gameObject);
         }
+    }
+
+    public static IEnumerator ReloadAnimation(GunStats forGun, Transform at, VariableStore variableStore)
+    {
+        ReloadAnimation currentReloadAnimation = Instantiate<ReloadAnimation>(forGun.reloadAnimation);
+        currentReloadAnimation.transform.SetParent(at, false);
+        currentReloadAnimation.transform.localPosition = Vector3.zero;
+        int currentShots = 0;
+        currentReloadAnimation.SetShotCount(currentShots);
+
+        yield return AsyncUtil.Pause(forGun.reloadDelay);
+
+        while (currentShots < forGun.capacity)
+        {
+            ++currentShots;
+            forGun.SetShotsLeft(variableStore, currentShots);
+            currentReloadAnimation.SetShotCount(currentShots);
+            yield return AsyncUtil.Pause(forGun.reloadBulletDuration);
+        }
+
+        Destroy(currentReloadAnimation.gameObject);
     }
 }

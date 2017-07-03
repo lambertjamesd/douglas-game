@@ -16,7 +16,14 @@ public static class GameObjectExtensions {
                 return result;
             }
 
-            current = current.transform.parent.gameObject;
+            if (current.transform.parent != null)
+            {
+                current = current.transform.parent.gameObject;
+            }
+            else
+            {
+                current = null;
+            }
         }
 
         return null;

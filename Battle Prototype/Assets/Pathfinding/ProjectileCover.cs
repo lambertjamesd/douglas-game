@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class ProjectileCover {
-    private Vector2 v1;
-    private Vector2 v2;
-    private Vector2 normal;
+    public Vector2 v1;
+    public Vector2 v2;
+    public Vector2 normal;
 
     public ProjectileCover(Vector2 v1, Vector2 v2)
     {
@@ -33,6 +34,14 @@ public class ProjectileCover {
         get
         {
             return v1;
+        }
+    }
+
+    public Vector2 V2
+    {
+        get
+        {
+            return v2;
         }
     }
 }

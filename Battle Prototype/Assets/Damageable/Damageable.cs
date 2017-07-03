@@ -38,6 +38,14 @@ public class Damageable : MonoBehaviour {
 		}
 	}
 
+    public bool IsDead
+    {
+        get
+        {
+            return currentHealth <= 0.0f;
+        }
+    }
+
 	public bool Damage(DamageSource source) 
     {
 		bool result = false;

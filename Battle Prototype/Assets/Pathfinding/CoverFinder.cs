@@ -16,7 +16,9 @@ public class CoverFinder {
     {
         foreach (Vector2 direction in directions)
         {
-            if (flyable.GetCell((int)direction.x + x, (int)direction.y + y) == null)
+            int adjX = (int)direction.x + x;
+            int adjY = (int)direction.y + y;
+            if (flyable.IsInside(adjX, adjY) && flyable.GetCell(adjX, adjY) == null)
             {
                 Vector2 offset = new Vector2(-direction.y, direction.x);
                 offset.x *= flyable.GetCellSize().x * 0.5f;

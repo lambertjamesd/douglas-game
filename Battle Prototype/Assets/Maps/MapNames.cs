@@ -48,8 +48,6 @@ public class MapNames : ScriptableObject {
     public MapEntry GetEntry(string name) {
         this.CheckInitialized();
 
-        Debug.Log(name);
-
         if (this.mapping.ContainsKey(name))
         {
             return this.mapping[name];
