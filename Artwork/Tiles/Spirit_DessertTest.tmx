@@ -2,11 +2,11 @@
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="18" tilewidth="32" tileheight="32" nextobjectid="14">
  <properties>
   
-  <property name="LeftMap" value="LeftDessert" />
-  <property name="Name" value="DessertTest" />
-    <property name="DeadMap" value="Spirit_DessertTest" />
+  <property name="LeftMap" value="Spirit_LeftDessert" />
+  <property name="Name" value="Spirit_DessertTest" />
+    <property name="LivingMap" value="DessertTest" />
  </properties>
- <tileset firstgid="1" source="Dessert.tsx" />
+ <tileset firstgid="1" source="DessertSpirit.tsx" />
  <tileset firstgid="257" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">
   <image source="PlaceObjects.png" width="128" height="128" />
   <tile id="0">
