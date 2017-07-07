@@ -26,7 +26,7 @@ namespace Tiled2Unity
             foreach (var importComponent in ImportBehaviour.EnumerateImportBehaviors_ByWaitingMaterial(asset))
             {
                 // The material has finished loading. Keep track of that status.
-                if (!importComponent.ImportComplete_Materials.Contains(asset))
+                if (!importComponent.ImportComplete_Materials.Contains(asset, StringComparer.OrdinalIgnoreCase))
                 {
                     importComponent.ImportComplete_Materials.Add(asset);
                 }
@@ -83,61 +83,58 @@ namespace Tiled2Unity
 
         private void ImportAllMaterials(Tiled2Unity.ImportBehaviour importComponent)
         {
-            if (importComponent.XmlDocument != null)
+            // Create a material for each texture that has been imported
+            foreach (var xmlTexture in importComponent.XmlDocument.Root.Elements("ImportTexture"))
             {
-                // Create a material for each texture that has been imported
-                foreach (var xmlTexture in importComponent.XmlDocument.Root.Elements("ImportTexture"))
+                bool isResource = ImportUtils.GetAttributeAsBoolean(xmlTexture, "isResource", false);
+
+                string textureFile = ImportUtils.GetAttributeAsString(xmlTexture, "filename");
+                string materialPath = MakeMaterialAssetPath(textureFile, isResource);
+                string materialFile = System.IO.Path.GetFileName(materialPath);
+
+                // Keep track that we importing this material
+                if (!importComponent.ImportWait_Materials.Contains(materialFile, StringComparer.OrdinalIgnoreCase))
                 {
-                    bool isResource = ImportUtils.GetAttributeAsBoolean(xmlTexture, "isResource", false);
-
-                    string textureFile = ImportUtils.GetAttributeAsString(xmlTexture, "filename");
-                    string materialPath = MakeMaterialAssetPath(textureFile, isResource);
-                    string materialFile = System.IO.Path.GetFileName(materialPath);
-
-                    // Keep track that we importing this material
-                    if (!importComponent.ImportWait_Materials.Contains(materialFile))
-                    {
-                        importComponent.ImportWait_Materials.Add(materialFile);
-                    }
-
-                    // Create the material
-                    UnityEngine.Material material = CreateMaterialFromXml(xmlTexture, importComponent);
-
-                    // Assign the texture to the material
-                    {
-                        string textureAsset = GetTextureAssetPath(textureFile);
-                        AssignTextureAssetToMaterial(material, materialFile, textureAsset, importComponent);
-                    }
-
-                    ImportUtils.ReadyToWrite(materialPath);
-                    ImportUtils.CreateOrReplaceAsset(material, materialPath);
-                    importComponent.ImportTiled2UnityAsset(materialPath);
+                    importComponent.ImportWait_Materials.Add(materialFile);
                 }
 
-                // Create a material for each internal texture
-                foreach (var xmlInternal in importComponent.XmlDocument.Root.Elements("InternalTexture"))
+                // Create the material
+                UnityEngine.Material material = CreateMaterialFromXml(xmlTexture, importComponent);
+
+                // Assign the texture to the material
                 {
-                    bool isResource = ImportUtils.GetAttributeAsBoolean(xmlInternal, "isResource", false);
-
-                    string textureAsset = ImportUtils.GetAttributeAsString(xmlInternal, "assetPath");
-                    string textureFile = System.IO.Path.GetFileName(textureAsset);
-                    string materialPath = MakeMaterialAssetPath(textureFile, isResource);
-                    string materialFile = System.IO.Path.GetFileName(materialPath);
-
-                    // Keep track that we importing this material
-                    if (!importComponent.ImportWait_Materials.Contains(materialFile))
-                    {
-                        importComponent.ImportWait_Materials.Add(materialFile);
-                    }
-
-                    // Create the material and assign the texture
-                    UnityEngine.Material material = CreateMaterialFromXml(xmlInternal, importComponent);
+                    string textureAsset = GetTextureAssetPath(textureFile);
                     AssignTextureAssetToMaterial(material, materialFile, textureAsset, importComponent);
-
-                    ImportUtils.ReadyToWrite(materialPath);
-                    ImportUtils.CreateOrReplaceAsset(material, materialPath);
-                    importComponent.ImportTiled2UnityAsset(materialPath);
                 }
+
+                ImportUtils.ReadyToWrite(materialPath);
+                ImportUtils.CreateOrReplaceAsset(material, materialPath);
+                importComponent.ImportTiled2UnityAsset(materialPath);
+            }
+
+            // Create a material for each internal texture
+            foreach (var xmlInternal in importComponent.XmlDocument.Root.Elements("InternalTexture"))
+            {
+                bool isResource = ImportUtils.GetAttributeAsBoolean(xmlInternal, "isResource", false);
+
+                string textureAsset = ImportUtils.GetAttributeAsString(xmlInternal, "assetPath");
+                string textureFile = System.IO.Path.GetFileName(textureAsset);
+                string materialPath = MakeMaterialAssetPath(textureFile, isResource);
+                string materialFile = System.IO.Path.GetFileName(materialPath);
+
+                // Keep track that we importing this material
+                if (!importComponent.ImportWait_Materials.Contains(materialFile, StringComparer.OrdinalIgnoreCase))
+                {
+                    importComponent.ImportWait_Materials.Add(materialFile);
+                }
+
+                // Create the material and assign the texture
+                UnityEngine.Material material = CreateMaterialFromXml(xmlInternal, importComponent);
+                AssignTextureAssetToMaterial(material, materialFile, textureAsset, importComponent);
+
+                ImportUtils.ReadyToWrite(materialPath);
+                ImportUtils.CreateOrReplaceAsset(material, materialPath);
+                importComponent.ImportTiled2UnityAsset(materialPath);
             }
 
             // If we have no materials to import then go to next stage (meshes)

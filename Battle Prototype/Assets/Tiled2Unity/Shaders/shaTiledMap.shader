@@ -1,6 +1,4 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-// Legacy shader for older Tiled2Unity builds. Will eventually remove.
+﻿// Legacy shader for older Tiled2Unity builds. Will eventually remove.
 Shader "Tiled2Unity/TextureTintSnap (Legacy)"
 {
     Properties
@@ -56,7 +54,7 @@ Shader "Tiled2Unity/TextureTintSnap (Legacy)"
             v2f vert(appdata_t IN)
             {
                 v2f OUT;
-                OUT.vertex = UnityObjectToClipPos(IN.vertex);
+                OUT.vertex = mul(UNITY_MATRIX_MVP, IN.vertex);
                 OUT.texcoord = IN.texcoord;
                 OUT.color = IN.color * _Color;
                 #ifdef PIXELSNAP_ON
