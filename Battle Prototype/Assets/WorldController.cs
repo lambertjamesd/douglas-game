@@ -152,11 +152,13 @@ public class WorldController : MonoBehaviour {
         if (currentAttachement != null && directionAsInt < currentAttachement.attachments.Length && currentAttachement.attachments[directionAsInt] != null)
         {
             var map = mapNames.GetEntry(currentAttachement.attachments[directionAsInt]);
-            SpawnTilemap(map.tiled, new Vector3(
+            Vector3 position = new Vector3(
                 worldBounds.min.x,
                 worldBounds.max.y,
                 0.0f
-            ));
+            );
+            Reset();
+            SpawnTilemap(map.tiled, position);
         }
     }
 

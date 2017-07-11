@@ -75,4 +75,12 @@ public class Pathfinder : MonoBehaviour
             return currentWaypoints != null && currentWaypointIndex < currentWaypoints.Length;
         }
     }
+
+    public IEnumerator FollowPath()
+    {
+        while (IsActive)
+        {
+            yield return null;
+        }
+    }
 }
