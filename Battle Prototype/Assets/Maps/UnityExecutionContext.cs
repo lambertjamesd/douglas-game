@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class UnityExecutionContext : MonoBehaviour, ExecutionContext
 {
-    private GameState gameState = new GameState();
+    private GameState gameState = new GameState(StoryManager.GetSingleton().GetStory());
     public Transform textLocation;
 
     public IEnumerator emitText(string text)

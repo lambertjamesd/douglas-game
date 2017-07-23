@@ -6,7 +6,7 @@ public class PrefabSpawner : MonoBehaviour {
     public GameObject toSpawn;
 
     public void Start() {
-        if (condition == "" || ConditionParser.parseCondition(condition).evaluate(GameState.getGameState(gameObject))) {
+        if (condition == "" || ConditionParser.parseCondition(condition).evaluate(new GameState(StoryManager.GetSingleton().GetStory()))) {
             GameObject instance = Instantiate(toSpawn, transform.position, Quaternion.identity) as GameObject;
             instance.transform.parent = transform.parent;
         }

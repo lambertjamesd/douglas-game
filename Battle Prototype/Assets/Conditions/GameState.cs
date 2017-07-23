@@ -1,68 +1,64 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Ink.Runtime;
 
 public class GameState {
-    private Dictionary<string, bool> booleanTypes = new Dictionary<string, bool>();
-    private Dictionary<string, double> numberTypes = new Dictionary<string, double>();
-    private Dictionary<string, string> stringTypes = new Dictionary<string, string>();
+    private Story story;
 
-    public GameState()
+    public GameState(Story story)
     {
-
+        this.story = story;
     }
 
-    public GameState(Dictionary<string, bool> booleanTypes, Dictionary<string, double> numberTypes, Dictionary<string, string> stringTypes)
+    public void setBoolean(string name, bool boolValue)
     {
-        this.booleanTypes = booleanTypes;
-        this.numberTypes = numberTypes;
-        this.stringTypes = stringTypes;
     }
 
-    public void setBoolean(string name, bool boolValue) {
-        booleanTypes[name] = boolValue;
-    }
-
-    public bool getBoolean(string name) {
-        if (booleanTypes.ContainsKey(name)) {
-            return booleanTypes[name];
-        } else {
+    public bool getBoolean(string name)
+    {
+        object result = story.variablesState[name];
+        if (result != null)
+        {
+            return (bool)result;
+        }
+        else
+        {
             return false;
         }
     }
 
-    public void setNumber(string name, double numberValue) {
-        numberTypes[name] = numberValue;
+    public void setNumber(string name, double numberValue)
+    {
     }
 
-    public double getNumber(string name) {
-        if (numberTypes.ContainsKey(name)) {
-            return numberTypes[name];
-        } else {
+    public double getNumber(string name)
+    {
+        object result = story.variablesState[name];
+        if (result != null)
+        {
+            return (double)result;
+        }
+        else
+        {
             return 0.0;
         }
     }
 
     public void setString(string name, string stringValue)
     {
-        stringTypes[name] = stringValue;
     }
 
     public string getString(string name)
     {
-        if (stringTypes.ContainsKey(name))
+        object result = story.variablesState[name];
+        if (result != null)
         {
-            return stringTypes[name];
+            return result.ToString();
         }
         else
         {
             return "";
         }
-    }
-
-    public static GameState getGameState(GameObject forObject) {
-        var result = new GameState();
-        result.setBoolean("has-foo", true);
-        return result;
     }
 }

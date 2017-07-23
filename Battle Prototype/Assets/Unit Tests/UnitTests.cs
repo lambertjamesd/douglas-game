@@ -46,14 +46,8 @@ public class UnitTests : MonoBehaviour {
     False Condition
 "
 );
-        TestScript(test, new GameState(), new List<string> { "Text line", "False Condition" });
+        TestScript(test, new GameState(new Ink.Runtime.Story("{}")), new List<string> { "Text line", "False Condition" });
 
-        TestScript(test, new GameState(
-            new Dictionary<string, bool>{
-                { "boolean", true }
-            },
-            new Dictionary<string, double>(),
-            new Dictionary<string, string>()    
-        ), new List<string> { "Text line", "True Condition" });
+        TestScript(test, new GameState(new Ink.Runtime.Story("{}")), new List<string> { "Text line", "True Condition" });
     }
 }

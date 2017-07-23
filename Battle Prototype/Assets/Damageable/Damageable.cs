@@ -14,7 +14,7 @@ public class Damageable : MonoBehaviour {
 	private List<DamageFilter> damageFilters = new List<DamageFilter>();
 	private List<DeathAlert> deathListeners = new List<DeathAlert>();
 
-	public void Start() {
+	public void Awake() {
 		currentHealth = maxHealth;
 	}
 
