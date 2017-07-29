@@ -6,6 +6,7 @@ public class Flasher : MonoBehaviour {
 	public float frequency = 1.0f;
 	public float depth = 1.0f;
 	public Renderer target = null;
+    public Color defaultColor = Color.white;
 
 	private float currentTime = 0.0f;
 
@@ -16,6 +17,6 @@ public class Flasher : MonoBehaviour {
 	}
 
 	void OnDisable() {
-		target.material.color = Color.black;
+		target.material.color = defaultColor;
 	}
 }

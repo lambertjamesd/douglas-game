@@ -6,6 +6,7 @@ public class Projectile : MonoBehaviour {
 	public Rigidbody2D rigidBody;
 	public DamageInfo damageInfo;
 	public float maxRange = 50.0f;
+    private Vector2 startPosition;
 	private OnHit onHit;
 	private bool active = false;
 	private float lifeTimer;
@@ -19,7 +20,9 @@ public class Projectile : MonoBehaviour {
 		transform.parent = null;
 		active = true;
 		lifeTimer = maxRange / velocity.magnitude;
-	}
+        startPosition = transform.position;
+
+    }
 
 	public void Update() {
 		if (lifeTimer > 0.0f) {
@@ -39,7 +42,7 @@ public class Projectile : MonoBehaviour {
 			bool didDamage = false;
 
 			if (damageable != null) {
-				didDamage = damageable.Damage(new DamageSource(damageInfo, transform.TransformDirection(Vector3.right)));
+				didDamage = damageable.Damage(new DamageSource(damageInfo, transform.TransformDirection(Vector3.right), startPosition));
 			}
 
 			if (onHit != null) {

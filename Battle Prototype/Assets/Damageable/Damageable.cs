@@ -1,6 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
+
+public class DamageListener : System.IDisposable
+{
+    Damageable target;
+    Damageable.DamageFilter filter;
+
+    public DamageListener(Damageable target, Damageable.DamageFilter filter, bool highPriority)
+    {
+        this.target = target;
+        this.filter = filter;
+
+        target.FilterDamage(filter, highPriority);
+    }
+
+    public void Dispose()
+    {
+        target.UnfilterDamage(this.filter);
+    }
+}
 
 public class Damageable : MonoBehaviour {
 	public float maxHealth;
@@ -91,7 +111,7 @@ public class Damageable : MonoBehaviour {
 		this.damageFilters.Remove(filter);
 	}
 
-	public DeathAlert OnDeath(DeathAlert alert) {
+    public DeathAlert OnDeath(DeathAlert alert) {
 		this.deathListeners.Add(alert);
 		return alert;
 	}

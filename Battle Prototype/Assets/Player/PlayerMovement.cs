@@ -68,7 +68,7 @@ public class PlayerMovement : State {
 	IEnumerator SwingSword() {
 		if (!swingingSword) {
 			movement.LockRotation();
-			DamageSource source = new DamageSource(swordDamage, direction.TransformDirection(Vector3.right));
+			DamageSource source = new DamageSource(swordDamage, direction.TransformDirection(Vector3.right), transform.position);
 			swingingSword = true;
 			IEnumerator swordSwing = sword.Swing(hit => {
 				Damageable target = hit.gameObject.GetComponent<Damageable>();

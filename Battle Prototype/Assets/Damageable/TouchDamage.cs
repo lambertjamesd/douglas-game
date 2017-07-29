@@ -8,7 +8,7 @@ public class TouchDamage : MonoBehaviour {
 		Damageable damageable =	collision.gameObject.GetComponent<Damageable>();
 
 		if (damageable != null) {
-			damageable.Damage(new DamageSource(damageInfo, -collision.contacts[0].normal));
+            damageable.Damage(new DamageSource(damageInfo, -collision.contacts[0].normal, transform.position));
 		}
 	}
 }

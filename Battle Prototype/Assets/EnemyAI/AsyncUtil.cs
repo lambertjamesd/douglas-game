@@ -73,6 +73,19 @@ public static class AsyncUtil
         }
     }
 
+    public static IEnumerator Sequence(IEnumerable<IEnumerator> allEnumerators)
+    {
+        IEnumerable<AsyncManager> asyncManagers = allEnumerators.Select(select => new AsyncManager(select));
+        
+        foreach (AsyncManager enumerator in asyncManagers)
+        {
+            while (enumerator.Next())
+            {
+                yield return null;
+            }
+        }
+    }
+
     public static IEnumerator Pause(float delay)
     {
         float end = Time.time + delay;

@@ -12,14 +12,17 @@ public class DamageInfo
 
 public class DamageSource
 {
-	private Vector2 direction;
+    private Vector2 direction;
+	private Vector2 damagePosition;
 	private DamageInfo damageInfo;
 
-	public DamageSource(DamageInfo damageInfo, Vector2 direction)
+	public DamageSource(DamageInfo damageInfo, Vector2 direction, Vector2 damagePosition)
 	{
 		this.damageInfo = damageInfo;
 		this.direction = direction;
-	}
+        this.damagePosition = damagePosition;
+
+    }
 
 	public float Amount {
 		get {
@@ -31,9 +34,17 @@ public class DamageSource
 		get {
 			return direction;
 		}
-	}
+    }
 
-	public int DamageBitmask {
+    public Vector2 DamagePosition
+    {
+        get
+        {
+            return damagePosition;
+        }
+    }
+
+    public int DamageBitmask {
 		get {
 			return damageInfo.damageBitmask;
 		}
