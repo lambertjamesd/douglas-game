@@ -17,9 +17,14 @@ public class Sight : MonoBehaviour
         Vector2 origin = this.transform.position;
         Vector2 target = gameObject.transform.position;
 
-        if (sightBlocked != 0 && Physics2D.Raycast(origin, target - origin, float.MaxValue, sightBlocked))
+        RaycastHit2D hit = new RaycastHit2D();
+
+        if (sightBlocked != 0 && (hit = Physics2D.Raycast(origin, target - origin, float.MaxValue, sightBlocked)))
         {
-            return false;
+            if ((target - origin).sqrMagnitude > hit.distance * hit.distance)
+            {
+                return false;
+            }
         }
 
         if (damageableOnly && gameObject.GetComponent<Damageable>() == null)

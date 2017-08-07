@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ToSpiritDeath : MonoBehaviour {
     public Damageable target = null;
+    public PlayerMovement player = null;
 
     void Start()
     {
@@ -21,6 +22,6 @@ public class ToSpiritDeath : MonoBehaviour {
     void OnDie(Damageable damageable)
     {
         target.CurrentHealth = target.MaxHealth;
-        GameObject.FindGameObjectWithTag("GameController").GetComponent<WorldController>().SwitchTo(MapDirections.Dead);
+        StartCoroutine(DeathSequence.Start());
     }
 }

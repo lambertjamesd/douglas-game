@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class ZombieAI : MonoBehaviour
 {
@@ -9,11 +10,32 @@ public class ZombieAI : MonoBehaviour
     public DefaultMovement movement;
     public PatrolParameters patrolParameters;
     public float chargeSpeed;
+    private GameObject externalTarget;
+    public float alertRadius = 5.0f;
 
     // Use this 
     public void Start()
     {
         StartCoroutine(DoLogic());
+    }
+
+    public void AlertNearbyZombies(GameObject target)
+    {
+        Vector3 pos = transform.position;
+        foreach (GameObject zombie in GameObject.FindGameObjectsWithTag("Zombie"))
+        {
+            Vector2 offset = pos - zombie.transform.position;
+
+            if (zombie != gameObject && offset.sqrMagnitude <= alertRadius * alertRadius)
+            {
+                ZombieAI otherAI = zombie.GetComponent<ZombieAI>();
+
+                if (otherAI != null)
+                {
+                    otherAI.externalTarget = target;
+                }
+            }
+        }
     }
 
     public IEnumerator DoLogic()
@@ -26,35 +48,56 @@ public class ZombieAI : MonoBehaviour
             using (DamageListener damageListener = new DamageListener(damageable, (source, damageable) =>
             {
                 moveTowards = -source.Direction;
-                movement.SetDirection(moveTowards);
                 movement.TargetVelocity = moveTowards * chargeSpeed;
                 Vector2 position = transform.position;
                 chargeTime = Vector2.Dot(moveTowards, source.DamagePosition - position) / chargeSpeed;
                 return source;
             }, false))
             {
-                yield return AsyncUtil.Race(new IEnumerator[] {
-                    AsyncUtil.Sequence(new IEnumerator[] {
-                        AsyncUtil.Race(new IEnumerator[] {
-                            Patrol.PatrolForever(movement, patrolParameters),
-                            AsyncUtil.WaitUntil(() => chargeTime > 0.0f),
-                        }),
-                        AsyncUtil.WaitUntil(() => {
-                            chargeTime -= Time.deltaTime;
-                            return chargeTime <= 0.0f;
-                        }),
-                    }),
-                    AsyncUtil.WaitUntil(() => sight.GetVisibleObject() != null),
-                });
-            }
-            Collider2D target = sight.GetVisibleObject();
+                AsyncManager patrol = new AsyncManager(Patrol.PatrolForever(movement, patrolParameters));
 
-            while (target != null && sight.canSeeObject(target.gameObject))
+                while (patrol.Next())
+                {
+                    yield return null;
+
+                    if (sight.GetVisibleObject() != null || externalTarget != null)
+                    {
+                        break;
+                    }
+
+                    if (chargeTime > 0.0f)
+                    {
+                        patrol = new AsyncManager(AsyncUtil.Pause(chargeTime));
+                        chargeTime = 0.0f;
+                    }
+                }
+            }
+
+            GameObject target = null;
+
+            if (externalTarget)
+            {
+                target = externalTarget;
+                externalTarget = null;
+            }
+
+            Collider2D sightTest = sight.GetVisibleObject();
+            
+            if (sightTest != null)
+            {
+                target = sightTest.gameObject;
+                AlertNearbyZombies(target);
+            }
+
+            while (target != null && sight.canSeeObject(target))
             {
                 Vector2 offset = target.transform.position - transform.position;
                 movement.TargetVelocity = offset.normalized * chargeSpeed;
                 yield return null;
             }
+
+            movement.TargetVelocity = Vector2.zero;
+            yield return new WaitForSeconds(1.0f);
         }
     }
 }
