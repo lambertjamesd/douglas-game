@@ -62,7 +62,11 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
         {
 			StartingPoint portal = gameObject.AddComponent<StartingPoint>();
 			portal.locationName = keyValuePairs["PortalFrom"];
-		}
+            Collider2D collider = gameObject.GetComponent<Collider2D>();
+
+            gameObject.transform.position = collider.bounds.center;
+            GameObject.DestroyImmediate(collider);
+        }
 
 		if (keyValuePairs.ContainsKey("ObjectName"))
         {

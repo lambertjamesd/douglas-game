@@ -17,13 +17,15 @@ public class WorldController : MonoBehaviour {
 	private MapAttachements currentAttachement = null;
 	public int PixelsPerUnit = 32;
 	public MapNames mapNames;
+    public PrefabNames prefabNames;
     public TextAsset story;
 	public MapPath startingLocation = new MapPath("default", "default");
 	public GameObject player;
 	public FollowCamera followCamera;
 	public List<Tiled2Unity.TiledMap> currentMaps = new List<Tiled2Unity.TiledMap>();
+    public StoryFunctionBindings storyFunctionBindings;
 
-	private static Vector2[] currentBoundsAnchor = new Vector2[]{
+    private static Vector2[] currentBoundsAnchor = new Vector2[]{
 		new Vector2(0.0f, 1.0f),
 		new Vector2(1.0f, 1.0f),
 		new Vector2(0.0f, 0.0f),
@@ -80,6 +82,18 @@ public class WorldController : MonoBehaviour {
 		currentMaps = new List<Tiled2Unity.TiledMap>();
 	}
 
+    public Tiled2Unity.TiledMap GetCurrentMap()
+    {
+        if (currentMaps.Count > 0)
+        {
+            return currentMaps[0];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
 	public Tiled2Unity.TiledMap SpawnTilemap(Tiled2Unity.TiledMap from, Vector3 origin) {
 		Tiled2Unity.TiledMap result = Instantiate(from);
 		currentMaps.Add(result);
@@ -109,6 +123,7 @@ public class WorldController : MonoBehaviour {
         if (story != null)
         {
             StoryManager.GetSingleton().SetStory(story);
+            storyFunctionBindings.BindToStory(StoryManager.GetSingleton().GetStory());
         }
 
 		if (startingLocation != null) {

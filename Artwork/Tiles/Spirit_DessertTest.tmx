@@ -1,17 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="18" tilewidth="32" tileheight="32" nextobjectid="14">
  <properties>
-  
-  <property name="LeftMap" value="Spirit_LeftDessert" />
-  <property name="Name" value="Spirit_DessertTest" />
-    <property name="LivingMap" value="DessertTest" />
+  <property name="LeftMap" value="Spirit_LeftDessert"/>
+  <property name="LivingMap" value="DessertTest"/>
+  <property name="Name" value="Spirit_DessertTest"/>
  </properties>
- <tileset firstgid="1" source="DessertSpirit.tsx" />
+ <tileset firstgid="1" source="DessertSpirit.tsx"/>
  <tileset firstgid="257" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">
-  <image source="PlaceObjects.png" width="128" height="128" />
+  <image source="PlaceObjects.png" width="128" height="128"/>
   <tile id="0">
    <properties>
-    <property name="ObjectName" value="ShootOnSight" />
+    <property name="ObjectName" value="ShootOnSight"/>
    </properties>
   </tile>
  </tileset>
@@ -59,11 +58,5 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="Objects" offsetx="0" offsety="-1">
-  <object id="11" name="ShootOnSight" gid="257" x="512" y="192" width="32" height="32">
-   <properties>
-    <property name="ObjectName" value="ShootOnSight" />
-   </properties>
-  </object>
- </objectgroup>
+ <objectgroup name="Objects"/>
 </map>

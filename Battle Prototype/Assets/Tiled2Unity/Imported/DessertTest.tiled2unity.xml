@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 7/6/2017 10:08:37 PM-->
+<!--Last exported: 8/7/2017 7:48:59 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="Dessert" />
   <AssignMaterial mesh="mesh_0002" material="Dessert" />
   <AssignMaterial mesh="mesh_tile_0257" material="PlaceObjects" />
   <Prefab name="DessertTest" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="2" numTilesWide="24" numTilesHigh="18" tileWidth="32" tileHeight="32" exportScale="0.03125" mapWidthInPixels="768" mapHeightInPixels="576" backgroundColor="#808080">
+    <Property name="DeadMap" value="Spirit_DessertTest" />
     <Property name="LeftMap" value="LeftDessert" />
     <Property name="Name" value="DessertTest" />
-    <Property name="DeadMap" value="Spirit_DessertTest" />
     <GameObject name="Tile Layer 1" x="0" y="0" z="0">
       <TileLayer opacity="1" offsetX="0" offsetY="0" />
       <GameObject name="Dessert" copy="mesh_0001" sortingLayerName="" sortingOrder="0" opacity="1" />
@@ -25,14 +25,24 @@
       <TileLayer opacity="1" offsetX="0" offsetY="0" />
       <GameObject name="Dessert" copy="mesh_0002" sortingLayerName="" sortingOrder="1" opacity="1" />
     </GameObject>
-    <GameObject name="Objects" x="0" y="0.03125" z="0">
-      <ObjectLayer offsetX="0" offsetY="-1" color="#ff808080" />
+    <GameObject name="Objects" x="0" y="0" z="0">
+      <ObjectLayer offsetX="0" offsetY="0" color="#ff808080" />
       <GameObject name="ShootOnSight" x="16" y="-6" rotation="0" layer="" scaleX="1" scaleY="1">
         <Property name="ObjectName" value="ShootOnSight" />
         <TileObjectComponent tmx-object-id="11" tmx-object-name="ShootOnSight" tmx-object-type="" tmx-object-x="512" tmx-object-y="192" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
           <GameObject name="tile_obj" copy="mesh_tile_0257" sortingLayerName="" sortingOrder="2" x="-0.5" y="0.5" />
         </GameObject>
+      </GameObject>
+      <GameObject name="RectangleObject" x="13" y="-11" rotation="0" layer="">
+        <Property name="PortalTo" value="Saloon" />
+        <RectangleObjectComponent tmx-object-id="16" tmx-object-name="" tmx-object-type="" tmx-object-x="416" tmx-object-y="352" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" />
+        <BoxCollider2D width="1" height="1" />
+      </GameObject>
+      <GameObject name="RectangleObject" x="13" y="-12" rotation="0" layer="">
+        <Property name="PortalFrom" value="SaloonDoor" />
+        <RectangleObjectComponent tmx-object-id="14" tmx-object-name="" tmx-object-type="" tmx-object-x="416" tmx-object-y="384" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" />
+        <BoxCollider2D width="1" height="1" />
       </GameObject>
     </GameObject>
   </Prefab>

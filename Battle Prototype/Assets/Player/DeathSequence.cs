@@ -11,5 +11,8 @@ public class DeathSequence : MonoBehaviour
         yield return new WaitForSecondsRealtime(2.0f);
         GameObject.FindGameObjectWithTag("GameController").GetComponent<WorldController>().SwitchTo(MapDirections.Dead);
         Time.timeScale = 1.0f;
+        yield return null;
+
+        yield return StoryFunctionBindings.GetBindings().interact("on_player_death");
     }
 }

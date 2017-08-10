@@ -9,6 +9,7 @@ public enum MovementMode {
 public class DefaultMovement : MonoBehaviour {
 	private Rigidbody2D forBody;
 	private Vector2 targetVelocity;
+    private Vector2 lastPosition;
 
 	public Damageable damageKnockback;
 	public bool canKnockback = true;
@@ -34,7 +35,9 @@ public class DefaultMovement : MonoBehaviour {
 	public void Start() {
 		forBody = GetComponent<Rigidbody2D>();
 
-		if (damageKnockback != null) {
+        lastPosition = transform.position;
+
+        if (damageKnockback != null) {
 			damageKnockback.FilterDamage((source, damageable) => {
 				if (source.KnockbackDistance > 0.0f) {
 					Knockback(source.Direction * source.KnockbackDistance);
@@ -55,7 +58,23 @@ public class DefaultMovement : MonoBehaviour {
 			}
 		}
 
-		if (isSliding) {
+        Vector2 currentPosition = transform.position;
+
+        if (moveAnimator != null)
+        {
+            float speed = Time.fixedDeltaTime == 0.0f ? 0.0f : (currentPosition - lastPosition).magnitude / Time.fixedDeltaTime;
+
+            moveAnimator.SetBool("Moving", speed != 0.0f);
+
+            if (animationSpeed)
+            {
+                moveAnimator.SetFloat("Speed", speed);
+            }
+        }
+
+        lastPosition = currentPosition;
+
+        if (isSliding) {
 			Vector2 offset = TargetVelocity - Velocity;
 			float accel = acceleration * Time.fixedDeltaTime;
 
@@ -90,14 +109,6 @@ public class DefaultMovement : MonoBehaviour {
 
 			if (lockRotation == 0) {
                 SetDirection(value);
-			}
-			
-			if (moveAnimator != null) {
-				moveAnimator.SetBool("Moving", value != Vector2.zero);
-
-				if (animationSpeed) {
-					moveAnimator.SetFloat("Speed", value.magnitude);
-				}
 			}
 		}
 	}
