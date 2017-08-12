@@ -8,16 +8,23 @@ public class StoryFunctionBindings : MonoBehaviour
     public WorldController world;
     public TextDialog textPrefab;
     private TextDialog prefabInstance;
+    private Dictionary<string, GameObject> namedObjects = new Dictionary<string, GameObject>();
+    private float delayTime = 0.0f;
+    private string timeoutKnot = null;
 
     public void BindToStory(Story story)
     {
         story.BindExternalFunction<string, float, float>("createObject", (objectName, x, y) =>
         {
-            PrefabEntry entry = world.prefabNames.GetEntry(objectName);
+            var splitName = objectName.Split(new char[] { ':' });
+
+            PrefabEntry entry = world.prefabNames.GetEntry(splitName[0]);
 
             if (entry != null)
             {
-                GameObject.Instantiate(entry.prefab, new Vector3(x, y, 0.0f), Quaternion.identity, world.GetCurrentMap().transform);
+                GameObject result = GameObject.Instantiate(entry.prefab, new Vector3(x, y, 0.0f), Quaternion.identity, world.GetCurrentMap().transform);
+                namedObjects[splitName.Length > 1 ? splitName[1] : splitName[0]] = result;
+
                 return true;
             }
             else
@@ -26,7 +33,26 @@ public class StoryFunctionBindings : MonoBehaviour
                 return false;
             }
         });
-        
+
+        story.BindExternalFunction<string, float, float>("lookAt", (objectName, x, y) =>
+        {
+            var toLook = namedObjects[objectName];
+
+            if (toLook != null)
+            {
+                DefaultMovement movement = toLook.GetComponent<DefaultMovement>();
+
+                movement.SetDirection(new Vector3(x, y, 0.0f) - toLook.transform.position);
+            }
+        });
+
+        story.BindExternalFunction<float, string>("setTimeout", (value, knot) =>
+        {
+            delayTime += value;
+            timeoutKnot = knot;
+            return true;
+        });
+
         story.BindExternalFunction<float>("setTimeScale", (value) =>
         {
             Time.timeScale = value;
@@ -74,7 +100,18 @@ public class StoryFunctionBindings : MonoBehaviour
             List<Choice> choices = story.currentChoices;
             string[] parts = prefabInstance.SplitSections(storyText, choices.Count);
 
+            if (delayTime > 0.0f && timeoutKnot != null)
+            {
+                yield return new WaitForSecondsRealtime(delayTime);
+                delayTime = 0.0f;
+            }
+
             prefabInstance.Reset();
+
+            if (storyText.Trim() == "[...]")
+            {
+                continue;
+            }
 
             foreach (string part in parts)
             {
@@ -138,5 +175,12 @@ public class StoryFunctionBindings : MonoBehaviour
         Destroy(prefabInstance.gameObject);
 
         Time.timeScale = 1.0f;
+
+        if (timeoutKnot != null)
+        {
+            string toKnot = timeoutKnot;
+            timeoutKnot = null;
+            yield return interact(toKnot);
+        }
     }
 }

@@ -3,8 +3,9 @@ VAR player_colt45_pistol_shots = 6
 
 ==on_player_death==
 You have died.
-...
+[...]
 ~ setTextBoxVisible(false)
 ~ setTimeScale(1)
 ~ createObject("Death", getPlayerX() - 1, getPlayerY())
+~ setTimeout(2, -> greet_death)
 -> DONE
