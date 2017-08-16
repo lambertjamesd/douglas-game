@@ -101,7 +101,7 @@ public class Deck
         {
             for (int type = 0; type < (int)CardType.Count; ++type)
             {
-                cards.Add(new Card(skin.cards[type + suite * (int)Suite.Count], (Suite)suite, (CardType)type));
+                cards.Add(new Card(skin.cards[type + suite * (int)CardType.Count], (Suite)suite, (CardType)type));
             }
         }
     }
