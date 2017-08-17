@@ -25,6 +25,10 @@ public class CardGameLogic : MonoBehaviour {
 
     public Text playerMoney;
     public Text oponentMoney;
+    public Text potLabel;
+
+    public Text positivePrefab;
+    public Text negativePrefab;
 
     private int moneyInPot = 0;
 
@@ -47,6 +51,14 @@ public class CardGameLogic : MonoBehaviour {
     public void StartHand()
     {
         StartCoroutine(PlayHand());
+    }
+
+    public IEnumerator AnimateMoney(int amount, Vector3 from, Vector3 to)
+    {
+        Text text = Instantiate(amount >= 0 ? positivePrefab : negativePrefab, from, Quaternion.identity, transform);
+        text.text = "$" + System.Math.Abs(amount);
+        yield return TweenHelper.LerpPosition(from, to, 0.5f, (pos) => text.transform.position = pos);
+        Destroy(text.gameObject);
     }
 
     public IEnumerator PlayHand()
@@ -84,18 +96,22 @@ public class CardGameLogic : MonoBehaviour {
                     PlayerLogic player = players[playerIndex];
                     player.StartTurn(playerHands, currentBid, 0);
 
-                    while (player.TakingTurn())
-                    {
-                        yield return null;
-                    }
+                    yield return player.StartTurn(playerHands, currentBid, moneyInPot);
 
-                    TurnChoice choice = player.TakeTurn();
+                    TurnChoice choice = player.TurnResult();
 
                     currentBid = System.Math.Max(choice.bid, currentBid);
 
                     if (choice.card == null)
                     {
                         stillIn[i] = false;
+                    }
+                    else
+                    {
+                        player.AdjustMoney(-choice.bid);
+                        yield return AnimateMoney(-choice.bid, player.moneyLabel.transform.position, potLabel.transform.position);
+                        moneyInPot += choice.bid;
+                        potLabel.text = moneyInPot.ToString();
                     }
 
                     choices.Add(choice);
@@ -113,7 +129,6 @@ public class CardGameLogic : MonoBehaviour {
                 int playerIndex = (currentTurn + i) % players.Length;
                 if (choices[i].card != null)
                 {
-                    moneyInPot += choices[i].bid;
                     players[playerIndex].ExecuteTurn(choices[i]);
                     ++stillInCount;
                 }
@@ -133,11 +148,15 @@ public class CardGameLogic : MonoBehaviour {
         {
             if (maxScore == player.hand.GetScore())
             {
-                player.AdjustMoney(moneyInPot / winningPlayerCount + (player == players[currentTurn] ? (moneyInPot % winningPlayerCount) : 0));
+                int moneyEarned = moneyInPot / winningPlayerCount + (player == players[currentTurn] ? (moneyInPot % winningPlayerCount) : 0);
+                moneyInPot -= moneyEarned;
+                potLabel.text = moneyInPot.ToString();
+                yield return AnimateMoney(moneyEarned, potLabel.transform.position, player.moneyLabel.transform.position);
+                player.AdjustMoney(moneyEarned);
             }
-        }
 
-        moneyInPot = 0;
+            player.hand.RevealHand();
+        }
 
         playAgain.gameObject.SetActive(true);
     }

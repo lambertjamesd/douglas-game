@@ -61,15 +61,11 @@ public abstract class PlayerLogic {
             {
                 hand.PlayCard(turn.extraCard);
             }
-            AdjustMoney(-turn.bid);
         }
     }
 
-    public abstract void StartTurn(List<List<Card>> onBoard, int currentBid, int inPot);
-
-    public abstract bool TakingTurn();
-
-    public abstract TurnChoice TakeTurn();
+    public abstract IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot);
+    public abstract TurnChoice TurnResult();
 }
 
 public class HumanPlayerLogic : PlayerLogic
@@ -81,6 +77,7 @@ public class HumanPlayerLogic : PlayerLogic
     private TurnChoice choice = null;
     private int cardChoice = -1;
     private bool takingTurn = false;
+    private Card chosenCard;
 
     public HumanPlayerLogic(
         int index, 
@@ -121,31 +118,46 @@ public class HumanPlayerLogic : PlayerLogic
                 if (choice == null)
                 {
                     choice = new TurnChoice(spinner.value, pickedCard);
+                    chosenCard = pickedCard;
                 }
                 else if (choice.card != pickedCard)
                 {
                     choice.bid = spinner.value;
                     choice.extraCard = pickedCard;
+                    chosenCard = pickedCard;
                 }
             }
         });
     }
 
-    public override void StartTurn(List<List<Card>> onBoard, int currentBid, int inPot)
+    public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot)
     {
         takingTurn = true;
         choice = null;
         cardChoice = -1;
-    }
 
-    public override bool TakingTurn()
-    {
-        return choice == null || (CanPlayExtraCard(choice.card) && choice.extraCard == null);
-    }
+        while (choice == null || (CanPlayExtraCard(choice.card) && choice.extraCard == null))
+        {
+            if (chosenCard != null)
+            {
+                yield return hand.PutCardOnTable(chosenCard);
+                chosenCard = null;
+            }
 
-    public override TurnChoice TakeTurn()
-    {
+            yield return null;
+        }
+
+        if (chosenCard != null)
+        {
+            yield return hand.PutCardOnTable(chosenCard);
+            chosenCard = null;
+        }
+
         takingTurn = false;
+    }
+
+    public override TurnChoice TurnResult()
+    {
         return choice;
     }
 }
@@ -173,7 +185,7 @@ public class DumbAIPlayer : PlayerLogic
         return result;
     }
 
-    public override void StartTurn(List<List<Card>> onBoard, int currentBid, int inPot)
+    public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot)
     {
         if (onBoard[index].Count == 0)
         {
@@ -181,20 +193,21 @@ public class DumbAIPlayer : PlayerLogic
         }
 
         choice = new TurnChoice(Math.Max(currentBid, 10), PickCard());
+
+        yield return hand.PutCardOnTable(choice.card);
         
         if (CanPlayExtraCard(choice.card))
         {
             choice.extraCard = PickCard();
+
+            yield return hand.PutCardOnTable(choice.extraCard);
         }
+
+        yield return null;
     }
 
-    public override TurnChoice TakeTurn()
+    public override TurnChoice TurnResult()
     {
         return choice;
-    }
-
-    public override bool TakingTurn()
-    {
-        return false;
     }
 }

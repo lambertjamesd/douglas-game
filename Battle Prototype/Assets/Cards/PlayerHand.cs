@@ -27,6 +27,20 @@ public class PlayerHand : MonoBehaviour {
         }
     }
 
+    public IEnumerator PutCardOnTable(Card card)
+    {
+        int handIndex = hand.IndexOf(card);
+
+        if (handIndex != -1)
+        {
+            handSlots[handIndex].gameObject.SetActive(false);
+            int boardSlot = playedCards.Count + (boardSlots[playedCards.Count].gameObject.activeSelf ? 1 : 0);
+            boardSlots[boardSlot].gameObject.SetActive(true);
+            boardSlots[boardSlot].sprite = cardBack;
+            yield return TweenHelper.LerpPosition(handSlots[handIndex].transform.position, boardSlots[boardSlot].transform.position, 0.25f, (pos) => boardSlots[boardSlot].transform.position = pos);
+        }
+    }
+
     public void UseBack(Sprite back)
     {
         cardBack = back;
@@ -40,6 +54,17 @@ public class PlayerHand : MonoBehaviour {
         {
             handSlots[i].sprite = isHidden ? cardBack : hand[i].sprite;
             handSlots[i].gameObject.SetActive(true);
+        }
+    }
+
+    public void RevealHand()
+    {
+        for (int i = 0; i < hand.Count; ++i)
+        {
+            if (hand[i] != null)
+            {
+                handSlots[i].sprite = hand[i].sprite;
+            }
         }
     }
 
