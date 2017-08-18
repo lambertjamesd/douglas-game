@@ -18,7 +18,7 @@ public class CardGameLogic : MonoBehaviour {
     private bool[] stillIn;
 
     public Button foldButton;
-    public Button bidButton;
+    public Transform guiTransform;
     public NumberSpinner spinner;
     public List<Button> cardSelection;
     public Button playAgain;
@@ -38,7 +38,7 @@ public class CardGameLogic : MonoBehaviour {
 
         players = new PlayerLogic[]
         {
-            new HumanPlayerLogic(0, playerHand, foldButton, bidButton, spinner, cardSelection, playerMoney),
+            new HumanPlayerLogic(0, playerHand, foldButton, guiTransform, spinner, cardSelection, playerMoney),
             new DumbAIPlayer(1, oponentHand, oponentMoney)
         };
 
@@ -58,6 +58,7 @@ public class CardGameLogic : MonoBehaviour {
         Text text = Instantiate(amount >= 0 ? positivePrefab : negativePrefab, from, Quaternion.identity, transform);
         text.text = "$" + System.Math.Abs(amount);
         yield return TweenHelper.LerpPosition(from, to, 0.5f, (pos) => text.transform.position = pos);
+        yield return new WaitForSeconds(0.5f);
         Destroy(text.gameObject);
     }
 
@@ -83,7 +84,7 @@ public class CardGameLogic : MonoBehaviour {
         for (int round = 0; round < 3; ++round)
         {
             var playerHands = players.Select(player => player.hand.GetPlayedCards()).ToList();
-            int currentBid = 0;
+            int currentBid = -1;
 
             List<TurnChoice> choices = new List<TurnChoice>();
 

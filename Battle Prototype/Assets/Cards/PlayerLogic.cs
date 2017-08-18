@@ -49,7 +49,7 @@ public abstract class PlayerLogic {
 
     public bool CanPlayExtraCard(Card next)
     {
-        return hand.GetPlayedCards().TrueForAll(card => card.suite == next.suite) && hand.GetPlayedCards().Count == 2;
+        return next != null && hand.GetPlayedCards().TrueForAll(card => card.suite == next.suite) && hand.GetPlayedCards().Count == 2;
     }
 
     public void ExecuteTurn(TurnChoice turn)
@@ -71,7 +71,7 @@ public abstract class PlayerLogic {
 public class HumanPlayerLogic : PlayerLogic
 {
     private Button foldButton;
-    private Button bidButton;
+    private Transform guiTransform;
     private NumberSpinner spinner;
     private IEnumerable<Button> cardSelection;
     private TurnChoice choice = null;
@@ -83,13 +83,13 @@ public class HumanPlayerLogic : PlayerLogic
         int index, 
         PlayerHand hand,
         Button foldButton,
-        Button bidButton,
+        Transform guiTransform,
         NumberSpinner spinner,
         List<Button> cardSelection, 
         Text moneyLabel
     ) : base(index, hand, moneyLabel)  {
         this.foldButton = foldButton;
-        this.bidButton = bidButton;
+        this.guiTransform = guiTransform;
         this.spinner = spinner;
         this.cardSelection = cardSelection;
 
@@ -104,6 +104,26 @@ public class HumanPlayerLogic : PlayerLogic
         for (int i = 0; i < cardSelection.Count; ++i)
         {
             BindCardClick(cardSelection[i], i);
+        }
+        SetGUIVisible(false, -1);
+    }
+
+    private void PositionGUI(int slotOffset = 0)
+    {
+        guiTransform.position = hand.boardSlots[hand.GetPlayedCards().Count + slotOffset].transform.position;
+    }
+
+    private void SetGUIVisible(bool value, int useBid)
+    {
+        guiTransform.gameObject.SetActive(value);
+        foldButton.gameObject.SetActive(value);
+
+        PositionGUI(0);
+
+        spinner.SetEnabled(useBid == -1);
+        if (useBid != -1)
+        {
+            spinner.SetValue(useBid);
         }
     }
 
@@ -136,16 +156,26 @@ public class HumanPlayerLogic : PlayerLogic
         choice = null;
         cardChoice = -1;
 
+        int min = Math.Max(Math.Min((currentBid == -1) ? inPot / 2 : currentBid, money), 1);
+
+        spinner.SetMin(min);
+        spinner.SetMax(money);
+
+        SetGUIVisible(true, currentBid);
+
         while (choice == null || (CanPlayExtraCard(choice.card) && choice.extraCard == null))
         {
             if (chosenCard != null)
             {
+                PositionGUI(1);
                 yield return hand.PutCardOnTable(chosenCard);
                 chosenCard = null;
             }
 
             yield return null;
         }
+
+        SetGUIVisible(false, -1);
 
         if (chosenCard != null)
         {
@@ -192,7 +222,9 @@ public class DumbAIPlayer : PlayerLogic
             pickedCard = 0;
         }
 
-        choice = new TurnChoice(Math.Max(currentBid, 10), PickCard());
+        int bid = (currentBid == -1) ? Math.Max(10, inPot / 2) : currentBid;
+
+        choice = new TurnChoice(Math.Min(bid, money), PickCard());
 
         yield return hand.PutCardOnTable(choice.card);
         

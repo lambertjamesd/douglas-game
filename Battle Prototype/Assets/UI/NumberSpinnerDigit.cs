@@ -13,6 +13,12 @@ public class NumberSpinnerDigit : MonoBehaviour
     public Button down;
     public Text text;
 
+    public void SetEnabled(bool value)
+    {
+        up.gameObject.SetActive(value);
+        down.gameObject.SetActive(value);
+    }
+
     void Start()
     {
         increment = 1;
@@ -28,6 +34,7 @@ public class NumberSpinnerDigit : MonoBehaviour
         down.onClick.AddListener(Decrement);
 
         forSpinner.onChange(UpdateText);
+        forSpinner.digits.Add(this);
         UpdateText();
     }
 
