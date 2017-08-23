@@ -30,6 +30,8 @@ public class CardGameLogic : MonoBehaviour {
     public Text positivePrefab;
     public Text negativePrefab;
 
+    public int buyInPrice = 10;
+
     private int moneyInPot = 0;
 
     // Use this for initialization
@@ -39,7 +41,7 @@ public class CardGameLogic : MonoBehaviour {
         players = new PlayerLogic[]
         {
             new HumanPlayerLogic(0, playerHand, foldButton, guiTransform, spinner, cardSelection, playerMoney),
-            new DumbAIPlayer(1, oponentHand, oponentMoney)
+            new FoldAI(1, oponentHand, oponentMoney)
         };
 
         foreach (PlayerLogic logic in players)
@@ -47,6 +49,23 @@ public class CardGameLogic : MonoBehaviour {
             logic.hand.UseBack(deckSkin.back);
         }
 	}
+
+    public void CalculateScore(int sampleSize)
+    {
+        Deck deck = new Deck(deckSkin);
+
+        int[] pointCount = new int[54];
+
+        for (int i = 0; i < sampleSize; ++i)
+        {
+            deck.Shuffle();
+            var hand = deck.Deal(5);
+            pointCount[CardAIBase.IdealScore(hand, new Card[] { })]++;
+            deck.Discard(hand);
+        }
+
+        System.IO.File.WriteAllLines("point_probability.csv", pointCount.Select(point => point + "," + ((float)point / sampleSize).ToString()).ToArray());
+    }
 
     public void StartHand()
     {
@@ -68,7 +87,13 @@ public class CardGameLogic : MonoBehaviour {
 
         for (int i = 0; i < players.Length; ++i)
         {
-            deck.Discard(players[i].hand.TakeCards());
+            var player = players[i];
+            deck.Discard(player.hand.TakeCards());
+
+            player.AdjustMoney(-buyInPrice);
+            yield return AnimateMoney(-buyInPrice, player.moneyLabel.transform.position, potLabel.transform.position);
+            moneyInPot += buyInPrice;
+            potLabel.text = moneyInPot.ToString();
         }
 
         deck.Shuffle();
@@ -87,6 +112,7 @@ public class CardGameLogic : MonoBehaviour {
             int currentBid = -1;
 
             List<TurnChoice> choices = new List<TurnChoice>();
+            List<float> choiceInSeconds = new List<float>();
 
             for (int i = 0; i < players.Length; ++i)
             {
@@ -97,7 +123,11 @@ public class CardGameLogic : MonoBehaviour {
                     PlayerLogic player = players[playerIndex];
                     player.StartTurn(playerHands, currentBid, 0);
 
+                    float startTime = Time.time;
+
                     yield return player.StartTurn(playerHands, currentBid, moneyInPot);
+
+                    choiceInSeconds.Add(Time.time - startTime);
 
                     TurnChoice choice = player.TurnResult();
 
@@ -128,11 +158,18 @@ public class CardGameLogic : MonoBehaviour {
             for (int i = 0; i < players.Length; ++i)
             {
                 int playerIndex = (currentTurn + i) % players.Length;
+                PlayerLogic player = players[playerIndex];
+                TurnChoice choice = choices[i];
                 if (choices[i].card != null)
                 {
-                    players[playerIndex].ExecuteTurn(choices[i]);
+                    if (choices[i].extraCard != null)
+                    {
+                        yield return player.hand.PutCardOnTable(choice.extraCard);
+                    }
+                    players[playerIndex].ExecuteTurn(choice);
                     ++stillInCount;
                 }
+                RoundLogger.LogRound(round, playerIndex, choice.PlayedCards(), choice.bid, player.hand.UnplayedCards(), choiceInSeconds[i], player.money + choice.bid);
             }
 
             if (stillInCount <= 1)

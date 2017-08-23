@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class TurnChoice
 {
@@ -19,6 +20,19 @@ public class TurnChoice
     public static TurnChoice Fold()
     {
         return new TurnChoice(0, null);
+    }
+
+    public IEnumerable<Card> PlayedCards()
+    {
+        if (card != null)
+        {
+            yield return card;
+        }
+
+        if (extraCard != null)
+        {
+            yield return extraCard;
+        }
     }
 }
 
@@ -179,7 +193,10 @@ public class HumanPlayerLogic : PlayerLogic
 
         if (chosenCard != null)
         {
-            yield return hand.PutCardOnTable(chosenCard);
+            if (chosenCard != choice.extraCard)
+            {
+                yield return hand.PutCardOnTable(chosenCard);
+            }
             chosenCard = null;
         }
 
@@ -192,47 +209,108 @@ public class HumanPlayerLogic : PlayerLogic
     }
 }
 
-public class DumbAIPlayer : PlayerLogic
+public class CardAIBase : PlayerLogic
 {
     TurnChoice choice = null;
-    int pickedCard;
+    IEnumerator<Card> pickedCards;
+    int handScore = 0;
 
-    public DumbAIPlayer(int index, PlayerHand hand, Text moneyLabel) : base(index, hand, moneyLabel)
+    int[] bidAmount = new int[]{
+        5,
+        10,
+        20,
+        30,
+        40,
+        50,
+        100,
+        200,
+        300,
+        400,
+        500,
+    };
+
+    public CardAIBase(int index, PlayerHand hand, Text moneyLabel)
+        : base(index, hand, moneyLabel)
     {
     }
 
     private Card PickCard()
     {
-        while (hand.GetHand()[pickedCard] == null)
+        if (pickedCards.MoveNext())
         {
-            ++pickedCard;
+            return pickedCards.Current;
         }
+        else
+        {
+            return null;
+        }
+    }
 
-        Card result = hand.GetHand()[pickedCard];
+    public virtual float WinProbability(int bid, int score)
+    {
+        return 1.0f;
+    }
 
-        ++pickedCard;
+    public virtual float OponentFoldProbability()
+    {
+        return 0.0f;
+    }
 
-        return result;
+    public IEnumerable<Card> PlayOrderCommon(IEnumerable<Card> cardsToPlay)
+    {
+        return PlayOrder(cardsToPlay.Take(3)).Concat(cardsToPlay.Skip(3));
+    }
+
+    public virtual IEnumerable<Card> PlayOrder(IEnumerable<Card> cardsToPlay)
+    {
+        return cardsToPlay;
     }
 
     public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot)
     {
         if (onBoard[index].Count == 0)
         {
-            pickedCard = 0;
+            var pickedCardsList = PlayOrderCommon(IdealHand(hand.GetHand(), new Card[] { }));
+            pickedCards = pickedCardsList.GetEnumerator();
+            handScore = ScoreHand(pickedCardsList);
         }
 
-        int bid = (currentBid == -1) ? Math.Max(10, inPot / 2) : currentBid;
+        int minBid = inPot / 2;
+        int bid = currentBid;
+        bool shouldFold = false;
 
-        choice = new TurnChoice(Math.Min(bid, money), PickCard());
+        if (currentBid == -1)
+        {
+            float expectedWinnings = ScoreOutcome(WinProbability(bid, handScore), OponentFoldProbability(), inPot, minBid);
+            bid = minBid;
+            foreach (int bidCheck in bidAmount)
+            {
+                if (bidCheck > minBid)
+                {
+                    float winnings = ScoreOutcome(WinProbability(bid, handScore), OponentFoldProbability(), inPot, bidCheck);
+
+                    if (winnings > expectedWinnings)
+                    {
+                        expectedWinnings = winnings;
+                        bid = bidCheck;
+                    }
+                }
+            }
+
+            shouldFold = expectedWinnings < 0.0f;
+        }
+        else
+        {
+            shouldFold = ScoreOutcome(WinProbability(bid, handScore), OponentFoldProbability(), inPot, bid) < 0.0f;
+        }
+
+        choice = shouldFold ? TurnChoice.Fold() : new TurnChoice(Math.Min(bid, money), PickCard());
 
         yield return hand.PutCardOnTable(choice.card);
         
         if (CanPlayExtraCard(choice.card))
         {
             choice.extraCard = PickCard();
-
-            yield return hand.PutCardOnTable(choice.extraCard);
         }
 
         yield return null;
@@ -241,5 +319,103 @@ public class DumbAIPlayer : PlayerLogic
     public override TurnChoice TurnResult()
     {
         return choice;
+    }
+
+    public static Suite SuiteForCards(IEnumerable<Card> cards)
+    {
+        Suite result = Suite.Count;
+
+        foreach (Card card in cards)
+        {
+            if (result == Suite.Count)
+            {
+                result = card.suite;
+            }
+            else if (result != card.suite)
+            {
+                return Suite.Count;
+            }
+        }
+
+        return result;
+    }
+
+    public static IEnumerable<Card> IdealHand(IEnumerable<Card> cards, IEnumerable<Card> playedCards)
+    {
+        int[] suiteCount = new int[]{
+            0, 0, 0, 0
+        };
+
+        var cardList = cards.ToList();
+        cardList.Sort((a, b) => b.PointValue() - a.PointValue());
+
+        Suite suiteToUse = SuiteForCards(playedCards);
+
+        for (int i = 0; suiteToUse == Suite.Count && i < cardList.Count; ++i)
+        {
+            Card card = cardList[i];
+            if (suiteCount[(int)card.suite] == 2)
+            {
+                suiteToUse = card.suite;
+                break;
+            }
+            else
+            {
+                suiteCount[(int)card.suite]++;
+            }
+        }
+
+        int suitePoints = 0;
+        int suiteCardsPlayed = 0;
+        int notSuiteHighCard = 0;
+        int tripleCardScore = 0;
+        Card extraCard = null;
+
+        cardList.InsertRange(0, playedCards);
+
+        for (int i = 0; i < cardList.Count; ++i)
+        {
+            Card card = cardList[i];
+            int cardPoints = card.PointValue();
+            if (card.suite == suiteToUse && suiteCardsPlayed < 3)
+            {
+                suitePoints += cardPoints;
+                ++suiteCardsPlayed;
+            }
+            else if (cardPoints > notSuiteHighCard)
+            {
+                notSuiteHighCard = cardPoints;
+                extraCard = card;
+            }
+
+            if (i < 3)
+            {
+                tripleCardScore += cardPoints;
+            }
+        }
+
+        if (suiteCardsPlayed != 3 || tripleCardScore > suitePoints + notSuiteHighCard)
+        {
+            return cardList.Take(3);
+        }
+        else
+        {
+            return cardList.Where(card => card.suite == suiteToUse).Take(3).Concat(new Card[] { extraCard });
+        }
+    }
+
+    public static int IdealScore(IEnumerable<Card> cards, IEnumerable<Card> playedCards)
+    {
+        return IdealHand(cards, playedCards).Sum(card => card.PointValue());
+    }
+
+    public static int ScoreHand(IEnumerable<Card> cards)
+    {
+        return cards.Sum(card => card.PointValue());
+    }
+
+    public static float ScoreOutcome(float winProbability, float foldProbability, float potSize, float bid)
+    {
+        return foldProbability * potSize + (1.0f - foldProbability) * (winProbability * (potSize + bid) - (1.0f - winProbability) * bid * 2.0f);
     }
 }

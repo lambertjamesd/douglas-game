@@ -14,6 +14,11 @@ public class PlayerHand : MonoBehaviour {
     private List<Card> hand = new List<Card>();
     private List<Card> playedCards = new List<Card>();
 
+    public IEnumerable<Card> UnplayedCards()
+    {
+        return hand.Where((card) => card != null);
+    }
+
     void Start()
     {
         foreach (Image boardSlot in boardSlots)

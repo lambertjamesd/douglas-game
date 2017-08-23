@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -34,6 +35,19 @@ public enum CardType
     Count,
 }
 
+public class CardEquality : IEqualityComparer<Card>
+{
+    public int GetHashCode(Card card)
+    {
+        return card.suite.GetHashCode() ^ card.type.GetHashCode();
+    }
+
+    public bool Equals(Card a, Card b)
+    {
+        return a.suite == b.suite && a.type == b.type;
+    }
+}
+
 public class Card
 {
     public Sprite sprite;
@@ -45,6 +59,11 @@ public class Card
         this.sprite = sprite;
         this.suite = suite;
         this.type = type;
+    }
+
+    public string ShortName()
+    {
+        return type.ToString().Substring(1) + suite.ToString().Substring(0, 1);
     }
 
     public int PointValue()
@@ -101,7 +120,7 @@ public class Deck
         {
             for (int type = 0; type < (int)CardType.Count; ++type)
             {
-                cards.Add(new Card(skin.cards[type + suite * (int)CardType.Count], (Suite)suite, (CardType)type));
+                cards.Add(new Card(skin != null ? skin.cards[type + suite * (int)CardType.Count] : null, (Suite)suite, (CardType)type));
             }
         }
     }
@@ -121,6 +140,11 @@ public class Deck
         }
 
         cards = result;
+    }
+
+    public void Remove(IEnumerable<Card> toRemove)
+    {
+        cards.RemoveAll(card => toRemove.Contains(card, new CardEquality()));
     }
 
     public List<Card> Deal(int count)
