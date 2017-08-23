@@ -11,6 +11,11 @@ public class TurnChoice
     public Card card;
     public Card extraCard;
 
+    public bool IsFold()
+    {
+        return card == null;
+    }
+
     public TurnChoice(int bid, Card card)
     {
         this.bid = bid;
@@ -41,6 +46,14 @@ public abstract class PlayerLogic {
     public PlayerHand hand = null;
     public int money = 1000;
     public Text moneyLabel;
+
+    public int Index
+    {
+        get
+        {
+            return index;
+        }
+    }
 
     public PlayerLogic(int index, PlayerHand hand, Text moneyLabel)
     {

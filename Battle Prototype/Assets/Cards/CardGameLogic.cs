@@ -100,13 +100,15 @@ public class CardGameLogic : MonoBehaviour {
 
         stillIn = new bool[players.Length];
 
+        int stillInCount = players.Length;
+
         for (int i = 0; i < players.Length; ++i)
         {
             stillIn[i] = true;
             players[i].hand.GiveHand(deck.Deal(5));
         }
 
-        for (int round = 0; round < 3; ++round)
+        for (int round = 0; stillInCount > 1 && round < 3; ++round)
         {
             var playerHands = players.Select(player => player.hand.GetPlayedCards()).ToList();
             int currentBid = -1;
@@ -116,50 +118,77 @@ public class CardGameLogic : MonoBehaviour {
 
             for (int i = 0; i < players.Length; ++i)
             {
-                if (stillIn[i])
+                int playerIndex = (currentTurn + i) % players.Length;
+
+                if (stillIn[playerIndex])
                 {
-                    int playerIndex = (currentTurn + i) % players.Length;
-
                     PlayerLogic player = players[playerIndex];
-                    player.StartTurn(playerHands, currentBid, 0);
 
-                    float startTime = Time.time;
-
-                    yield return player.StartTurn(playerHands, currentBid, moneyInPot);
-
-                    choiceInSeconds.Add(Time.time - startTime);
-
-                    TurnChoice choice = player.TurnResult();
-
-                    currentBid = System.Math.Max(choice.bid, currentBid);
-
-                    if (choice.card == null)
+                    if (stillInCount == 1)
                     {
-                        stillIn[i] = false;
+                        choices.Add(new TurnChoice(moneyInPot / 2, player.hand.GetHand().Where(card => card != null).Take(1).ToArray()[0]));
+                        choiceInSeconds.Add(0.0f);
                     }
                     else
                     {
-                        player.AdjustMoney(-choice.bid);
-                        yield return AnimateMoney(-choice.bid, player.moneyLabel.transform.position, potLabel.transform.position);
-                        moneyInPot += choice.bid;
-                        potLabel.text = moneyInPot.ToString();
-                    }
+                        player.StartTurn(playerHands, currentBid, 0);
 
-                    choices.Add(choice);
+                        float startTime = Time.time;
+
+                        yield return player.StartTurn(playerHands, currentBid, moneyInPot);
+
+                        choiceInSeconds.Add(Time.time - startTime);
+
+                        TurnChoice choice = player.TurnResult();
+
+                        currentBid = System.Math.Max(choice.bid, currentBid);
+
+                        if (choice.card == null)
+                        {
+                            stillIn[playerIndex] = false;
+                        }
+                        else
+                        {
+                            player.AdjustMoney(-choice.bid);
+                            yield return AnimateMoney(-choice.bid, player.moneyLabel.transform.position, potLabel.transform.position);
+                            moneyInPot += choice.bid;
+                            potLabel.text = moneyInPot.ToString();
+                        }
+
+                        if (choice.IsFold())
+                        {
+                            --stillInCount;
+                        }
+                        choices.Add(choice);
+                    }
                 }
                 else
                 {
                     choices.Add(TurnChoice.Fold());
+                    --stillInCount;
+                    choiceInSeconds.Add(0.0f);
                 }
             }
-
-            int stillInCount = 0;
 
             for (int i = 0; i < players.Length; ++i)
             {
                 int playerIndex = (currentTurn + i) % players.Length;
                 PlayerLogic player = players[playerIndex];
                 TurnChoice choice = choices[i];
+                RoundLogger.LogRound(
+                    round, 
+                    playerIndex, 
+                    choice.PlayedCards(), 
+                    choice.bid, 
+                    player.hand.UnplayedCards(), 
+                    choiceInSeconds[i], 
+                    player.money + choice.bid
+                );
+
+                if (!stillIn[playerIndex] && stillInCount == 1)
+                {
+                    break;
+                }
                 if (choices[i].card != null)
                 {
                     if (choices[i].extraCard != null)
@@ -167,33 +196,29 @@ public class CardGameLogic : MonoBehaviour {
                         yield return player.hand.PutCardOnTable(choice.extraCard);
                     }
                     players[playerIndex].ExecuteTurn(choice);
-                    ++stillInCount;
                 }
-                RoundLogger.LogRound(round, playerIndex, choice.PlayedCards(), choice.bid, player.hand.UnplayedCards(), choiceInSeconds[i], player.money + choice.bid);
-            }
-
-            if (stillInCount <= 1)
-            {
-                break;
             }
 
             currentTurn = (currentTurn + 1) % players.Length;
         }
 
-        int maxScore = players.Aggregate(0, (sum, player) => System.Math.Max(sum, player.hand.GetScore()));
-        int winningPlayerCount = players.Aggregate(0, (sum, player) => maxScore == player.hand.GetScore() ? sum + 1 : sum);
+        var playersStillIn = players.Where(player => stillIn[player.Index]);
+
         foreach (PlayerLogic player in players)
         {
-            if (maxScore == player.hand.GetScore())
-            {
-                int moneyEarned = moneyInPot / winningPlayerCount + (player == players[currentTurn] ? (moneyInPot % winningPlayerCount) : 0);
-                moneyInPot -= moneyEarned;
-                potLabel.text = moneyInPot.ToString();
-                yield return AnimateMoney(moneyEarned, potLabel.transform.position, player.moneyLabel.transform.position);
-                player.AdjustMoney(moneyEarned);
-            }
-
             player.hand.RevealHand();
+        }
+        
+        int maxScore = playersStillIn.Aggregate(0, (sum, player) => System.Math.Max(sum, player.hand.GetScore()));
+        var winningPlayers = playersStillIn.Where(player => maxScore == player.hand.GetScore());
+        int winningCount = winningPlayers.Count();
+        foreach (PlayerLogic player in winningPlayers)
+        {
+            int moneyEarned = moneyInPot / winningCount + (player == players[currentTurn] ? (moneyInPot % winningCount) : 0);
+            moneyInPot -= moneyEarned;
+            potLabel.text = moneyInPot.ToString();
+            yield return AnimateMoney(moneyEarned, potLabel.transform.position, player.moneyLabel.transform.position);
+            player.AdjustMoney(moneyEarned);
         }
 
         playAgain.gameObject.SetActive(true);
