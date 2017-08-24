@@ -279,6 +279,11 @@ public class CardAIBase : PlayerLogic
         return cardsToPlay;
     }
 
+    public int GetBid(int minBid, int points)
+    {
+        return minBid;
+    }
+
     public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot)
     {
         if (onBoard[index].Count == 0)
@@ -294,21 +299,8 @@ public class CardAIBase : PlayerLogic
 
         if (currentBid == -1)
         {
+            bid = GetBid(minBid, handScore);
             float expectedWinnings = ScoreOutcome(WinProbability(bid, handScore), OponentFoldProbability(), inPot, minBid);
-            bid = minBid;
-            foreach (int bidCheck in bidAmount)
-            {
-                if (bidCheck > minBid)
-                {
-                    float winnings = ScoreOutcome(WinProbability(bid, handScore), OponentFoldProbability(), inPot, bidCheck);
-
-                    if (winnings > expectedWinnings)
-                    {
-                        expectedWinnings = winnings;
-                        bid = bidCheck;
-                    }
-                }
-            }
 
             shouldFold = expectedWinnings < 0.0f;
         }

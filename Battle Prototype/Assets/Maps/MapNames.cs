@@ -10,6 +10,12 @@ using UnityEditor;
 
 [System.Serializable]
 public class MapPath {
+    public static MapPath WithString(string parts)
+    {
+        var partSplit = parts.Split(new char[] { ':' }, 2);
+        return new MapPath(partSplit[0], partSplit.Length > 1 ? partSplit[1] : "default");
+    }
+
     public MapPath(string mapName, string portalName) {
         this.mapName = mapName;
         this.portalName = portalName;

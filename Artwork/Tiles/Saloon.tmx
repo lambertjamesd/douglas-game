@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="8" tilewidth="32" tileheight="32" nextobjectid="3">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="8" tilewidth="32" tileheight="32" nextobjectid="5">
  <properties>
   <property name="Name" value="Saloon"/>
  </properties>
@@ -125,6 +125,14 @@
    </objectgroup>
   </tile>
  </tileset>
+ <tileset firstgid="257" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">
+  <image source="PlaceObjects.png" width="128" height="128"/>
+  <tile id="0">
+   <properties>
+    <property name="ObjectName" value="ShootOnSight"/>
+   </properties>
+  </tile>
+ </tileset>
  <layer name="Base" width="12" height="8">
   <data encoding="csv">
 0,1,1,3,1,1,1,1,3,4,1,0,
@@ -170,6 +178,16 @@
   <object id="2" x="160" y="224" width="32" height="32">
    <properties>
     <property name="PortalFrom" value="default"/>
+   </properties>
+  </object>
+  <object id="3" name="CardPlayer" gid="257" x="320" y="128" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="CardPlayer"/>
+   </properties>
+  </object>
+  <object id="4" x="320" y="128" width="32" height="32">
+   <properties>
+    <property name="PortalFrom" value="card_game"/>
    </properties>
   </object>
  </objectgroup>

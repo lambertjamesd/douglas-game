@@ -5,6 +5,7 @@ EXTERNAL getPlayerX()
 EXTERNAL getPlayerY()
 EXTERNAL setTimeout(duration, knot)
 EXTERNAL lookAt(name, x, y)
+EXTERNAL playCards(playerName, returnPoint, returnKnot)
 
 == function createObject(objectName, x, y) ==
 ~ return true
@@ -19,4 +20,6 @@ EXTERNAL lookAt(name, x, y)
 == function setTimeout(duration, knot) ==
 ~ return 0
 == function lookAt(name, x, y) ==
+~ return 0
+== function playCards(playerName, returnPoint, returnKnot) ==
 ~ return 0

@@ -7,7 +7,7 @@ public class ScriptInteraction : MonoBehaviour {
     
     public string storyEntryPoint;
 
-    public IEnumerator interact()
+    public virtual IEnumerator interact()
     {
         if (storyEntryPoint != null)
         {

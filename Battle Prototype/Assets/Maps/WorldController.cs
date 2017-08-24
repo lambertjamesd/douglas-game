@@ -123,12 +123,22 @@ public class WorldController : MonoBehaviour {
         if (story != null)
         {
             StoryManager.GetSingleton().SetStory(story);
-            storyFunctionBindings.BindToStory(StoryManager.GetSingleton().GetStory());
+            StoryManager.GetSingleton().currentBindings = storyFunctionBindings;
         }
 
-		if (startingLocation != null) {
+        if (WorldInitializer.location != null)
+        {
+            Goto(WorldInitializer.location);
+        }
+        else if (startingLocation != null)
+        {
 			Goto(startingLocation);
 		}
+
+        if (WorldInitializer.storyKnot != null && WorldInitializer.storyKnot.Length > 0)
+        {
+            StartCoroutine(StoryFunctionBindings.GetBindings().interact(WorldInitializer.storyKnot));
+        }
 	}
 
 

@@ -22,6 +22,7 @@ public class CardGameLogic : MonoBehaviour {
     public NumberSpinner spinner;
     public List<Button> cardSelection;
     public Button playAgain;
+    public Button stopPlaying;
 
     public Text playerMoney;
     public Text oponentMoney;
@@ -32,23 +33,72 @@ public class CardGameLogic : MonoBehaviour {
 
     public int buyInPrice = 10;
 
+    public CardGameVariables defaultPlayer;
+    public CardGameVariables[] cardPlayers;
+
     private int moneyInPot = 0;
 
+    PlayerLogic BuildPlayerLogic(CardGameVariables variables)
+    {
+        switch (variables.aiType)
+        {
+            case CardAIType.NeverFold:
+            default:
+                return new DumbCardAIPlayer(1, oponentHand, oponentMoney);
+        }
+    }
+
+    public CardGameVariables GetOponent(string name)
+    {
+        foreach (CardGameVariables variables in cardPlayers)
+        {
+            if (variables.playerName == name)
+            {
+                return variables;
+            }
+        }
+
+        return defaultPlayer;
+    }
+
     // Use this for initialization
-    void Start () {
-        deck = new Deck(deckSkin);
+    void Start ()
+    {
+        CardGameVariables oponent = GetOponent(CardGameInitializer.playerName);
+
+        deck = new Deck(oponent.deckSkin ?? deckSkin);
 
         players = new PlayerLogic[]
         {
             new HumanPlayerLogic(0, playerHand, foldButton, guiTransform, spinner, cardSelection, playerMoney),
-            new FoldAI(1, oponentHand, oponentMoney)
+            BuildPlayerLogic(oponent)
         };
+
+        var story = StoryManager.GetSingleton().GetStory();
+
+        if (story != null)
+        {
+            players[0].AdjustMoney((int)(story.variablesState["player_money"] ?? 1000) - players[0].money);
+
+            if (oponent.oponentMoneyStore != null)
+            {
+                players[1].AdjustMoney((int)story.variablesState[oponent.oponentMoneyStore] - players[1].money);
+            }
+        }
 
         foreach (PlayerLogic logic in players)
         {
-            logic.hand.UseBack(deckSkin.back);
+            logic.hand.UseBack(oponent.deckSkin == null ? deckSkin.back : oponent.deckSkin.back);
         }
-	}
+
+        StartHand();
+
+    }
+
+    public void EndGame()
+    {
+        WorldInitializer.LoadWorld(CardGameInitializer.returnPoint ?? new MapPath("default", "default"), CardGameInitializer.returnKnot);
+    }
 
     public void CalculateScore(int sampleSize)
     {
@@ -84,6 +134,7 @@ public class CardGameLogic : MonoBehaviour {
     public IEnumerator PlayHand()
     {
         playAgain.gameObject.SetActive(false);
+        stopPlaying.gameObject.SetActive(false);
 
         for (int i = 0; i < players.Length; ++i)
         {
@@ -222,5 +273,6 @@ public class CardGameLogic : MonoBehaviour {
         }
 
         playAgain.gameObject.SetActive(true);
+        stopPlaying.gameObject.SetActive(true);
     }
 }

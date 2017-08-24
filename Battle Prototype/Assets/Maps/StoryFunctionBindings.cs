@@ -12,76 +12,67 @@ public class StoryFunctionBindings : MonoBehaviour
     private float delayTime = 0.0f;
     private string timeoutKnot = null;
 
-    public void BindToStory(Story story)
+    private GameObject GetNamedObject(string name)
     {
-        story.BindExternalFunction<string, float, float>("createObject", (objectName, x, y) =>
+        if (namedObjects.ContainsKey(name))
         {
-            var splitName = objectName.Split(new char[] { ':' });
-
-            PrefabEntry entry = world.prefabNames.GetEntry(splitName[0]);
-
-            if (entry != null)
-            {
-                GameObject result = GameObject.Instantiate(entry.prefab, new Vector3(x, y, 0.0f), Quaternion.identity, world.GetCurrentMap().transform);
-                namedObjects[splitName.Length > 1 ? splitName[1] : splitName[0]] = result;
-
-                return true;
-            }
-            else
-            {
-                Debug.LogError("Could not find prefab named " + objectName);
-                return false;
-            }
-        });
-
-        story.BindExternalFunction<string, float, float>("lookAt", (objectName, x, y) =>
+            return namedObjects[name];
+        }
+        else
         {
-            var toLook = namedObjects[objectName];
-
-            if (toLook != null)
-            {
-                DefaultMovement movement = toLook.GetComponent<DefaultMovement>();
-
-                movement.SetDirection(new Vector3(x, y, 0.0f) - toLook.transform.position);
-            }
-        });
-
-        story.BindExternalFunction<float, string>("setTimeout", (value, knot) =>
-        {
-            delayTime += value;
-            timeoutKnot = knot;
-            return true;
-        });
-
-        story.BindExternalFunction<float>("setTimeScale", (value) =>
-        {
-            Time.timeScale = value;
-            return true;
-        });
-
-        story.BindExternalFunction<bool>("setTextBoxVisible", (value) =>
-        {
-            if (prefabInstance != null)
-            {
-                prefabInstance.gameObject.SetActive(value);
-            }
-            return true;
-        });
-
-        story.BindExternalFunction("getPlayerX", () =>
-        {
-            return GameObject.FindWithTag("Player").transform.position.x;
-        });
-
-        story.BindExternalFunction("getPlayerY", () =>
-        {
-            return GameObject.FindWithTag("Player").transform.position.y;
-        });
+            return GameObject.FindWithTag(name);
+        }
     }
 
     public static StoryFunctionBindings GetBindings()
     {
         return GameObject.FindWithTag("GameController").GetComponent<StoryFunctionBindings>();
+    }
+
+    public bool CreateObject(string objectName, float x, float y)
+    {
+        var splitName = objectName.Split(new char[] { ':' });
+
+        PrefabEntry entry = world.prefabNames.GetEntry(splitName[0]);
+
+        if (entry != null)
+        {
+            GameObject result = GameObject.Instantiate(entry.prefab, new Vector3(x, y, 0.0f), Quaternion.identity, world.GetCurrentMap().transform);
+            namedObjects[splitName.Length > 1 ? splitName[1] : splitName[0]] = result;
+
+            return true;
+        }
+        else
+        {
+            Debug.LogError("Could not find prefab named " + objectName);
+            return false;
+        }
+    }
+
+    public void LookAt(string objectName, float x, float y)
+    {
+        var toLook = GetNamedObject(objectName);
+
+        if (toLook != null)
+        {
+            DefaultMovement movement = toLook.GetComponent<DefaultMovement>();
+
+            movement.SetDirection(new Vector3(x, y, 0.0f) - toLook.transform.position);
+        }
+    }
+
+    public void SetTimeout(float value, string knot)
+    {
+        delayTime += value;
+        timeoutKnot = knot;
+    }
+
+    public void SetTextBoxVisible(bool value)
+    {
+        if (prefabInstance != null)
+        {
+            prefabInstance.gameObject.SetActive(value);
+        }
     }
 
     public IEnumerator interact(string storyEntryPoint)
@@ -182,5 +173,7 @@ public class StoryFunctionBindings : MonoBehaviour
             timeoutKnot = null;
             yield return interact(toKnot);
         }
+
+        CardGameInitializer.Commit();
     }
 }
