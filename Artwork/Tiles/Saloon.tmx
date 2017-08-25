@@ -180,7 +180,7 @@
     <property name="PortalFrom" value="default"/>
    </properties>
   </object>
-  <object id="3" name="CardPlayer" gid="257" x="320" y="128" width="32" height="32">
+  <object id="3" name="CardPlayer" gid="257" x="320" y="131" width="32" height="32">
    <properties>
     <property name="ObjectName" value="CardPlayer"/>
    </properties>

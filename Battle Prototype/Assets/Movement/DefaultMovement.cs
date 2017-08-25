@@ -23,6 +23,7 @@ public class DefaultMovement : MonoBehaviour {
 
 	public LayerMask iceLayers;
 	public float iceAcceleration = 2.0f;
+    public Vector2 startDirection = Vector2.down;
 
 	public void LockRotation() {
 		++lockRotation;
@@ -45,6 +46,8 @@ public class DefaultMovement : MonoBehaviour {
 				return source;
 			}, false);
 		}
+
+        SetDirection(startDirection);
 	}
 
 	public void FixedUpdate() {

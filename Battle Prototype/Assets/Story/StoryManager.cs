@@ -54,6 +54,12 @@ public class StoryManager {
             return true;
         });
 
+        currentStory.BindExternalFunction<string, bool>("useUnscaledTime", (objectName, value) =>
+        {
+            currentBindings.UseUnscaledTime(objectName, value);
+            return true;
+        });
+
         currentStory.BindExternalFunction<float>("setTimeScale", (value) =>
         {
             Time.timeScale = value;
@@ -68,12 +74,54 @@ public class StoryManager {
 
         currentStory.BindExternalFunction("getPlayerX", () =>
         {
-            return GameObject.FindWithTag("Player").transform.position.x;
+            GameObject gameObject = GameObject.FindWithTag("Player");
+            if (gameObject != null)
+            {
+                return gameObject.transform.position.x;
+            }
+            else
+            {
+                return 0.0f;
+            }
         });
 
         currentStory.BindExternalFunction("getPlayerY", () =>
         {
-            return GameObject.FindWithTag("Player").transform.position.y;
+            GameObject gameObject = GameObject.FindWithTag("Player");
+            if (gameObject != null)
+            {
+                return gameObject.transform.position.y;
+            }
+            else
+            {
+                return 0.0f;
+            }
+        });
+
+        currentStory.BindExternalFunction<string>("getCharacterX", (character) =>
+        {
+            GameObject gameObject = GameObject.FindWithTag(character);
+            if (gameObject != null)
+            {
+                return gameObject.transform.position.x;
+            }
+            else
+            {
+                return 0.0f;
+            }
+        });
+
+        currentStory.BindExternalFunction<string>("getCharacterY", (character) =>
+        {
+            GameObject gameObject = GameObject.FindWithTag(character);
+            if (gameObject != null)
+            {
+                return gameObject.transform.position.y;
+            }
+            else
+            {
+                return 0.0f;
+            }
         });
 
         currentStory.BindExternalFunction<string, string, string>("playCards", (playerName, returnTo, returnKnot) =>

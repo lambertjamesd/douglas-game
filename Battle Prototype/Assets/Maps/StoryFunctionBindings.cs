@@ -61,6 +61,21 @@ public class StoryFunctionBindings : MonoBehaviour
         }
     }
 
+    public void UseUnscaledTime(string objectName, bool value)
+    {
+        var toSet = GetNamedObject(objectName);
+
+        if (toSet != null)
+        {
+            DefaultMovement movement = toSet.GetComponent<DefaultMovement>();
+            
+            if (Time.timeScale == 0.0f && movement.moveAnimator != null)
+            {
+                movement.moveAnimator.updateMode = value ? AnimatorUpdateMode.UnscaledTime : AnimatorUpdateMode.Normal;
+            }
+        }
+    }
+
     public void SetTimeout(float value, string knot)
     {
         delayTime += value;

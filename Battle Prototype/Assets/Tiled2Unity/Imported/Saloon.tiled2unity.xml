@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 8/23/2017 10:04:25 PM-->
+<!--Last exported: 8/24/2017 10:10:09 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="Interior" />
   <AssignMaterial mesh="mesh_0002" material="Interior" />
@@ -52,17 +52,17 @@
     </GameObject>
     <GameObject name="Objects" x="0" y="0" z="0">
       <ObjectLayer offsetX="0" offsetY="0" color="#ff808080" />
-      <GameObject name="CardPlayer" x="10" y="-4" rotation="0" layer="" scaleX="1" scaleY="1">
-        <Property name="ObjectName" value="CardPlayer" />
-        <TileObjectComponent tmx-object-id="3" tmx-object-name="CardPlayer" tmx-object-type="" tmx-object-x="320" tmx-object-y="128" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
-        <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
-          <GameObject name="tile_obj" copy="mesh_tile_0257" sortingLayerName="" sortingOrder="3" x="-0.5" y="0.5" />
-        </GameObject>
-      </GameObject>
       <GameObject name="RectangleObject" x="10" y="-4" rotation="0" layer="">
         <Property name="PortalFrom" value="card_game" />
         <RectangleObjectComponent tmx-object-id="4" tmx-object-name="" tmx-object-type="" tmx-object-x="320" tmx-object-y="128" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" />
         <BoxCollider2D width="1" height="1" />
+      </GameObject>
+      <GameObject name="CardPlayer" x="10" y="-4.09375" rotation="0" layer="" scaleX="1" scaleY="1">
+        <Property name="ObjectName" value="CardPlayer" />
+        <TileObjectComponent tmx-object-id="3" tmx-object-name="CardPlayer" tmx-object-type="" tmx-object-x="320" tmx-object-y="131" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
+        <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
+          <GameObject name="tile_obj" copy="mesh_tile_0257" sortingLayerName="" sortingOrder="3" x="-0.5" y="0.5" />
+        </GameObject>
       </GameObject>
       <GameObject name="RectangleObject" x="5" y="-7" rotation="0" layer="">
         <Property name="PortalFrom" value="default" />
