@@ -29,6 +29,10 @@ public class PrefabNames : ScriptableObject {
 
     public PrefabEntry GetEntry(string name) {
         this.CheckInitialized();
+        if (!this.mapping.ContainsKey(name))
+        {
+            Debug.LogError("Cannot find name " + name);
+        }
         return this.mapping[name];
     }
 
