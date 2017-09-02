@@ -9,6 +9,7 @@ EXTERNAL setTimeout(duration, knot)
 EXTERNAL lookAt(name, x, y)
 EXTERNAL playCards(playerName, returnPoint, returnKnot)
 EXTERNAL useUnscaledTime(objectName, value)
+EXTERNAL showStore(storeName)
 
 == function createObject(objectName, x, y) ==
 ~ return true
@@ -31,4 +32,6 @@ EXTERNAL useUnscaledTime(objectName, value)
 == function playCards(playerName, returnPoint, returnKnot) ==
 ~ return 0
 == function useUnscaledTime(objectName, value) ==
+~ return 0
+== function showStore(storeName) ==
 ~ return 0

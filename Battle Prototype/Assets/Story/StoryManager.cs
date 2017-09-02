@@ -36,6 +36,25 @@ public class StoryManager {
         return singleton;
     }
 
+    public int GetInt(string name)
+    {
+        var result = currentStory.variablesState[name];
+
+        if (result != null)
+        {
+            return (int)result;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    public void SetInt(string name, int value)
+    {
+        currentStory.variablesState[name] = value;
+    }
+
     public void BindToStory()
     {
         currentStory.BindExternalFunction<string, float, float>("createObject", (objectName, x, y) =>
@@ -62,7 +81,7 @@ public class StoryManager {
 
         currentStory.BindExternalFunction<float>("setTimeScale", (value) =>
         {
-            Time.timeScale = value;
+            TimePause.SetUniformScale(value);
             return true;
         });
 
@@ -127,6 +146,12 @@ public class StoryManager {
         currentStory.BindExternalFunction<string, string, string>("playCards", (playerName, returnTo, returnKnot) =>
         {
             CardGameInitializer.PlayCards(playerName, returnTo, returnKnot);
+            return true;
+        });
+
+        currentStory.BindExternalFunction<string>("showStore", (storeName) =>
+        {
+            currentBindings.ShowStore(storeName);
             return true;
         });
     }

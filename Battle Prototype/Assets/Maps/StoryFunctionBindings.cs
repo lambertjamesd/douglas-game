@@ -8,6 +8,8 @@ public class StoryFunctionBindings : MonoBehaviour
     public WorldController world;
     public TextDialog textPrefab;
     private TextDialog prefabInstance;
+    public StoreGUI storePrefab;
+    private StoreGUI storePrefabInstance;
     private Dictionary<string, GameObject> namedObjects = new Dictionary<string, GameObject>();
     private float delayTime = 0.0f;
     private string timeoutKnot = null;
@@ -90,8 +92,20 @@ public class StoryFunctionBindings : MonoBehaviour
         }
     }
 
+    public void ShowStore(string name)
+    {
+        if (storePrefabInstance != null)
+        {
+            storePrefabInstance.ExitStore();
+        }
+
+        storePrefabInstance = Instantiate(storePrefab);
+        storePrefabInstance.UseStore(name);
+    }
+
     public IEnumerator interact(string storyEntryPoint)
     {
+        TimePause.ScaleTime(0.0f);
         Time.timeScale = 0.0f;
 
         prefabInstance = Instantiate<TextDialog>(textPrefab);
@@ -180,6 +194,7 @@ public class StoryFunctionBindings : MonoBehaviour
 
         Destroy(prefabInstance.gameObject);
 
+        TimePause.UnscaleTime(0.0f);
         Time.timeScale = 1.0f;
 
         if (timeoutKnot != null)

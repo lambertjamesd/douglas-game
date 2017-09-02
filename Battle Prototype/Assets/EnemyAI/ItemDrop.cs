@@ -4,6 +4,7 @@ using System.Collections;
 [System.Serializable]
 public class DropSlot {
 	public float probability = 1.0f;
+    public string dropGroup;
 	public GameObject drop;
 	public Vector3 startOffset;
 	public Vector3 endOffset;
