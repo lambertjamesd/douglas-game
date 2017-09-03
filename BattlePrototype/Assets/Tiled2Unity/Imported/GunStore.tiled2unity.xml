@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 8/28/2017 9:28:54 PM-->
+<!--Last exported: 9/2/2017 10:09:41 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="Interior" />
   <AssignMaterial mesh="mesh_0002" material="Interior" />
@@ -9,6 +9,7 @@
   <AssignMaterial mesh="mesh_tile_0257" material="PlaceObjects" />
   <Prefab name="GunStore" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="3" numTilesWide="12" numTilesHigh="8" tileWidth="32" tileHeight="32" exportScale="0.03125" mapWidthInPixels="384" mapHeightInPixels="256" backgroundColor="#808080">
     <Property name="Name" value="GunStore" />
+    <Property name="DeadMap" value="Spirit_GunStore" />
     <GameObject name="Base" x="0" y="0" z="0">
       <TileLayer opacity="1" offsetX="0" offsetY="0" />
       <GameObject name="Interior" copy="mesh_0001" sortingLayerName="" sortingOrder="0" opacity="1" />

@@ -68,6 +68,7 @@ public class MapNames : ScriptableObject {
 
     public void AddEntry(MapEntry entry)
     {
+        Debug.Log(entry.name, this);
         maps.RemoveAll((otherEntry) => otherEntry.name == entry.name);
         maps.Add(entry);
     }

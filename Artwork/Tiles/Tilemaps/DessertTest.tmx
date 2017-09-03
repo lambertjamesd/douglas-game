@@ -1,16 +1,42 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="18" tilewidth="32" tileheight="32" nextobjectid="20">
  <properties>
-  <property name="DeadMap" value="Spirit_DessertTest"/>
-  <property name="LeftMap" value="LeftDessert"/>
-  <property name="Name" value="DessertTest"/>
+  
+  <property name="LeftMap" value="LeftDessert" />
+  <property name="Name" value="DessertTest" />
+    <property name="DeadMap" value="Spirit_DessertTest" />
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
  </properties>
- <tileset firstgid="1" source="Dessert.tsx"/>
+ <tileset firstgid="1" source="../Tilesets/Dessert.tsx" />
  <tileset firstgid="257" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">
-  <image source="PlaceObjects.png" width="128" height="128"/>
+  <image source="../Tilesets/PlaceObjects.png" width="128" height="128" />
   <tile id="0">
    <properties>
-    <property name="ObjectName" value="ShootOnSight"/>
+    <property name="ObjectName" value="ShootOnSight" />
    </properties>
   </tile>
  </tileset>
@@ -61,27 +87,27 @@
  <objectgroup name="Objects">
   <object id="11" name="ShootOnSight" gid="257" x="512" y="192" width="32" height="32">
    <properties>
-    <property name="ObjectName" value="ShootOnSight"/>
+    <property name="ObjectName" value="ShootOnSight" />
    </properties>
   </object>
   <object id="14" x="416" y="320" width="32" height="32">
    <properties>
-    <property name="PortalFrom" value="SaloonDoor"/>
+    <property name="PortalFrom" value="SaloonDoor" />
    </properties>
   </object>
   <object id="16" x="416" y="288" width="32" height="32">
    <properties>
-    <property name="PortalTo" value="Saloon"/>
+    <property name="PortalTo" value="Saloon" />
    </properties>
   </object>
   <object id="18" x="256" y="480" width="32" height="32">
    <properties>
-    <property name="PortalTo" value="GunStore"/>
+    <property name="PortalTo" value="GunStore" />
    </properties>
   </object>
   <object id="19" x="256" y="512" width="32" height="32">
    <properties>
-    <property name="PortalFrom" value="GunStore"/>
+    <property name="PortalFrom" value="GunStore" />
    </properties>
   </object>
  </objectgroup>

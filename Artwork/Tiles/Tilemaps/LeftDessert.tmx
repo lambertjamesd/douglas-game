@@ -1,13 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="18" tilewidth="32" tileheight="32" nextobjectid="15">
  <properties>
-  <property name="Name" value="Spirit_LeftDessert" />
-    <property name="LivingMap" value="LeftDessert" />
-  <property name="RightMap" value="Spirit_DessertTest" />
+  <property name="Name" value="LeftDessert" />
+    <property name="DeadMap" value="Spirit_LeftDessert" />
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  <property name="RightMap" value="DessertTest" />
  </properties>
- <tileset firstgid="1" source="DessertSpirit.tsx" />
+ <tileset firstgid="1" source="../Tilesets/Dessert.tsx" />
  <tileset firstgid="257" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">
-  <image source="PlaceObjects.png" width="128" height="128" />
+  <image source="../Tilesets/PlaceObjects.png" width="128" height="128" />
   <tile id="0">
    <properties>
     <property name="ObjectName" value="ShootOnSight" />

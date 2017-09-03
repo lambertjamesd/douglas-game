@@ -4,7 +4,7 @@
   <property name="LivingMap" value="DessertTest"/>
   <property name="Name" value="DessertTestSpirit"/>
  </properties>
- <tileset firstgid="1" source="DessertSpirit.tsx"/>
+ <tileset firstgid="1" source="../Tilesets/DessertSpirit.tsx"/>
  <layer name="Tile Layer 1" width="24" height="18">
   <data encoding="csv">
 198,1,213,1,196,197,197,198,38,1,37,1,196,197,197,197,197,198,37,38,1,1,213,22,

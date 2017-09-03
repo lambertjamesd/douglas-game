@@ -137,13 +137,16 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 	public void CustomizePrefab(GameObject prefab)
 	{
 
-	}
+    }
 
     public void HandleFinalPrefab(UnityEngine.Object prefab)
     {
+        Debug.Log("Here I am");
         if (mapName != null && prefab is GameObject)
         {
-            GetMapNames().AddEntry(new MapEntry(mapName, ((GameObject)prefab).GetComponent<Tiled2Unity.TiledMap>()));
+            var mapNames = GetMapNames();
+            mapNames.AddEntry(new MapEntry(mapName, ((GameObject)prefab).GetComponent<Tiled2Unity.TiledMap>()));
+            EditorUtility.SetDirty(mapNames);
             SaveMapNames();
         }
     }

@@ -153,7 +153,7 @@ public class WorldController : MonoBehaviour {
 
 			for (int i = 0; i < mapDirection.Length; ++i)
             {
-				if (currentAttachement.attachments[i] != null && Vector2.Dot(minOffset, mapDirection[i]) > 0 && Vector2.Dot(maxOffset, mapDirection[i]) > 0)
+				if (currentAttachement.attachments[i] != null && currentAttachement.attachments[i] != "" && Vector2.Dot(minOffset, mapDirection[i]) > 0 && Vector2.Dot(maxOffset, mapDirection[i]) > 0)
                 {
 					Reset();
 					var map = mapNames.GetEntry(currentAttachement.attachments[i]);

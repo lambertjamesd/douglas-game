@@ -1,14 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="8" tilewidth="32" tileheight="32" nextobjectid="5">
  <properties>
-  <property name="Name" value="Saloon"/>
+  <property name="Name" value="Saloon" />
+    <property name="DeadMap" value="Spirit_Saloon" />
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
  </properties>
- <tileset firstgid="1" source="Interior.tsx"/>
+ <tileset firstgid="1" source="../Tilesets/Interior.tsx" />
  <tileset firstgid="257" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">
-  <image source="PlaceObjects.png" width="128" height="128"/>
+  <image source="../Tilesets/PlaceObjects.png" width="128" height="128" />
   <tile id="0">
    <properties>
-    <property name="ObjectName" value="ShootOnSight"/>
+    <property name="ObjectName" value="ShootOnSight" />
    </properties>
   </tile>
  </tileset>
@@ -51,22 +73,22 @@
  <objectgroup name="Objects">
   <object id="1" x="160" y="256" width="32" height="32">
    <properties>
-    <property name="PortalTo" value="DessertTest:SaloonDoor"/>
+    <property name="PortalTo" value="DessertTest:SaloonDoor" />
    </properties>
   </object>
   <object id="2" x="160" y="224" width="32" height="32">
    <properties>
-    <property name="PortalFrom" value="default"/>
+    <property name="PortalFrom" value="default" />
    </properties>
   </object>
   <object id="3" name="CardPlayer" gid="257" x="320" y="131" width="32" height="32">
    <properties>
-    <property name="ObjectName" value="CardPlayer"/>
+    <property name="ObjectName" value="CardPlayer" />
    </properties>
   </object>
   <object id="4" x="320" y="128" width="32" height="32">
    <properties>
-    <property name="PortalFrom" value="card_game"/>
+    <property name="PortalFrom" value="card_game" />
    </properties>
   </object>
  </objectgroup>

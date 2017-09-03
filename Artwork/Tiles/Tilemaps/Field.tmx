@@ -7,7 +7,7 @@
   <property name="TopMap" value="aboveField"/>
  </properties>
  <tileset firstgid="1" name="Snow" tilewidth="32" tileheight="32" tilecount="256" columns="16">
-  <image source="Snow.png" width="512" height="512"/>
+  <image source="../Tilesets/Snow.png" width="512" height="512"/>
   <terraintypes>
    <terrain name="Snow" tile="-1"/>
    <terrain name="Ice" tile="-1"/>
@@ -528,7 +528,7 @@
   </tile>
  </tileset>
  <tileset firstgid="257" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">
-  <image source="PlaceObjects.png" width="128" height="128"/>
+  <image source="../Tilesets/PlaceObjects.png" width="128" height="128"/>
   <tile id="0">
    <properties>
     <property name="ObjectName" value="ShootOnSight"/>

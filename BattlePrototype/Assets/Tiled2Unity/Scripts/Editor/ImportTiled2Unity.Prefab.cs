@@ -95,6 +95,8 @@ namespace Tiled2Unity
             // Replace the prefab, keeping connections based on name. This imports the prefab asset as a side-effect.
             PrefabUtility.ReplacePrefab(tempPrefab, finalPrefab, ReplacePrefabOptions.ReplaceNameBased);
 
+            HandleFinalPrefab(finalPrefab, customImporters);
+
             // Destroy the instance from the current scene hiearchy.
             UnityEngine.Object.DestroyImmediate(tempPrefab);
         }
@@ -586,6 +588,14 @@ namespace Tiled2Unity
             foreach (ICustomTiledImporter importer in importers)
             {
                 importer.CustomizePrefab(prefab);
+            }
+        }
+
+        private void HandleFinalPrefab(UnityEngine.Object prefab, IList<ICustomTiledImporter> importers)
+        {
+            foreach (ICustomTiledImporter importer in importers)
+            {
+                importer.HandleFinalPrefab(prefab);
             }
         }
 
