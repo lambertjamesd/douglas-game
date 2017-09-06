@@ -10,5 +10,6 @@ You have died.
 ~ setTextBoxVisible(false)
 ~ setTimeScale(1)
 ~ createObject("Death", getPlayerX() - 1, getPlayerY())
+~ useUnscaledTime("Death", true)
 ~ setTimeout(2, -> greet_death)
 -> DONE
