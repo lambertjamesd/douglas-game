@@ -5,12 +5,33 @@ using UnityEngine.UI;
 using System.Linq;
 using Ink.Runtime;
 
+public struct NumberSpinnerParams
+{
+    public string variableName;
+    public int digitCount;
+
+    public NumberSpinnerParams(string variableName, int digitCount)
+    {
+        this.variableName = variableName;
+        this.digitCount = digitCount;
+    }
+}
+
 public class TextDialog : MonoBehaviour {
     public Text text;
     public TextOption optionPrefab;
+    public KeyboardNumberSpinner spinnerPrefab;
+    public RectTransform spinnerPosition;
     private List<TextOption> existingOptions;
     private int selection = 0;
-    
+    private KeyboardNumberSpinner spinnerInstance;
+    private NumberSpinnerParams? spinnerParams = null;
+
+    public void Start()
+    {
+
+    }
+
     public void Reset()
     {
         if (existingOptions != null)
@@ -60,6 +81,16 @@ public class TextDialog : MonoBehaviour {
         return result.ToArray();
     }
 
+    public void ShowNumberSpinner(NumberSpinnerParams spinParams)
+    {
+        spinnerParams = spinParams;
+        spinnerInstance = Instantiate(spinnerPrefab);
+        spinnerInstance.rectTransform.SetParent(spinnerPosition.parent, false);
+        spinnerInstance.rectTransform.position = spinnerPosition.position;
+        spinnerInstance.SetDigitCount(spinnerParams.GetValueOrDefault().digitCount);
+        spinnerInstance.SetValue((int)StoryManager.GetSingleton().GetStory().variablesState[spinnerParams.GetValueOrDefault().variableName]);
+    }
+
     public void ShowOptions(List<Choice> choices)
     {
         int index = 0;
@@ -96,6 +127,21 @@ public class TextDialog : MonoBehaviour {
             }
 
             selection = index;
+        }
+    }
+
+    public bool HasSpinner()
+    {
+        return spinnerParams != null && spinnerInstance != null;
+    }
+
+    public void ResetSpinner()
+    {
+        if (HasSpinner())
+        {
+            StoryManager.GetSingleton().GetStory().variablesState[spinnerParams.GetValueOrDefault().variableName] = spinnerInstance.GetValue();
+            Destroy(spinnerInstance.gameObject);
+            spinnerParams = null;
         }
     }
 }

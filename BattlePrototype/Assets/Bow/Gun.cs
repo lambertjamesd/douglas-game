@@ -10,6 +10,7 @@ using UnityEditor;
 public enum AmmoType
 {
     Colt45,
+    _44Magnum,
 }
 
 public class GunStats : ScriptableObject

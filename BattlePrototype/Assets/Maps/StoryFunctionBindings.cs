@@ -13,6 +13,7 @@ public class StoryFunctionBindings : MonoBehaviour
     private Dictionary<string, GameObject> namedObjects = new Dictionary<string, GameObject>();
     private float delayTime = 0.0f;
     private string timeoutKnot = null;
+    private NumberSpinnerParams? spinnerParams;
 
     private GameObject GetNamedObject(string name)
     {
@@ -103,6 +104,14 @@ public class StoryFunctionBindings : MonoBehaviour
         storePrefabInstance.UseStore(name);
     }
 
+    public void UseSpinner(int digits, string name)
+    {
+        if (textPrefab != null)
+        {
+            spinnerParams = new NumberSpinnerParams(name, digits);
+        }
+    }
+
     public IEnumerator interact(string storyEntryPoint)
     {
         TimePause.ScaleTime(0.0f);
@@ -118,7 +127,7 @@ public class StoryFunctionBindings : MonoBehaviour
         {
             string storyText = story.Continue();
             List<Choice> choices = story.currentChoices;
-            string[] parts = prefabInstance.SplitSections(storyText, choices.Count);
+            string[] parts = prefabInstance.SplitSections(storyText, choices.Count + (spinnerParams != null ? 1 : 0));
 
             if (delayTime > 0.0f && timeoutKnot != null)
             {
@@ -136,6 +145,12 @@ public class StoryFunctionBindings : MonoBehaviour
             foreach (string part in parts)
             {
                 prefabInstance.text.text = part;
+
+                if (part == parts[parts.Length - 1] && spinnerParams != null)
+                {
+                    prefabInstance.ShowNumberSpinner(spinnerParams.GetValueOrDefault());
+                    spinnerParams = null;
+                }
 
                 if (choices.Count > 0 && part != parts[parts.Length - 1] || choices.Count == 0)
                 {
@@ -189,6 +204,8 @@ public class StoryFunctionBindings : MonoBehaviour
                     yield return null;
                 }
             }
+
+            prefabInstance.ResetSpinner();
         }
         while (story.canContinue);
 

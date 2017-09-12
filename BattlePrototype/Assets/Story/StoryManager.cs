@@ -154,5 +154,11 @@ public class StoryManager {
             currentBindings.ShowStore(storeName);
             return true;
         });
+
+        currentStory.BindExternalFunction<int, string>("useSpinner", (digits, name) =>
+        {
+            currentBindings.UseSpinner(digits, name);
+            return true;
+        });
     }
 }

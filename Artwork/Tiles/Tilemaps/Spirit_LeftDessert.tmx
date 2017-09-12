@@ -23,6 +23,11 @@
     
     
     
+    
+    
+    
+    
+    
   <property name="RightMap" value="Spirit_DessertTest" />
  </properties>
  <tileset firstgid="1" source="../Tilesets/DessertSpirit.tsx" />

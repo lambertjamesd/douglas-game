@@ -10,6 +10,7 @@ EXTERNAL lookAt(name, x, y)
 EXTERNAL playCards(playerName, returnPoint, returnKnot)
 EXTERNAL useUnscaledTime(objectName, value)
 EXTERNAL showStore(storeName)
+EXTERNAL useSpinner(digits, name)
 
 == function createObject(objectName, x, y) ==
 ~ return true
@@ -34,4 +35,6 @@ EXTERNAL showStore(storeName)
 == function useUnscaledTime(objectName, value) ==
 ~ return 0
 == function showStore(storeName) ==
+~ return 0
+== function useSpinner(digits, name) ==
 ~ return 0
