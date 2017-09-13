@@ -20,7 +20,7 @@ public class GameState {
         object result = story.variablesState[name];
         if (result != null)
         {
-            return (bool)result;
+            return (int)result != 0;
         }
         else
         {

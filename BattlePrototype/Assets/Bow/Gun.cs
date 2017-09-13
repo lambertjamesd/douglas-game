@@ -10,6 +10,7 @@ public class Gun : State
     public GunStats gunStats;
     public VariableStore stateStore;
     public InventorySlot inventory;
+    public float lastFireTime = 0.0f;
 
     public int GetShotsLeft()
     {
@@ -28,11 +29,12 @@ public class Gun : State
 
     public override IState UpdateState(float deltaTime)
     {
-        if (GetShotsLeft() > 0)
+        if (GetShotsLeft() > 0 && lastFireTime + gunStats.shotDelay < Time.time)
         {
             bow.LoadProjectile(gunStats.round);
-            bow.Fire(gunStats.speed);
+            bow.Fire(gunStats);
             SetShotsLeft(GetShotsLeft() - 1);
+            lastFireTime = Time.time;
         }
         return nextState;
     }

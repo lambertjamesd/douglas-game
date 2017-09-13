@@ -4,37 +4,32 @@ using System.Collections;
 public class Bow : MonoBehaviour {
 	public Projectile projectile;
 
-	private Projectile currentProjectile = null;
-
-	public Projectile Draw() {
-		if (currentProjectile == null) {
-			currentProjectile = Instantiate(projectile);
-			currentProjectile.transform.position = transform.position;
-			currentProjectile.transform.rotation = transform.rotation;
-			currentProjectile.transform.parent = transform;
-		}
-
-		return currentProjectile;
+	public void FireSingle(Vector2 velocity) {
+		Projectile currentProjectile = Instantiate(projectile);
+		currentProjectile.transform.position = transform.position;
+		currentProjectile.transform.rotation = transform.rotation;
+		currentProjectile.transform.parent = transform;
+        currentProjectile.Fire(velocity);
 	}
 
-	public void Fire(float speed) {
-		if (currentProjectile == null) {
-			Draw();
-		}
-
+	public void Fire(float speed)
+    {
 		Vector3 velocity = transform.TransformDirection(Vector3.right) * speed;
-		currentProjectile.Fire(velocity);
-
-		currentProjectile = null;
+		FireSingle(velocity);
 	}
+
+    public void Fire(GunStats gunStats)
+    {
+        Vector3 forward = transform.TransformDirection(Vector3.right) * gunStats.speed;
+        float angle = -gunStats.spread * 0.5f;
+        for (int i = 0; i < gunStats.shellSplitCount; ++i)
+        {
+            FireSingle(Quaternion.AngleAxis(angle, Vector3.back) * forward);
+            angle += gunStats.spread / (gunStats.shellSplitCount - 1);
+        }
+    }
 
 	public void LoadProjectile(Projectile toUse) {
-		Projectile current = Draw();
-
-		currentProjectile = Instantiate(toUse);
-		currentProjectile.transform.position = current.transform.position;
-		currentProjectile.transform.rotation = current.transform.rotation;
-		currentProjectile.transform.parent = current.transform.parent;
-		Destroy(current.gameObject);
+        projectile = toUse;
 	}
 }

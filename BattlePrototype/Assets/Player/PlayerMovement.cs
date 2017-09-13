@@ -48,6 +48,11 @@ public class PlayerMovement : State {
             return reload;
         }
 
+        if (Input.GetButtonDown("CycleWeapon") && inventory.HasAGun())
+        {
+            inventory.NextGun();
+        }
+
         if (Input.GetButtonDown("Submit"))
         {
             var overlaps = Physics2D.OverlapCircleAll(direction.TransformPoint(Vector3.right * interactDistance), interactRadius);

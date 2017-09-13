@@ -19,6 +19,7 @@ public class GunStats : ScriptableObject
     public string gunName;
     public float speed;
     public int capacity;
+    public float shotDelay;
     public float reloadDelay;
     public float reloadBulletDuration;
     public ReloadAnimation reloadAnimation;
@@ -26,7 +27,8 @@ public class GunStats : ScriptableObject
     public Sprite fullSize;
     public Projectile round;
     public AmmoType type = AmmoType.Colt45;
-
+    public int shellSplitCount = 1;
+    public float spread;
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/Gun")]

@@ -30,11 +30,11 @@ public class StoryVariableStore : VariableStore {
             return false;
         }
 
-        return (bool)result;
+        return (int)result != 0;
     }
 
     public override void SetBool(string name, bool value)
     {
-        StoryManager.GetSingleton().GetStory().variablesState[prefix + name] = value;
+        StoryManager.GetSingleton().GetStory().variablesState[prefix + name] = value ? 1 : 0;
     }
 }

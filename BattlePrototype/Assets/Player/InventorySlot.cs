@@ -70,6 +70,11 @@ public class InventorySlot : MonoBehaviour
         return usableWeapons.guns.Where((gun) => HasGun(gun.gunName)).ToArray();
     }
 
+    public bool HasAGun()
+    {
+        return usableWeapons.guns.Exists((gun) => HasGun(gun.gunName));
+    }
+
     public int GetAmmoCount(AmmoType type)
     {
         return variableStore.GetInt(type.ToString() + "_count");
@@ -82,7 +87,7 @@ public class InventorySlot : MonoBehaviour
 
 	public State usePrimaryItem() 
     {
-		if (primaryItem != null && primaryItem.canUse(this)) {
+		if (primaryItem != null && HasAGun() && primaryItem.canUse(this)) {
 			return primaryItem.useItem(this);
 		} else {
 			return null;
@@ -93,7 +98,7 @@ public class InventorySlot : MonoBehaviour
     {
         State result = null;
 
-        if (result == null && Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1"))
         {
             result = usePrimaryItem();
         }
