@@ -38,8 +38,7 @@ public class FindCoverEnemy : MonoBehaviour
 
                 if (sight.canSeeObject(target.gameObject))
                 {
-                    shootFrom.LoadProjectile(gunStats.round);
-                    shootFrom.Fire(gunStats.speed);
+                    shootFrom.Fire(gunStats);
                     gunStats.SetShotsLeft(variableStore, gunStats.GetShotsLeft(variableStore) - 1);
                     yield return AsyncUtil.Pause(postFireDelay);
 
