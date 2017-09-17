@@ -32,6 +32,21 @@ public class StoryFunctionBindings : MonoBehaviour
         return GameObject.FindWithTag("GameController").GetComponent<StoryFunctionBindings>();
     }
 
+    public void SetGUIVisible(string name, bool value)
+    {
+        GameObject gui = GameObject.FindWithTag("PlayerGUI");
+
+        if (gui != null)
+        {
+            PlayerHUD hud = gui.GetComponent<PlayerHUD>();
+
+            if (hud != null)
+            {
+                hud.SetGUIVisible(name, value);
+            }
+        }
+    }
+
     public bool CreateObject(string objectName, float x, float y)
     {
         var splitName = objectName.Split(new char[] { ':' });

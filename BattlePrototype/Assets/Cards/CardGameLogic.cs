@@ -97,6 +97,10 @@ public class CardGameLogic : MonoBehaviour {
 
     public void EndGame()
     {
+        CardGameVariables oponent = GetOponent(CardGameInitializer.playerName);
+        var story = StoryManager.GetSingleton();
+        story.SetInt("player_money", players[0].money);
+        story.SetInt(oponent.oponentMoneyStore, players[1].money);
         WorldInitializer.LoadWorld(CardGameInitializer.returnPoint ?? new MapPath("default", "default"), CardGameInitializer.returnKnot);
     }
 

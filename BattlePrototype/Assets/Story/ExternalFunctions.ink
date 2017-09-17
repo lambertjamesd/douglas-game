@@ -11,6 +11,7 @@ EXTERNAL playCards(playerName, returnPoint, returnKnot)
 EXTERNAL useUnscaledTime(objectName, value)
 EXTERNAL showStore(storeName)
 EXTERNAL useSpinner(digits, name)
+EXTERNAL setGUIVisible(name, value)
 
 == function createObject(objectName, x, y) ==
 ~ return true
@@ -37,4 +38,6 @@ EXTERNAL useSpinner(digits, name)
 == function showStore(storeName) ==
 ~ return 0
 == function useSpinner(digits, name) ==
+~ return 0
+== function setGUIVisible(name, value) ==
 ~ return 0

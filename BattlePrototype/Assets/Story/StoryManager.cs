@@ -55,8 +55,33 @@ public class StoryManager {
         currentStory.variablesState[name] = value;
     }
 
+    public bool GetBoolean(string name)
+    {
+        var result = currentStory.variablesState[name];
+
+        if (result != null)
+        {
+            return (int)result != 0;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void SetBoolean(string name, bool value)
+    {
+        currentStory.variablesState[name] = value ? 1 : 0;
+    }
+
     public void BindToStory()
     {
+        currentStory.BindExternalFunction<string, bool>("setGUIVisible", (name, value) =>
+        {
+            currentBindings.SetGUIVisible(name, value);
+            return true;
+        });
+
         currentStory.BindExternalFunction<string, float, float>("createObject", (objectName, x, y) =>
         {
             return currentBindings.CreateObject(objectName, x, y);

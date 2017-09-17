@@ -1,33 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="18" tilewidth="32" tileheight="32" nextobjectid="15">
  <properties>
+  
   <property name="Name" value="LeftDessert" />
     <property name="DeadMap" value="Spirit_LeftDessert" />
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
   <property name="RightMap" value="DessertTest" />
  </properties>
  <tileset firstgid="1" source="../Tilesets/Dessert.tsx" />
@@ -87,11 +63,13 @@
   <object id="11" name="ShootOnSight" gid="257" x="512" y="192" width="32" height="32">
    <properties>
     <property name="ObjectName" value="ShootOnSight" />
+    <property name="When" value="not player_is_dead" />
    </properties>
   </object>
   <object id="14" name="FindCover" gid="257" x="384" y="384" width="32" height="32">
    <properties>
     <property name="ObjectName" value="FindCover" />
+    <property name="When" value="not player_is_dead" />
    </properties>
   </object>
  </objectgroup>

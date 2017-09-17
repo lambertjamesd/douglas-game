@@ -6,6 +6,7 @@ public class PlayerMovement : State {
 	public float speed = 2.0f;
 	public SwordSwing sword;
     public ReloadGun reload;
+    public UsingSights useSights;
 	public Transform direction;
 	public float bowSpeed = 2.0f;
     public float interactDistance = 0.5f;
@@ -24,26 +25,32 @@ public class PlayerMovement : State {
 	void Start () {
 		movement = GetComponent<DefaultMovement>();
 	}
-	
-	public override IState UpdateState(float deltaTime) {
-		float horz = Input.GetAxisRaw("Horizontal");
-		float vert = Input.GetAxisRaw("Vertical");
 
-		movement.TargetVelocity = new Vector2(horz, vert).normalized * speed;
+    public IState CommonMovement(float deltaTime, float speed)
+    {
+        if (deltaTime == 0.0f)
+        {
+            return null;
+        }
+
+        float horz = Input.GetAxisRaw("Horizontal");
+        float vert = Input.GetAxisRaw("Vertical");
+
+        movement.TargetVelocity = new Vector2(horz, vert).normalized * speed;
 
         State maybeResult = inventory.checkUseItems();
 
         if (maybeResult != null)
         {
             return maybeResult;
-		}
+        }
 
-		if (Input.GetButtonDown("Fire2"))
+        if (Input.GetButtonDown("Fire2"))
         {
-			StartCoroutine(SwingSword());
-		}
+            StartCoroutine(SwingSword());
+        }
 
-        if (Input.GetButtonDown("Reload"))
+        if (inventory.HasAGun() && Input.GetButtonDown("Reload"))
         {
             return reload;
         }
@@ -67,8 +74,18 @@ public class PlayerMovement : State {
             }
         }
 
-		return null;
-	}
+        return null;
+    }
+	
+	public override IState UpdateState(float deltaTime)
+    {
+        if (Input.GetButton("UseSights"))
+        {
+            return useSights;
+        }
+
+        return CommonMovement(deltaTime, speed);
+    }
 
 	IEnumerator SwingSword() {
 		if (!swingingSword) {

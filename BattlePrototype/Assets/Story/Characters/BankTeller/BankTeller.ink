@@ -1,10 +1,11 @@
 VAR bank_money_amount = 0
 == bank_teller ==
+~ setGUIVisible("AccountBalance", true)
 What can I do for you? -> choices
 = choices
 + Deposit -> deposit
 + Withdraw -> withdraw
-+ Nothing -> DONE
++ Nothing -> stop_talking
 
 = deposit
 ~ bank_money_amount = 0
@@ -42,6 +43,10 @@ It looks like you don't have that much. Withdraw {player_bank_money} instead?
 
 = anything_else
 Anything else? -> choices
+
+= stop_talking
+~ setGUIVisible("AccountBalance", false)
+-> DONE
 
 == function transferMoney(amount) ==
 ~ player_money = player_money - amount

@@ -21,6 +21,7 @@ public class ToSpiritDeath : MonoBehaviour {
 
     void OnDie(Damageable damageable)
     {
+        StoryManager.GetSingleton().SetBoolean("player_is_dead", true);
         target.CurrentHealth = target.MaxHealth;
         StartCoroutine(DeathSequence.Start());
     }

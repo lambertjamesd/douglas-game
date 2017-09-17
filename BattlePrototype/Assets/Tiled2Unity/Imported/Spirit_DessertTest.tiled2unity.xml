@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 9/6/2017 9:36:50 PM-->
+<!--Last exported: 9/16/2017 5:43:50 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="DessertSpirit" />
   <AssignMaterial mesh="mesh_0002" material="DessertSpirit" />
@@ -22,6 +22,7 @@
       <ObjectLayer offsetX="0" offsetY="0" color="#ff808080" />
       <GameObject name="ShootOnSight" x="16" y="-6" rotation="0" layer="" scaleX="1" scaleY="1">
         <Property name="ObjectName" value="ShootOnSight" />
+        <Property name="When" value="not player_is_dead" />
         <TileObjectComponent tmx-object-id="11" tmx-object-name="ShootOnSight" tmx-object-type="" tmx-object-x="512" tmx-object-y="192" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
           <GameObject name="tile_obj" copy="mesh_tile_0257" sortingLayerName="" sortingOrder="2" x="-0.5" y="0.5" />

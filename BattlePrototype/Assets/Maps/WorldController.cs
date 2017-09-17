@@ -116,7 +116,7 @@ public class WorldController : MonoBehaviour {
 	}
 
 	public void Start() {
-		if (followCamera != null) {
+		if (followCamera != null && followCamera.target == null) {
 			followCamera.target = player.transform;
 		}
 
@@ -134,18 +134,19 @@ public class WorldController : MonoBehaviour {
         {
 			Goto(startingLocation);
 		}
-
-        if (WorldInitializer.storyKnot != null && WorldInitializer.storyKnot.Length > 0)
-        {
-            StartCoroutine(StoryFunctionBindings.GetBindings().interact(WorldInitializer.storyKnot));
-        }
 	}
 
 
 
 	public void Update()
     {
-		if (currentAttachement != null && player != null)
+        if (WorldInitializer.storyKnot != null && WorldInitializer.storyKnot.Length > 0)
+        {
+            StartCoroutine(StoryFunctionBindings.GetBindings().interact(WorldInitializer.storyKnot));
+            WorldInitializer.storyKnot = null;
+        }
+
+        if (currentAttachement != null && player != null)
         {
 			Vector3 playerPos = player.transform.position;
 			Vector2 minOffset = playerPos - worldBounds.min;

@@ -59,6 +59,7 @@
   <object id="6" name="BankTeller" gid="257" x="128" y="64" width="32" height="32">
    <properties>
     <property name="ObjectName" value="BankTeller" />
+    <property name="When" value="not player_is_dead" />
    </properties>
   </object>
  </objectgroup>

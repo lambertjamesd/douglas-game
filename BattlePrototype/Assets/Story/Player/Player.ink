@@ -13,6 +13,8 @@ VAR player_ShotgunShell_count = 8
 VAR player_money = 100
 VAR player_bank_money = 1000
 
+VAR player_is_dead = false
+
 ==on_player_death==
 You have died.
 [...]

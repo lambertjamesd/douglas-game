@@ -24,6 +24,7 @@ Alright, come back if you change your mind
 ~ lookAt("CardPlayer", getPlayerX(), getPlayerY())
 ~ lookAt("Player", getPlayerX(), getPlayerY() + 1)
 Well played, come back and play any time
+[...]
 -> done_talking
 = done_talking
 ~ useUnscaledTime("CardPlayer", false)
