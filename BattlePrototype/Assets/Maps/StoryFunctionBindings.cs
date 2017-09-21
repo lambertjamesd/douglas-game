@@ -89,7 +89,7 @@ public class StoryFunctionBindings : MonoBehaviour
             
             if (Time.timeScale == 0.0f && movement.moveAnimator != null)
             {
-                movement.moveAnimator.updateMode = value ? AnimatorUpdateMode.UnscaledTime : AnimatorUpdateMode.Normal;
+                movement.moveAnimator.SetUseUnscaledTime(value);
             }
         }
     }

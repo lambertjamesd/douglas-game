@@ -29,6 +29,7 @@ public class GunStats : ScriptableObject
     public AmmoType type = AmmoType.Colt45;
     public int shellSplitCount = 1;
     public float spread;
+    public int animationIndex;
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/Gun")]

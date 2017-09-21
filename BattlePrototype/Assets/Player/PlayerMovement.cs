@@ -12,7 +12,7 @@ public class PlayerMovement : State {
     public float interactDistance = 0.5f;
     public float interactRadius = 0.5f;
 
-	public Animator animator;
+	public AnimationController animator;
 
 	public DamageInfo swordDamage;
 
@@ -58,6 +58,16 @@ public class PlayerMovement : State {
         if (Input.GetButtonDown("CycleWeapon") && inventory.HasAGun())
         {
             inventory.NextGun();
+        }
+
+        if (!inventory.HasAGun())
+        {
+            animator.SetInteger("GunType", 0);
+        }
+        else
+        {
+            GunStats stats = inventory.GetCurrentGun();
+            animator.SetInteger("GunType", stats.animationIndex);
         }
 
         if (Input.GetButtonDown("Submit"))

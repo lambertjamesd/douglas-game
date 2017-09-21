@@ -16,7 +16,7 @@ public class DefaultMovement : MonoBehaviour {
 	public float maxAcceleration = 2.0f;
 	public MovementMode movementMode = MovementMode.Sliding;
 	public float slideTimer = 0.0f;
-	public Animator moveAnimator;
+	public AnimationController moveAnimator;
 	public Transform direction = null;
 	private int lockRotation = 0;
 	public bool animationSpeed = false;

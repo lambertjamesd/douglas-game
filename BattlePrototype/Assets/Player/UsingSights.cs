@@ -8,9 +8,11 @@ public class UsingSights : State {
     public float speed;
     public CameraTarget cameraTarget;
     public float cameraOffset;
+    public AnimationController animator;
 
     public override void StateBegin()
     {
+        animator.SetBool("IsAiming", true);
         movement.LockRotation();
         cameraTarget.targetOffset = movement.direction.transform.TransformDirection(Vector3.right) * cameraOffset;
     }
@@ -29,6 +31,7 @@ public class UsingSights : State {
 
     public override void StateEnd()
     {
+        animator.SetBool("IsAiming", false);
         movement.UnlockRotation();
         cameraTarget.targetOffset = Vector3.zero;
     }
