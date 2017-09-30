@@ -1,36 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="8" tilewidth="32" tileheight="32" nextobjectid="5">
  <properties>
+  
   <property name="Name" value="Spirit_Saloon" />
     <property name="LivingMap" value="Saloon" />
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
  </properties>
  <tileset firstgid="1" source="../Tilesets/Spirit_Interior.tsx" />
@@ -79,7 +52,7 @@
 </data>
  </layer>
  <objectgroup name="Objects">
-  <object id="1" x="160" y="256" width="32" height="32">
+  <object id="1" x="0" y="256" width="384" height="32">
    <properties>
     <property name="PortalTo" value="Spirit_DessertTest:SaloonDoor" />
    </properties>
@@ -92,6 +65,7 @@
   <object id="3" name="CardPlayer" gid="257" x="320" y="131" width="32" height="32">
    <properties>
     <property name="ObjectName" value="CardPlayer" />
+    <property name="When" value="not player_is_dead" />
    </properties>
   </object>
   <object id="4" x="320" y="128" width="32" height="32">

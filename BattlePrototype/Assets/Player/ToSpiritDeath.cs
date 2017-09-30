@@ -5,6 +5,7 @@ using UnityEngine;
 public class ToSpiritDeath : MonoBehaviour {
     public Damageable target = null;
     public PlayerMovement player = null;
+    public SpriteRenderer playerRenderer;
 
     void Start()
     {
@@ -23,6 +24,11 @@ public class ToSpiritDeath : MonoBehaviour {
     {
         StoryManager.GetSingleton().SetBoolean("player_is_dead", true);
         target.CurrentHealth = target.MaxHealth;
-        StartCoroutine(DeathSequence.Start());
+        StartCoroutine(DeathSequence.Start(
+            DarknessOverlay.GetOverlay(),
+            player.animator,
+            playerRenderer,
+            player.GetComponent<Flasher>()
+        ));
     }
 }

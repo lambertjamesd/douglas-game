@@ -9,6 +9,7 @@ public class AnimationVariable
     public Vector2 direction;
     public float minValue;
     public float maxValue;
+    public float triggerValue;
     public bool wrap;
     public bool floor;
     public float[] mapping;
@@ -63,6 +64,18 @@ public class SpritesheetAnimator : MonoBehaviour {
             {
                 variable.currentValue = Mathf.Clamp(value, variable.minValue, variable.maxValue);
             }
+        }
+    }
+
+    public float GetTriggerValue(string name)
+    {
+        if (indexMapping.ContainsKey(name))
+        {
+            return variables[indexMapping[name]].triggerValue;
+        }
+        else
+        {
+            return 0.0f;
         }
     }
     

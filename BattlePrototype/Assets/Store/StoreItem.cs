@@ -1,6 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [System.Serializable]
 public class StoreItem
@@ -58,8 +63,33 @@ public class StoreItem
 }
 
 [System.Serializable]
-public class StoreInventory
+public class StoreInventory : ScriptableObject
 {
     public string name;
     public StoreItem[] inventory;
+
+#if UNITY_EDITOR
+    [MenuItem("Assets/Create/StoreInventory")]
+    static void CreateFont()
+    {
+        StoreInventory gunStats = ScriptableObject.CreateInstance<StoreInventory>();
+
+        string path = AssetDatabase.GetAssetPath(Selection.activeObject);
+        if (path == "")
+        {
+
+        }
+        else if (Path.GetExtension(path) != "")
+        {
+            path = path.Replace(Path.GetFileName(AssetDatabase.GetAssetPath(Selection.activeObject)), "");
+        }
+
+        string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(path + "/New Store.asset");
+
+        AssetDatabase.CreateAsset(gunStats, assetPathAndName);
+        AssetDatabase.SaveAssets();
+        EditorUtility.FocusProjectWindow();
+        Selection.activeObject = gunStats;
+    }
+#endif
 }

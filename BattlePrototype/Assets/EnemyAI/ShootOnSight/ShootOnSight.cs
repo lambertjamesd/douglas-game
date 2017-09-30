@@ -14,12 +14,22 @@ public class ShootOnSight : MonoBehaviour {
     public float postFireDelay = 1.0f;
     public VariableStore variableStore;
     public Transform reloadLocation;
+    public AnimationController animation;
+    public GameObject shotBy;
 
     public void Start()
     {
         StartCoroutine(DoLogic());
+        damageable.FilterDamage(OnDamage, false);
     }
-    
+
+    public DamageSource OnDamage(DamageSource source, Damageable damageable)
+    {
+        Vector2 pos2D = transform.position;
+        movement.SetDirection(source.DamagePosition - pos2D);
+        return source;
+    }
+
     public IEnumerator DoLogic()
     {
         while (!damageable.IsDead)
@@ -36,6 +46,10 @@ public class ShootOnSight : MonoBehaviour {
 
                 if (sight.canSeeObject(target.gameObject))
                 {
+                    if (animation != null)
+                    {
+                        animation.SetTigger("Firing");
+                    }
                     shootFrom.Fire(gunStats);
                     gunStats.SetShotsLeft(variableStore, gunStats.GetShotsLeft(variableStore) - 1);
                     yield return AsyncUtil.Pause(postFireDelay);

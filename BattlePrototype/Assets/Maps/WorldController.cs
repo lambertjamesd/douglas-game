@@ -112,7 +112,9 @@ public class WorldController : MonoBehaviour {
 
 		currentAttachement = result.gameObject.GetComponent<MapAttachements>();
 
-		return result;
+        Projectile.projectileParent = result.transform;
+
+        return result;
 	}
 
 	public void Start() {
@@ -193,7 +195,7 @@ public class WorldController : MonoBehaviour {
 		var mapEntry = mapNames.GetEntry(location.mapName);
 		var map = SpawnTilemap(mapEntry.tiled, Vector3.zero);
 
-		if (player != null) {
+        if (player != null) {
 			var staringPoints = GetComponentsInChildren<StartingPoint>();
 
 			StartingPoint start = null;

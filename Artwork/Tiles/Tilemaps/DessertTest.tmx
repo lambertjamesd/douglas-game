@@ -5,7 +5,7 @@
   <property name="LeftMap" value="LeftDessert" />
   <property name="Name" value="DessertTest" />
     <property name="DeadMap" value="Spirit_DessertTest" />
-    
+  <property name="RightMap" value="RightDessert" />
  </properties>
  <tileset firstgid="1" source="../Tilesets/Dessert.tsx" />
  <tileset firstgid="257" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">
@@ -61,12 +61,6 @@
 </data>
  </layer>
  <objectgroup name="Objects">
-  <object id="11" name="ShootOnSight" gid="257" x="512" y="192" width="32" height="32">
-   <properties>
-    <property name="ObjectName" value="ShootOnSight" />
-    <property name="When" value="not player_is_dead" />
-   </properties>
-  </object>
   <object id="14" x="416" y="320" width="32" height="32">
    <properties>
     <property name="PortalFrom" value="SaloonDoor" />

@@ -31,7 +31,6 @@ public class Gun : State
     {
         if (GetShotsLeft() > 0 && lastFireTime + gunStats.shotDelay < Time.time)
         {
-            bow.LoadProjectile(gunStats.round);
             bow.Fire(gunStats);
             SetShotsLeft(GetShotsLeft() - 1);
             lastFireTime = Time.time;

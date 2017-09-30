@@ -83,13 +83,14 @@ public class StoryFunctionBindings : MonoBehaviour
     {
         var toSet = GetNamedObject(objectName);
 
+        Debug.Log(objectName + ", " + value + ", " + (toSet == null ? "null" : toSet.ToString()));
+
         if (toSet != null)
         {
-            DefaultMovement movement = toSet.GetComponent<DefaultMovement>();
-            
-            if (Time.timeScale == 0.0f && movement.moveAnimator != null)
+            AnimationController controller = toSet.GetComponent<AnimationController>();
+            if (controller != null)
             {
-                movement.moveAnimator.SetUseUnscaledTime(value);
+                controller.SetUseUnscaledTime(value);
             }
         }
     }

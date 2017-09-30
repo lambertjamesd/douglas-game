@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 9/16/2017 5:43:52 PM-->
+<!--Last exported: 9/28/2017 9:39:04 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="DessertSpirit" />
   <AssignMaterial mesh="mesh_0002" material="DessertSpirit" />
@@ -21,7 +21,7 @@
     <GameObject name="Objects" x="0" y="0.03125" z="0">
       <ObjectLayer offsetX="0" offsetY="-1" color="#ff808080" />
       <GameObject name="ShootOnSight" x="16" y="-6" rotation="0" layer="" scaleX="1" scaleY="1">
-        <Property name="ObjectName" value="ShootOnSight" />
+        <Property name="ObjectName" value="StrongMan" />
         <Property name="When" value="not player_is_dead" />
         <TileObjectComponent tmx-object-id="11" tmx-object-name="ShootOnSight" tmx-object-type="" tmx-object-x="512" tmx-object-y="192" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
@@ -29,7 +29,7 @@
         </GameObject>
       </GameObject>
       <GameObject name="FindCover" x="12" y="-12" rotation="0" layer="" scaleX="1" scaleY="1">
-        <Property name="ObjectName" value="FindCover" />
+        <Property name="ObjectName" value="SharpShooter" />
         <Property name="When" value="not player_is_dead" />
         <TileObjectComponent tmx-object-id="14" tmx-object-name="FindCover" tmx-object-type="" tmx-object-x="384" tmx-object-y="384" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">

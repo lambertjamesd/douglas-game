@@ -5,7 +5,7 @@ public class Projectile : MonoBehaviour {
 
 	public Rigidbody2D rigidBody;
 	public DamageInfo damageInfo;
-	public float maxRange = 50.0f;
+	public float maxRange;
     private Vector2 startPosition;
 	private OnHit onHit;
 	private bool active = false;
@@ -13,15 +13,17 @@ public class Projectile : MonoBehaviour {
 
 	public delegate void OnHit(Collider2D collider, bool didDamage);
 
+    public static Transform projectileParent;
+
 	public void Fire(Vector2 velocity, OnHit onHit = null) {
 		rigidBody.isKinematic = false;
 		rigidBody.velocity = velocity;
 		this.onHit = onHit;
-		transform.parent = null;
 		active = true;
 		lifeTimer = maxRange / velocity.magnitude;
         startPosition = transform.position;
-
+        transform.SetParent(projectileParent, true);
+        Debug.Log(projectileParent);
     }
 
 	public void Update() {

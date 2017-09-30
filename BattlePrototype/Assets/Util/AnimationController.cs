@@ -57,4 +57,17 @@ public class AnimationController : MonoBehaviour {
             spritesheetAnimator.SetValue(name, value ? 1.0f : 0.0f);
         }
     }
+
+    public void SetTigger(string name)
+    {
+        if (unityAnimator != null)
+        {
+            unityAnimator.SetTrigger(name);
+        }
+
+        if (spritesheetAnimator != null)
+        {
+            spritesheetAnimator.SetValue(name, spritesheetAnimator.GetTriggerValue(name));
+        }
+    }
 }
