@@ -23,7 +23,6 @@ public class Projectile : MonoBehaviour {
 		lifeTimer = maxRange / velocity.magnitude;
         startPosition = transform.position;
         transform.SetParent(projectileParent, true);
-        Debug.Log(projectileParent);
     }
 
 	public void Update() {

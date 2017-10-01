@@ -16,8 +16,6 @@ VAR player_bank_money = 1000
 VAR player_is_dead = false
 
 ==on_player_death==
-You have died.
-[...]
 ~ setTextBoxVisible(false)
 ~ setTimeScale(1)
 ~ createObject("Death", getPlayerX() - 1, getPlayerY())

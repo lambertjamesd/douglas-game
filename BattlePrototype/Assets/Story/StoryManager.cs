@@ -144,7 +144,7 @@ public class StoryManager {
 
         currentStory.BindExternalFunction<string>("getCharacterX", (character) =>
         {
-            GameObject gameObject = GameObject.FindWithTag(character);
+            GameObject gameObject = currentBindings.GetObjectNamed(character);
             if (gameObject != null)
             {
                 return gameObject.transform.position.x;
@@ -157,7 +157,7 @@ public class StoryManager {
 
         currentStory.BindExternalFunction<string>("getCharacterY", (character) =>
         {
-            GameObject gameObject = GameObject.FindWithTag(character);
+            GameObject gameObject = currentBindings.GetObjectNamed(character);
             if (gameObject != null)
             {
                 return gameObject.transform.position.y;

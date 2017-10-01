@@ -47,6 +47,18 @@ public class StoryFunctionBindings : MonoBehaviour
         }
     }
 
+    public GameObject GetObjectNamed(string objectName)
+    {
+        if (namedObjects.ContainsKey(objectName))
+        {
+            return namedObjects[objectName];
+        }
+        else
+        {
+            return GameObject.FindWithTag(objectName);
+        }
+    }
+
     public bool CreateObject(string objectName, float x, float y)
     {
         var splitName = objectName.Split(new char[] { ':' });
@@ -75,15 +87,17 @@ public class StoryFunctionBindings : MonoBehaviour
         {
             DefaultMovement movement = toLook.GetComponent<DefaultMovement>();
 
-            movement.SetDirection(new Vector3(x, y, 0.0f) - toLook.transform.position);
+            if (movement != null)
+            {
+                Vector3 direction = new Vector3(x, y, 0.0f) - toLook.transform.position;
+                movement.SetDirection(direction);
+            }
         }
     }
 
     public void UseUnscaledTime(string objectName, bool value)
     {
         var toSet = GetNamedObject(objectName);
-
-        Debug.Log(objectName + ", " + value + ", " + (toSet == null ? "null" : toSet.ToString()));
 
         if (toSet != null)
         {

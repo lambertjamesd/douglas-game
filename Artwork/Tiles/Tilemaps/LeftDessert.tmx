@@ -4,6 +4,7 @@
   
   <property name="Name" value="LeftDessert" />
     <property name="DeadMap" value="Spirit_LeftDessert" />
+    
   <property name="RightMap" value="DessertTest" />
  </properties>
  <tileset firstgid="1" source="../Tilesets/Dessert.tsx" />

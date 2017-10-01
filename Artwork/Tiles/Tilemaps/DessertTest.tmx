@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="18" tilewidth="32" tileheight="32" nextobjectid="22">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="18" tilewidth="32" tileheight="32" nextobjectid="23">
  <properties>
   
   <property name="LeftMap" value="LeftDessert" />
@@ -13,6 +13,12 @@
   <tile id="0">
    <properties>
     <property name="ObjectName" value="ShootOnSight" />
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="ObjectName" value="LifePortal" />
+    <property name="When" value="player_is_dead" />
    </properties>
   </tile>
  </tileset>
@@ -91,5 +97,6 @@
     <property name="PortalFrom" value="Bank" />
    </properties>
   </object>
+  <object id="22" gid="258" x="512" y="192" width="32" height="32" />
  </objectgroup>
 </map>
