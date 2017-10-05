@@ -196,7 +196,7 @@ public class WorldController : MonoBehaviour {
 		var map = SpawnTilemap(mapEntry.tiled, Vector3.zero);
 
         if (player != null) {
-			var staringPoints = GetComponentsInChildren<StartingPoint>();
+			var staringPoints = map.GetComponentsInChildren<StartingPoint>();
 
 			StartingPoint start = null;
 

@@ -141,7 +141,6 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 
     public void HandleFinalPrefab(UnityEngine.Object prefab)
     {
-        Debug.Log("Here I am");
         if (mapName != null && prefab is GameObject)
         {
             var mapNames = GetMapNames();

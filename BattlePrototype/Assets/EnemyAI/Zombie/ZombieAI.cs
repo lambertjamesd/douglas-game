@@ -11,7 +11,7 @@ public class ZombieAI : MonoBehaviour
     public PatrolParameters patrolParameters;
     public float chargeSpeed;
     private GameObject externalTarget;
-    public float alertRadius = 5.0f;
+    public float alertRadius = 3.0f;
 
     // Use this 
     public void Start()

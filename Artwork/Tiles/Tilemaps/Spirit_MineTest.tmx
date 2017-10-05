@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="24" tilewidth="32" tileheight="32" nextobjectid="31">
+ <properties>
+  
+  <property name="Name" value="Spirit_MineHideout" />
+    <property name="LivingMap" value="MineHideout" />
+    
+ </properties>
+ <tileset firstgid="1" source="../Tilesets/MineTileset.tsx" />
+ <tileset firstgid="257" source="../Tilesets/PlaceObjects.tsx" />
+ <layer name="Tile Layer 1" width="24" height="24">
+  <data encoding="csv">
+162,162,97,178,98,98,98,178,178,98,98,98,178,178,98,98,178,178,98,178,99,162,162,162,
+162,97,179,4,20,114,20,18,20,114,114,18,4,114,114,4,114,20,20,18,177,99,162,162,
+97,179,18,18,20,114,114,114,145,147,114,18,4,20,114,114,145,147,4,114,20,177,99,162,
+163,20,4,4,114,114,114,18,177,179,20,4,20,114,18,4,177,179,20,114,114,4,177,99,
+163,114,18,18,18,20,114,18,114,18,18,18,20,114,114,18,20,18,20,20,18,20,114,115,
+113,114,20,114,145,147,4,114,18,4,4,4,145,147,18,114,114,114,18,18,114,20,114,115,
+163,18,18,114,177,179,18,4,20,20,18,114,177,179,4,20,4,18,4,18,4,114,4,161,
+113,4,36,18,18,18,18,114,18,20,18,114,114,114,114,20,114,20,4,4,20,114,4,161,
+113,18,18,4,4,114,114,18,114,18,114,4,4,20,18,18,18,18,18,114,114,114,114,161,
+129,130,130,146,146,146,146,130,146,130,130,130,146,130,146,130,146,130,146,147,18,18,145,131,
+162,162,162,162,162,162,162,162,162,162,162,162,97,98,98,98,98,178,178,179,20,114,177,99,
+97,178,178,178,178,98,98,98,178,178,178,99,113,20,18,18,20,20,4,114,20,4,114,115,
+163,18,20,114,114,20,4,20,4,4,114,115,113,20,114,20,18,20,114,4,18,20,4,115,
+113,18,4,20,20,20,18,4,114,114,114,177,179,4,18,4,114,20,20,4,4,18,18,115,
+163,18,114,18,20,20,114,20,114,20,20,114,4,20,4,20,18,18,20,18,18,18,18,161,
+163,18,4,18,18,20,20,20,4,114,18,145,130,130,130,146,146,147,18,145,130,146,130,131,
+113,114,18,18,20,20,4,4,20,114,114,115,97,178,98,178,178,179,20,177,178,178,98,99,
+129,146,130,146,147,18,145,146,146,146,146,131,163,4,114,18,114,114,4,114,18,20,20,115,
+162,162,162,162,163,18,161,162,162,162,162,162,113,114,18,20,114,18,114,4,4,18,4,115,
+97,178,178,181,179,18,177,181,178,99,162,162,163,20,114,4,4,20,114,18,114,18,4,161,
+113,18,18,18,18,18,4,4,4,115,162,162,163,4,4,18,18,4,18,114,4,20,18,115,
+113,18,18,18,18,18,18,18,18,115,162,162,163,18,18,18,18,114,4,20,18,18,18,115,
+163,20,18,18,18,18,18,18,18,161,162,162,163,18,18,18,18,114,20,114,20,18,114,115,
+129,146,130,147,18,145,146,146,130,131,162,162,129,130,146,130,130,130,146,146,130,130,130,131
+</data>
+ </layer>
+ <objectgroup name="ObjectLayers">
+  <object id="1" gid="257" x="288" y="448" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="BasicEnemy" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="5" gid="257" x="384" y="96" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="BasicEnemy" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="6" gid="257" x="256" y="224" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="BasicEnemy" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="7" gid="257" x="128" y="96" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="BasicEnemy" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="9" gid="260" x="672" y="672" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="MoneyDrop" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="11" gid="259" x="448" y="640" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="PistolAmmo" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="14" gid="259" x="544" y="640" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="ShotgunAmmo" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="21" gid="259" x="480" y="672" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="PistolAmmo" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="22" gid="259" x="448" y="704" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="PistolAmmo" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="23" gid="259" x="576" y="672" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="ShotgunAmmo" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="24" gid="259" x="544" y="704" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="ShotgunAmmo" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="25" gid="260" x="640" y="704" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="MoneyDrop" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="26" gid="260" x="672" y="704" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="MoneyDrop" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="27" x="128" y="736" width="32" height="32">
+   <properties>
+    <property name="PortalFrom" value="MineEntrance" />
+   </properties>
+  </object>
+  <object id="29" x="64" y="256" width="32" height="32">
+   <properties>
+    <property name="PortalFrom" value="LowerLevel" />
+   </properties>
+  </object>
+  <object id="30" x="64" y="224" width="32" height="32">
+   <properties>
+    <property name="PortalTo" value="Spirit_MineB1:UpperLevel" />
+   </properties>
+  </object>
+ </objectgroup>
+</map>

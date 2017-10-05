@@ -9,13 +9,13 @@ public class DeathSequence : MonoBehaviour
         damageFlasher.enabled = false;
         Time.timeScale = 0.0f;
 
-        float spinTime = 4.0f;
+        float spinTime = 2.0f;
         float spinRate = 16.0f;
         float endSpinRate = 2.0f;
         float spinRateChange = (endSpinRate - spinRate) / spinTime;
         float angle = 0.0f;
 
-        float startRadius = 10.0f;
+        float startRadius = 12.0f;
         float endRadius = 0.0f;
         float darkesRadius = startRadius;
         float radiusChangeRage = (endRadius - startRadius) / spinTime;
