@@ -22,6 +22,7 @@ ModelImporter:
     100028: mesh_tile_0259
     100030: mesh_tile_0260
     100032: //RootNode
+    100034: mesh_tile_0261
     400000: mesh_0001
     400002: mesh_0002
     400004: mesh_0003
@@ -39,6 +40,7 @@ ModelImporter:
     400028: mesh_tile_0259
     400030: mesh_tile_0260
     400032: //RootNode
+    400034: mesh_tile_0261
     2300000: mesh_0001
     2300002: mesh_0002
     2300004: mesh_0003
@@ -55,6 +57,7 @@ ModelImporter:
     2300026: mesh_tile_0257
     2300028: mesh_tile_0259
     2300030: mesh_tile_0260
+    2300032: mesh_tile_0261
     3300000: mesh_0001
     3300002: mesh_0002
     3300004: mesh_0003
@@ -71,6 +74,7 @@ ModelImporter:
     3300026: mesh_tile_0257
     3300028: mesh_tile_0259
     3300030: mesh_tile_0260
+    3300032: mesh_tile_0261
     4300000: mesh_0001
     4300002: mesh_0002
     4300004: mesh_0003
@@ -87,6 +91,7 @@ ModelImporter:
     4300026: mesh_tile_0257
     4300028: mesh_tile_0259
     4300030: mesh_tile_0260
+    4300032: mesh_tile_0261
     11400000: mesh_0001
     11400002: mesh_0002
     11400004: mesh_0003
@@ -103,6 +108,7 @@ ModelImporter:
     11400026: mesh_tile_0257
     11400028: mesh_tile_0259
     11400030: mesh_tile_0260
+    11400032: mesh_tile_0261
   materials:
     importMaterials: 0
     materialName: 0

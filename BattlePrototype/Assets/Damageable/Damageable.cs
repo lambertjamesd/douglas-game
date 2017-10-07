@@ -28,6 +28,9 @@ public class Damageable : MonoBehaviour {
 	private float currentHealth;
 	public bool immortal = false;
 
+    public float invincibleTime = 0.0f;
+    public float lastDamageTime = float.NegativeInfinity;
+
 	public delegate DamageSource DamageFilter(DamageSource source, Damageable damageable);
 	public delegate void DeathAlert(Damageable damageable);
 
@@ -66,36 +69,55 @@ public class Damageable : MonoBehaviour {
         }
     }
 
+    public void Heal(float amount)
+    {
+        currentHealth = Math.Min(currentHealth + amount, maxHealth);
+    }
+
 	public bool Damage(DamageSource source) 
     {
-		bool result = false;
+        float currentTime = Time.time;
 
-		if ((source.DamageBitmask & damageBitmask) != 0) 
+        if (currentTime >= lastDamageTime + invincibleTime)
         {
-			for (int i = 0; i < damageFilters.Count && source != null; ++i) 
-            {
-				source = damageFilters[i](source, this);
-			}
+		    bool result = false;
 
-			if (source != null) 
+		    if ((source.DamageBitmask & damageBitmask) != 0) 
             {
-				currentHealth -= source.Amount;
-				result = true;
-			}
-
-			if (currentHealth <= 0.0f && !immortal) 
-            {
-				for (int i = 0; i < deathListeners.Count; ++i) 
+			    for (int i = 0; i < damageFilters.Count && source != null; ++i) 
                 {
-					deathListeners[i](this);
-				}
+				    source = damageFilters[i](source, this);
+			    }
 
-				deathListeners.Clear();
-			}
+			    if (source != null) 
+                {
+				    currentHealth -= source.Amount;
+				    result = true;
+			    }
 
-		}
+			    if (currentHealth <= 0.0f && !immortal) 
+                {
+				    for (int i = 0; i < deathListeners.Count; ++i) 
+                    {
+					    deathListeners[i](this);
+				    }
 
-		return result;
+				    deathListeners.Clear();
+			    }
+
+		    }
+
+            if (result)
+            {
+                lastDamageTime = currentTime;
+            }
+
+		    return result;
+        }
+        else
+        {
+            return false;
+        }
 	}
 
 	public DamageFilter FilterDamage(DamageFilter filter, bool highPriority) {

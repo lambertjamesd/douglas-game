@@ -36,7 +36,8 @@ public class Projectile : MonoBehaviour {
 	}
 
 	public void OnTriggerEnter2D(Collider2D collider) {
-		if (active) {
+		if (active && collider.GetComponent<IgnoreProjectile>() == null) {
+            Debug.Log(collider);
 			active = false;
 			Damageable damageable = collider.gameObject.GetComponent<Damageable>();
 
@@ -53,4 +54,23 @@ public class Projectile : MonoBehaviour {
 			Destroy(gameObject);
 		}
 	}
+
+    public void Redirect(Vector2 velocity, int layer = -1)
+    {
+        startPosition = transform.position;
+        rigidBody.velocity = velocity;
+        lifeTimer = maxRange / velocity.magnitude;
+        if (layer >= 0 && layer < 32)
+        {
+            gameObject.layer = layer;
+        }
+    }
+
+    public Vector2 Velocity
+    {
+        get
+        {
+            return rigidBody.velocity;
+        }
+    }
 }

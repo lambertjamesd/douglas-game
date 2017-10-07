@@ -47,7 +47,7 @@ public class PlayerMovement : State {
 
         if (Input.GetButtonDown("Fire2"))
         {
-            StartCoroutine(SwingSword());
+            return new DoCoroutine(SwingSword(), this);
         }
 
         if (inventory.HasAGun() && Input.GetButtonDown("Reload"))
@@ -99,15 +99,26 @@ public class PlayerMovement : State {
 
 	IEnumerator SwingSword() {
 		if (!swingingSword) {
+            movement.TargetVelocity = Vector2.zero;
 			movement.LockRotation();
 			DamageSource source = new DamageSource(swordDamage, direction.TransformDirection(Vector3.right), transform.position);
 			swingingSword = true;
 			IEnumerator swordSwing = sword.Swing(hit => {
-				Damageable target = hit.gameObject.GetComponent<Damageable>();
+                Projectile projectile = hit.gameObject.GetComponent<Projectile>();
+
+                if (projectile != null)
+                {
+                    Debug.Log("Redirect!");
+                    projectile.Redirect(-projectile.Velocity, LayerMask.NameToLayer("L1: Player Weapon"));
+                }
+                else
+                {
+                    Damageable target = hit.gameObject.GetComponent<Damageable>();
 				
-				if (target != null) {
-					target.Damage(source);
-				}
+				    if (target != null) {
+					    target.Damage(source);
+				    }
+                }
 			});
 
 			while (swordSwing.MoveNext()) {

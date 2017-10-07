@@ -8,17 +8,35 @@ ModelImporter:
     100000: mesh_0001
     100002: mesh_tile_0257
     100004: //RootNode
+    100006: mesh_tile_0259
+    100008: mesh_tile_0260
+    100010: mesh_tile_0261
     400000: mesh_0001
     400002: mesh_tile_0257
     400004: //RootNode
+    400006: mesh_tile_0259
+    400008: mesh_tile_0260
+    400010: mesh_tile_0261
     2300000: mesh_0001
     2300002: mesh_tile_0257
+    2300004: mesh_tile_0259
+    2300006: mesh_tile_0260
+    2300008: mesh_tile_0261
     3300000: mesh_0001
     3300002: mesh_tile_0257
+    3300004: mesh_tile_0259
+    3300006: mesh_tile_0260
+    3300008: mesh_tile_0261
     4300000: mesh_0001
     4300002: mesh_tile_0257
+    4300004: mesh_tile_0259
+    4300006: mesh_tile_0260
+    4300008: mesh_tile_0261
     11400000: mesh_0001
     11400002: mesh_tile_0257
+    11400004: mesh_tile_0259
+    11400006: mesh_tile_0260
+    11400008: mesh_tile_0261
   materials:
     importMaterials: 0
     materialName: 0

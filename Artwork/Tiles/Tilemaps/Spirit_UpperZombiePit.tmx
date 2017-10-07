@@ -5,6 +5,10 @@
   
   <property name="Name" value="Spirit_UpperZombiePit" />
     <property name="LivingMap" value="UpperZombiePit" />
+    
+    
+    
+    
  </properties>
  <tileset firstgid="1" source="../Tilesets/MineTileset.tsx" />
  <tileset firstgid="257" source="../Tilesets/PlaceObjects.tsx" />
@@ -43,7 +47,7 @@
     <property name="When" value="not player_is_dead" />
    </properties>
   </object>
-  <object id="37" x="384" y="416" width="32" height="32">
+  <object id="37" x="352" y="416" width="32" height="32">
    <properties>
     <property name="PortalFrom" value="LowerLevel" />
    </properties>

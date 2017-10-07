@@ -19,6 +19,11 @@
     
     
     
+    
+    
+    
+    
+    
  </properties>
  <tileset firstgid="1" source="../Tilesets/Dessert.tsx" />
  <tileset firstgid="257" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">

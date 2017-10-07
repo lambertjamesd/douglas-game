@@ -25,7 +25,7 @@ public class SwordSwing : MonoBehaviour {
 			for (int i = 0; i < frames.Length; ++i) {
 				SwingFrame current = frames[i];
 				current.gameObject.SetActive(true);
-				yield return new WaitForSeconds(current.time);
+                yield return AsyncUtil.Pause(current.time);
 				current.gameObject.SetActive(false);
 			}
 
