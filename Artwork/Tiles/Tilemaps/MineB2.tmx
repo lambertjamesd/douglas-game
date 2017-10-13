@@ -8,6 +8,15 @@
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
   <property name="TopMap" value="UpperZombiePit" />
  </properties>
  <tileset firstgid="1" source="../Tilesets/MineTileset.tsx" />

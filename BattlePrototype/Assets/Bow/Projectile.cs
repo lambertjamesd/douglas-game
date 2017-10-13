@@ -35,9 +35,9 @@ public class Projectile : MonoBehaviour {
 		}
 	}
 
-	public void OnTriggerEnter2D(Collider2D collider) {
+	public void ColliderCommon(Collider2D collider)
+	{
 		if (active && collider.GetComponent<IgnoreProjectile>() == null) {
-            Debug.Log(collider);
 			active = false;
 			Damageable damageable = collider.gameObject.GetComponent<Damageable>();
 
@@ -52,6 +52,27 @@ public class Projectile : MonoBehaviour {
 			}
 
 			Destroy(gameObject);
+		}
+	}
+
+	public void OnTriggerEnter2D(Collider2D collider)
+	{
+		ColliderCommon(collider);
+	}
+
+	public void OnCollisionEnter2D(Collision2D collision)
+	{
+		IgnoreProjectile ignore = collision.gameObject.GetComponent<IgnoreProjectile> ();
+		if (ignore != null)
+		{
+			if (ignore.reflect)
+			{
+				Redirect(Vector2.Reflect (collision.relativeVelocity, collision.contacts[0].normal));
+			}
+		}
+		else
+		{
+			ColliderCommon(collision.collider);
 		}
 	}
 

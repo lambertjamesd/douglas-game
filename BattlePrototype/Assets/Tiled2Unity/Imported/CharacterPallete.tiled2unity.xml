@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Tiled2Unity generated xml data-->
+<!--Do not modify by hand-->
+<!--Last exported: 10/12/2017 9:48:37 PM-->
+<Tiled2Unity version="1.0.10.1">
+  <AssignMaterial mesh="mesh_tile_0001" material="PlaceObjects" />
+  <Prefab name="CharacterPallete" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="1" numTilesWide="24" numTilesHigh="18" tileWidth="32" tileHeight="32" exportScale="0.03125" mapWidthInPixels="768" mapHeightInPixels="576" backgroundColor="#808080">
+    <GameObject name="Tile Layer 1" x="0" y="0" z="0">
+      <TileLayer opacity="1" offsetX="0" offsetY="0" />
+    </GameObject>
+    <GameObject name="Objects" x="-2.4375" y="0" z="0">
+      <ObjectLayer offsetX="-78" offsetY="0" color="#ff808080" />
+      <GameObject name="ShootOnSight" x="0" y="-1" rotation="0" layer="" scaleX="1" scaleY="1">
+        <Property name="ObjectName" value="ShootOnSight" />
+        <TileObjectComponent tmx-object-id="1" tmx-object-name="ShootOnSight" tmx-object-type="" tmx-object-x="0" tmx-object-y="32" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
+        <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
+          <GameObject name="tile_obj" copy="mesh_tile_0001" sortingLayerName="" sortingOrder="1" x="-0.5" y="0.5" />
+        </GameObject>
+      </GameObject>
+      <GameObject name="FindCover" x="3" y="-1" rotation="0" layer="" scaleX="1" scaleY="1">
+        <Property name="ObjectName" value="FindCover" />
+        <TileObjectComponent tmx-object-id="2" tmx-object-name="FindCover" tmx-object-type="" tmx-object-x="96" tmx-object-y="32" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
+        <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
+          <GameObject name="tile_obj" copy="mesh_tile_0001" sortingLayerName="" sortingOrder="2" x="-0.5" y="0.5" />
+        </GameObject>
+      </GameObject>
+    </GameObject>
+  </Prefab>
+  <ImportMesh filename="CharacterPallete.obj">IyBXYXZlZnJvbnQgT0JKIGZpbGUgYXV0b21hdGljYWxseSBnZW5lcmF0ZWQgYnkgVGlsZWQyVW5pdHkNCg0KIyBWZXJ0aWNlcyAoQ291bnQgPSA0KQ0KdiAwIC0xIDANCnYgLTEgLTEgMA0KdiAtMSAwIDANCnYgMCAwIDANCg0KIyBUZXh0dXJlIGNvb3JpZGluYXRlcyAoQ291bnQgPSA0KQ0KdnQgMC4wMDAxMjIwNzAzIDAuNzUwMTIyMQ0KdnQgMC4yNDk4Nzc5IDAuNzUwMTIyMQ0KdnQgMC4yNDk4Nzc5IDAuOTk5ODc3OQ0KdnQgMC4wMDAxMjIwNzAzIDAuOTk5ODc3OQ0KDQojIE5vcm1hbA0Kdm4gMCAwIC0xDQoNCiMgR3JvdXBzIChDb3VudCA9IDIpDQoKZyBtZXNoX3RpbGVfMDAwMQpmIDEvMS8xIDIvMi8xIDMvMy8xIDQvNC8xCg0K</ImportMesh>
+  <ImportTexture filename="PlaceObjects.png">iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABmJLR0QA2QDZANkA8cKYAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QoLBAw3n3y/+AAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAEPUlEQVR42u3dP0gbYRjH8edCRZegFBGpKZVipShIBgdXR4cuIoLgIog4FrrprJvQsUjBRRBEXDpkdOnQwSEUlGIdLMQiRYriogheh/qGuzd3ySXee5fk/X6Wmktaj3t+97x/eq0iAAAAsI7T6G/MdHS73tcP99cOl9OCAKjC//qy5Dv+6t0mQWj3AGQ6ut2TrVnfsc7enoogEILWkXnqH3B3eSV3l1dcyXbvAEF3v051A7qAMW4c87dYO4DeDSwqhJv09yy5n0VE5PHXWM4hw01VfyHOSodyVjpMKwjlEMQRhIYC0D+9Kbd72+XXt3vb0j+9aUMXcB8LLyIiCQZBv/t9QdC6Ul3n8YwburHiD+bG9RDIYG7cjXN8riXnLAaGIucsRj6PujrA+emNiIhc7C9J18x8eeLXNTMvF/tLtky+fAZz40FhMD40qOJXGyKinEPkADzcXzuTa4WaE7/hhd22XAHcrOfDiu3rCCbbf1DRA+7+imOxzgFUF1Bfe1+3u5v1fGgQPMOA7Pz8YeSO9xY2LBTa8Zo3Yl1zgMcu4IqIHKxOycBQ1nfnq88YH/s+/AlsbaWNPiepIIiIZD0hMFh8xzOmRx4CjGwEHaxOlV/rw4H+nokghBU+gSC43sLrsitFERFf8efevDUxGXTVXV6r1UftAE7U4qtdwFot//XESxGJfzfQW/ypqeDPFArGu0FoELIrxXIADBU/cF4QNExELX60ZUKELWB9jjAwlJXO3p7YQqCK7y38+1H/Zz4eVQbB4JBQEQQVgASKH7gy8XaF2AKg2r4a64cXdiUsDKozTK4VyvODOEKgF18vvE4FIYEQ+IKghoGk9gBqBCL60B71g1GXd2HLxTjUKn7Uz8Q5QRMRpwmKXz6Xes8hE6WY56c3crI1W/EUkJfqEt4hI+55gLfNP+UzBi9+y4k8CVRtvdow4H0vzg2hJpwDtI26loHq62oB8HYPU0vAFFcB9gYgbFKobwqZ3ApOcR+gbTX8PIAqtHeeoD8fGLfSRp9Trbi13kellvzrYIqcZsvo6HaDVgNhxwEAbbEKMDWkpPn9bX98PfWngvn3A5YHgBAQAEJAAAgBASAErbUKMP0fRCS1OrA9cE6jxdmZuJXR/Iv/B/IjMrb8tSVDQACeUBwVgrFPf41dSNMhYB+gyTEnsDwAhKAJA6DPAb4vP6dVW9sB8iN0AoYAhgNrAqDavy6JYYAQNGMHKB4nOgwQghQDEHb3p9EFCEEzzQGKx8wJbAtAeRs4hdUAIbB4FUAICAAhIACEgAAQAgJACFIMwFHxNyGwvQP4QpDiXgAhaFzDPzNI3xGc+9bV1Bc8bIeSR8JiuqCtcCGDQkAAbBvz+HF3dqwCmBMQAEKAxiaGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9fgHtBtQzCTEwA0AAAAASUVORK5CYII=</ImportTexture>
+</Tiled2Unity>

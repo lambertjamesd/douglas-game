@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="9" height="8" tilewidth="32" tileheight="32" nextobjectid="5">
+ <properties>
+  
+  <property name="Name" value="MiningTownSaloon" />
+    <property name="DeadMap" value="Spirit_MiningTownSaloon" />
+    
+    
+ </properties>
+ <tileset firstgid="1" source="../../Tilesets/Interior.tsx" />
+ <tileset firstgid="257" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">
+  <image source="../../Tilesets/PlaceObjects.png" width="128" height="128" />
+  <tile id="0">
+   <properties>
+    <property name="ObjectName" value="ShootOnSight" />
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Base" width="9" height="8">
+  <data encoding="csv">
+0,1,1,3,1,1,1,1,0,
+0,34,34,34,34,34,34,34,0,
+0,34,34,34,34,34,34,34,0,
+0,34,34,34,34,34,34,34,0,
+0,34,33,33,33,33,33,34,0,
+0,34,33,33,33,33,33,34,0,
+0,34,34,34,34,34,34,34,0,
+0,34,34,34,34,34,34,34,0
+</data>
+ </layer>
+ <layer name="Overlay" width="9" height="8">
+  <data encoding="csv">
+6,36,36,0,36,36,36,36,7,
+6,52,52,0,52,52,52,52,7,
+6,81,81,81,81,82,81,81,7,
+6,0,0,0,0,0,0,0,7,
+6,70,54,70,0,0,0,0,7,
+6,0,0,0,0,70,54,70,7,
+6,70,54,70,0,0,0,0,7,
+22,0,0,0,0,0,0,0,23
+</data>
+ </layer>
+ <layer name="Table Decor" width="9" height="8">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,
+6,0,55,0,0,0,0,72,0,
+6,0,0,0,0,0,0,0,0,
+6,0,71,0,0,0,0,0,0,
+6,0,0,0,0,0,55,0,0,
+6,8,8,8,8,8,8,8,0,
+22,17,18,17,19,17,18,17,0
+</data>
+ </layer>
+ <objectgroup name="Objects">
+  <object id="1" x="0" y="256" width="287.667" height="32">
+   <properties>
+    <property name="PortalTo" value="MiningTown:Saloon" />
+   </properties>
+  </object>
+  <object id="2" x="128" y="224" width="32" height="32">
+   <properties>
+    <property name="PortalFrom" value="default" />
+   </properties>
+  </object>
+  <object id="3" name="CardPlayer" gid="257" x="224" y="192" width="32" height="32">
+   <properties>
+    <property name="Knot" value="mining_town_card_player" />
+    <property name="ObjectName" value="CardPlayer" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="4" x="224" y="192" width="32" height="32">
+   <properties>
+    <property name="PortalFrom" value="card_game" />
+   </properties>
+  </object>
+ </objectgroup>
+</map>

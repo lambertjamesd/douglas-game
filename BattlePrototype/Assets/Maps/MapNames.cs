@@ -68,9 +68,16 @@ public class MapNames : ScriptableObject {
 
     public void AddEntry(MapEntry entry)
     {
-        Debug.Log(entry.name, this);
-        maps.RemoveAll((otherEntry) => otherEntry.name == entry.name);
-        maps.Add(entry);
+		MapEntry result = maps.Find (item => item.name == entry.name);
+
+		if (result == null) 
+		{
+			maps.Add (entry);
+		} 
+		else 
+		{
+			entry.tiled = entry.tiled;
+		}
     }
 
 #if UNITY_EDITOR

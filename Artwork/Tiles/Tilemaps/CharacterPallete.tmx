@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="18" tilewidth="32" tileheight="32" nextobjectid="3">
  <tileset firstgid="1" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">
-  <image source="../Tilesets/PlaceObjects.png" width="128" height="128"/>
+  <image source="../Tilesets/PlaceObjects.png" width="128" height="128" />
   <tile id="0">
    <properties>
-    <property name="ObjectName" value="ShootOnSight"/>
+    <property name="ObjectName" value="ShootOnSight" />
    </properties>
   </tile>
  </tileset>
@@ -33,12 +33,12 @@
  <objectgroup name="Objects" offsetx="-78" offsety="0">
   <object id="1" name="ShootOnSight" gid="1" x="0" y="32" width="32" height="32">
    <properties>
-    <property name="ObjectName" value="ShootOnSight"/>
+    <property name="ObjectName" value="ShootOnSight" />
    </properties>
   </object>
   <object id="2" name="FindCover" gid="1" x="96" y="32" width="32" height="32">
    <properties>
-    <property name="ObjectName" value="FindCover"/>
+    <property name="ObjectName" value="FindCover" />
    </properties>
   </object>
  </objectgroup>

@@ -4,6 +4,15 @@
   
   <property name="Name" value="OutsideMine" />
     <property name="DeadMap" value="Spirit_OutsideMine" />
+    
+    
+    
+    
+    
+    
+    
+    
+    
   <property name="RightMap" value="MiningTown" />
  </properties>
  <tileset firstgid="1" source="../Tilesets/Dessert.tsx" />

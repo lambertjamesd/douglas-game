@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="18" tilewidth="32" tileheight="32" nextobjectid="11">
  <properties>
-  <property name="LivingMap" value="DessertTest"/>
-  <property name="Name" value="DessertTestSpirit"/>
+  <property name="LivingMap" value="DessertTest" />
+  <property name="Name" value="DessertTestSpirit" />
+    <property name="DeadMap" value="Spirit_DessertTestSpirit" />
  </properties>
- <tileset firstgid="1" source="../Tilesets/DessertSpirit.tsx"/>
+ <tileset firstgid="1" source="../Tilesets/DessertSpirit.tsx" />
  <layer name="Tile Layer 1" width="24" height="18">
   <data encoding="csv">
 198,1,213,1,196,197,197,198,38,1,37,1,196,197,197,197,197,198,37,38,1,1,213,22,

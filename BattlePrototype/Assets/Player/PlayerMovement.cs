@@ -108,8 +108,9 @@ public class PlayerMovement : State {
 
                 if (projectile != null)
                 {
-                    Debug.Log("Redirect!");
-                    projectile.Redirect(-projectile.Velocity, LayerMask.NameToLayer("L1: Player Weapon"));
+                    Vector2 normal = projectile.transform.position - transform.position;
+
+                    projectile.Redirect(Vector2.Reflect(projectile.Velocity, (normal - projectile.Velocity.normalized * 3.0f).normalized), LayerMask.NameToLayer("L1: Player Weapon"));
                 }
                 else
                 {

@@ -11,6 +11,7 @@ public class ShootOnSight : MonoBehaviour {
     public float targetOffset;
     public float lineUpSpeed;
     public GunStats gunStats;
+    public float preFireDelay = 0.5f;
     public float postFireDelay = 1.0f;
     public VariableStore variableStore;
     public Transform reloadLocation;
@@ -50,6 +51,7 @@ public class ShootOnSight : MonoBehaviour {
                     {
                         animation.SetTigger("Firing");
                     }
+                    yield return AsyncUtil.Pause(preFireDelay);
                     shootFrom.Fire(gunStats);
                     gunStats.SetShotsLeft(variableStore, gunStats.GetShotsLeft(variableStore) - 1);
                     yield return AsyncUtil.Pause(postFireDelay);

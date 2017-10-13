@@ -12,7 +12,7 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
     {
         if (maps == null)
         {
-            maps = UnityEditor.AssetDatabase.LoadAssetAtPath<MapNames>("Assets/Maps/WorldMaps.asset");
+            maps = Resources.FindObjectsOfTypeAll<MapNames>()[0];
         }
 
         return maps;
@@ -76,6 +76,7 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
             {
 				spawner.toSpawn = names.GetEntry(keyValuePairs["ObjectName"]).prefab;
 				spawner.condition = keyValuePairs.ContainsKey("When") ? keyValuePairs["When"] : "";
+				spawner.properties = keyValuePairs;
 			}
 
 			BoxCollider2D collider = gameObject.GetComponent<BoxCollider2D>();

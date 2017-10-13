@@ -1,22 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="40" tilewidth="32" tileheight="32" nextobjectid="27">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="40" tilewidth="32" tileheight="32" nextobjectid="33">
  <properties>
-  <property name="DeadMap" value="Spirit_DessertTest"/>
-  <property name="LeftMap" value="OutsideMine"/>
-  <property name="Name" value="MiningTown"/>
+  
+  <property name="LeftMap" value="OutsideMine" />
+  <property name="Name" value="MiningTown" />
+    <property name="DeadMap" value="Spirit_MiningTown" />
  </properties>
- <tileset firstgid="1" source="../Tilesets/Dessert.tsx"/>
+ <tileset firstgid="1" source="../Tilesets/Dessert.tsx" />
  <tileset firstgid="257" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">
-  <image source="../Tilesets/PlaceObjects.png" width="128" height="128"/>
+  <image source="../Tilesets/PlaceObjects.png" width="128" height="128" />
   <tile id="0">
    <properties>
-    <property name="ObjectName" value="ShootOnSight"/>
+    <property name="ObjectName" value="ShootOnSight" />
    </properties>
   </tile>
   <tile id="1">
    <properties>
-    <property name="ObjectName" value="LifePortal"/>
-    <property name="When" value="player_is_dead"/>
+    <property name="ObjectName" value="LifePortal" />
+    <property name="When" value="player_is_dead" />
    </properties>
   </tile>
  </tileset>
@@ -108,5 +109,36 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="Objects"/>
+ <objectgroup name="Objects">
+  <object id="27" x="480" y="448" width="32" height="32">
+   <properties>
+    <property name="PortalTo" value="MiningTownBank:default" />
+   </properties>
+  </object>
+  <object id="28" x="480" y="480" width="32" height="32">
+   <properties>
+    <property name="PortalFrom" value="Bank" />
+   </properties>
+  </object>
+  <object id="29" x="832" y="224" width="32" height="32">
+   <properties>
+    <property name="PortalFrom" value="Saloon" />
+   </properties>
+  </object>
+  <object id="30" x="832" y="192" width="32" height="32">
+   <properties>
+    <property name="PortalTo" value="MiningTownSaloon:default" />
+   </properties>
+  </object>
+  <object id="31" x="448" y="672" width="32" height="32">
+   <properties>
+    <property name="PortalTo" value="MiningTownGunStore:default" />
+   </properties>
+  </object>
+  <object id="32" x="448" y="704" width="32" height="32">
+   <properties>
+    <property name="PortalFrom" value="GunStore" />
+   </properties>
+  </object>
+ </objectgroup>
 </map>

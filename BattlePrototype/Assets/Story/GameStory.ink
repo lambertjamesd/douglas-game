@@ -5,3 +5,5 @@ INCLUDE Characters/GunSalesman/GunSalesman.ink
 INCLUDE Characters/BankTeller/BankTeller.ink
 INCLUDE Player/Player.ink
 INCLUDE ExternalFunctions.ink
+
+INCLUDE MiningTown/CardPlayer.ink
