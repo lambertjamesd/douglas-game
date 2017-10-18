@@ -1,17 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="24" tilewidth="32" tileheight="32" nextobjectid="37">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="24" tilewidth="32" tileheight="32" nextobjectid="39">
  <properties>
   
   <property name="Name" value="MineHideout" />
     <property name="DeadMap" value="Spirit_MineHideout" />
-    
-    
-    
-    
-    
-    
-    
-    
  </properties>
  <tileset firstgid="1" source="../Tilesets/MineTileset.tsx" />
  <tileset firstgid="257" source="../Tilesets/PlaceObjects.tsx" />
@@ -137,6 +129,16 @@
    </properties>
   </object>
   <object id="35" gid="262" x="192" y="416" width="32" height="32" rotation="-90">
+   <properties>
+    <property name="ObjectName" value="Reflector" />
+   </properties>
+  </object>
+  <object id="37" gid="262" x="320" y="416" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Reflector" />
+   </properties>
+  </object>
+  <object id="38" gid="262" x="448" y="384" width="32" height="32" rotation="-90">
    <properties>
     <property name="ObjectName" value="Reflector" />
    </properties>

@@ -26,6 +26,8 @@
     
     
     
+    
+    
   <property name="RightMap" value="RightDessert" />
  </properties>
  <tileset firstgid="1" source="../Tilesets/Dessert.tsx" />

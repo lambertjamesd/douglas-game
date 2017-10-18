@@ -18,6 +18,8 @@
     
     
     
+    
+    
  </properties>
  <tileset firstgid="1" source="../Tilesets/MineTileset.tsx" />
  <tileset firstgid="257" source="../Tilesets/PlaceObjects.tsx" />

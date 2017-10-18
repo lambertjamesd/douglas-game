@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 10/12/2017 8:12:26 PM-->
+<!--Last exported: 10/17/2017 9:37:07 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="DessertSpirit" />
   <Prefab name="RightDessert_Spirit" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="2" numTilesWide="24" numTilesHigh="18" tileWidth="32" tileHeight="32" exportScale="0.03125" mapWidthInPixels="768" mapHeightInPixels="576" backgroundColor="#808080">
     <Property name="LeftMap" value="Spirit_DessertTest" />
     <Property name="Name" value="Spirit_RightDessert" />
+    <Property name="DeadMap" value="Spirit_Spirit_RightDessert" />
     <Property name="LivingMap" value="RightDessert" />
     <GameObject name="Tile Layer 1" x="0" y="0" z="0">
       <TileLayer opacity="1" offsetX="0" offsetY="0" />

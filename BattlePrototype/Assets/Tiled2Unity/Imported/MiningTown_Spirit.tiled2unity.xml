@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 10/12/2017 8:12:31 PM-->
+<!--Last exported: 10/17/2017 9:37:05 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="DessertSpirit" />
   <Prefab name="MiningTown_Spirit" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="2" numTilesWide="32" numTilesHigh="40" tileWidth="32" tileHeight="32" exportScale="0.03125" mapWidthInPixels="1024" mapHeightInPixels="1280" backgroundColor="#808080">
     <Property name="LeftMap" value="Spirit_OutsideMine" />
     <Property name="Name" value="Spirit_MiningTown" />
+    <Property name="DeadMap" value="Spirit_Spirit_MiningTown" />
     <Property name="LivingMap" value="MiningTown" />
     <GameObject name="Tile Layer 1" x="0" y="0" z="0">
       <TileLayer opacity="1" offsetX="0" offsetY="0" />
@@ -35,6 +36,16 @@
       <GameObject name="RectangleObject" x="15" y="-15" rotation="0" layer="">
         <Property name="PortalFrom" value="Bank" />
         <RectangleObjectComponent tmx-object-id="28" tmx-object-name="" tmx-object-type="" tmx-object-x="480" tmx-object-y="480" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" />
+        <BoxCollider2D width="1" height="1" />
+      </GameObject>
+      <GameObject name="RectangleObject" x="14" y="-21" rotation="0" layer="">
+        <Property name="PortalTo" value="Spirit_MiningTownGunStore:default" />
+        <RectangleObjectComponent tmx-object-id="31" tmx-object-name="" tmx-object-type="" tmx-object-x="448" tmx-object-y="672" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" />
+        <BoxCollider2D width="1" height="1" />
+      </GameObject>
+      <GameObject name="RectangleObject" x="14" y="-22" rotation="0" layer="">
+        <Property name="PortalFrom" value="GunStore" />
+        <RectangleObjectComponent tmx-object-id="32" tmx-object-name="" tmx-object-type="" tmx-object-x="448" tmx-object-y="704" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" />
         <BoxCollider2D width="1" height="1" />
       </GameObject>
     </GameObject>

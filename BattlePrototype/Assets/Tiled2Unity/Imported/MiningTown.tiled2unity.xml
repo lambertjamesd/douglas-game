@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 10/12/2017 9:51:43 PM-->
+<!--Last exported: 10/17/2017 9:37:04 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="Dessert" />
   <Prefab name="MiningTown" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="2" numTilesWide="32" numTilesHigh="40" tileWidth="32" tileHeight="32" exportScale="0.03125" mapWidthInPixels="1024" mapHeightInPixels="1280" backgroundColor="#808080">

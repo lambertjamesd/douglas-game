@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="32" tilewidth="32" tileheight="32" nextobjectid="65">
+ <properties>
+  <property name="BottomMap" value="Spirit_" />
+  
+  <property name="Name" value="Spirit_LowerZombiePit" />
+    <property name="DeadMap" value="Spirit_Spirit_LowerZombiePit" />
+    <property name="LivingMap" value="LowerZombiePit" />
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+ </properties>
+ <tileset firstgid="1" source="../Tilesets/MineTileset.tsx" />
+ <tileset firstgid="257" source="../Tilesets/PlaceObjects.tsx" />
+ <layer name="Tile Layer 1" width="24" height="32">
+  <data encoding="csv">
+162,162,162,162,162,162,162,162,162,162,162,162,162,162,162,162,162,162,162,162,162,162,162,162,
+162,162,162,162,162,162,97,98,178,98,178,98,178,178,178,178,178,98,98,99,162,162,162,162,
+162,162,162,162,97,178,179,114,20,20,20,20,114,20,18,4,20,114,18,177,99,162,162,162,
+162,162,162,97,179,20,114,114,18,18,20,4,4,20,18,20,4,18,20,4,177,178,99,162,
+162,162,97,179,4,20,4,18,20,20,18,114,114,20,114,20,4,18,18,18,18,20,161,162,
+162,162,163,4,4,114,20,18,20,4,114,4,114,18,49,50,51,4,4,18,20,4,177,99,
+162,162,113,114,20,4,18,18,18,18,18,18,20,114,65,1,83,4,18,20,114,114,114,115,
+162,97,179,4,114,20,20,114,4,114,114,4,4,18,65,17,18,114,18,114,20,4,114,115,
+162,113,114,4,20,20,4,20,18,114,18,20,4,49,35,67,20,114,4,114,4,20,4,115,
+97,179,114,4,4,114,114,18,49,51,114,4,18,65,1,83,20,114,20,20,4,4,20,161,
+163,114,20,114,20,18,20,49,35,67,18,20,20,81,83,114,114,20,4,20,4,4,4,115,
+113,114,4,114,20,4,4,19,1,83,114,20,114,20,18,114,4,4,4,18,18,4,4,161,
+113,4,20,4,4,18,114,65,33,51,4,18,37,20,20,18,49,34,50,50,51,4,114,161,
+113,18,20,20,20,18,20,81,3,33,51,114,114,4,49,34,35,1,82,2,83,114,18,161,
+113,20,18,18,4,20,18,18,81,3,33,51,114,114,81,2,82,83,18,18,114,18,114,115,
+113,4,18,18,4,18,18,114,20,81,3,67,20,20,20,4,4,20,18,20,20,20,145,131,
+129,147,20,20,18,18,20,4,114,4,65,67,4,114,20,20,4,114,4,18,114,20,115,162,
+162,129,147,18,4,20,20,18,20,20,81,83,18,18,20,18,4,18,114,114,20,114,161,162,
+162,162,163,18,114,114,114,114,4,18,20,4,18,114,114,114,114,18,114,114,20,145,131,162,
+162,162,163,18,4,18,4,114,114,114,4,4,20,4,20,4,20,114,18,114,145,131,162,162,
+162,162,129,130,146,147,20,4,4,20,18,4,4,114,18,114,18,18,4,145,131,162,162,162,
+162,162,162,162,162,113,114,20,114,4,18,20,114,20,114,20,18,18,145,131,162,162,162,162,
+162,162,162,162,162,129,146,130,130,130,146,147,4,114,4,145,130,130,131,162,162,162,162,162,
+162,162,162,162,162,162,162,162,162,162,97,179,4,20,145,131,162,162,162,162,162,162,162,162,
+162,162,162,162,162,162,162,162,97,178,179,18,4,145,131,162,162,162,162,162,162,162,162,162,
+162,162,162,162,162,162,162,162,163,18,20,4,114,177,98,99,162,162,162,162,162,162,162,162,
+162,162,162,162,162,162,162,97,179,20,20,114,4,20,20,177,99,162,162,162,162,162,162,162,
+162,162,162,162,162,162,97,179,20,20,4,20,114,20,114,114,161,162,162,162,162,162,162,162,
+162,162,162,162,162,162,163,4,20,20,18,114,114,4,20,18,115,162,162,162,162,162,162,162,
+162,162,162,162,162,162,129,147,18,18,18,20,18,4,18,145,131,162,162,162,162,162,162,162,
+162,162,162,162,162,162,162,129,147,20,114,114,114,145,146,131,162,162,162,162,162,162,162,162,
+162,162,162,162,162,162,162,162,129,130,146,146,130,131,162,162,162,162,162,162,162,162,162,162
+</data>
+ </layer>
+ <objectgroup name="ObjectLayers">
+  <object id="6" gid="257" x="224" y="288" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="37" x="416" y="416" width="32" height="32">
+   <properties>
+    <property name="PortalFrom" value="UpperLevel" />
+   </properties>
+  </object>
+  <object id="38" x="384" y="384" width="32" height="32">
+   <properties>
+    <property name="PortalTo" value="Spirit_UpperZombiePit:LowerLevel" />
+   </properties>
+  </object>
+  <object id="39" gid="257" x="288" y="224" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="40" gid="257" x="384" y="192" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="41" gid="257" x="359" y="277" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="42" gid="257" x="608" y="320" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="43" gid="257" x="640" y="352" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="44" gid="257" x="678" y="244" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="45" gid="257" x="576" y="576" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="46" gid="257" x="576" y="512" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="47" gid="257" x="512" y="608" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="48" gid="257" x="487" y="519" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="49" gid="257" x="288" y="544" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="50" gid="257" x="224" y="608" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="51" gid="257" x="192" y="512" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="52" gid="257" x="160" y="576" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="53" gid="257" x="256" y="576" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="Zombie" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="54" gid="259" x="288" y="896" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="ShotgunAmmo" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="55" gid="259" x="320" y="928" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="ShotgunAmmo" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="56" gid="260" x="448" y="928" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="MoneyDrop" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="57" gid="260" x="384" y="960" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="MoneyDrop" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="58" gid="260" x="416" y="928" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="MoneyDrop" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="59" gid="260" x="416.25" y="895.25" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="MoneyDrop" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="60" gid="260" x="384" y="928" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="MoneyDrop" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="61" gid="260" x="448" y="896" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="MoneyDrop" />
+    <property name="When" value="not player_is_dead" />
+   </properties>
+  </object>
+  <object id="62" gid="261" x="320" y="960" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="HealthDrop" />
+    <property name="When" value="player_is_alive" />
+   </properties>
+  </object>
+  <object id="64" gid="261" x="288" y="992" width="32" height="32">
+   <properties>
+    <property name="ObjectName" value="HealthDrop" />
+    <property name="When" value="player_is_alive" />
+   </properties>
+  </object>
+ </objectgroup>
+</map>

@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 10/12/2017 8:12:29 PM-->
+<!--Last exported: 10/17/2017 9:37:09 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="MineTileset" />
   <AssignMaterial mesh="mesh_tile_0257" material="PlaceObjects" />
   <Prefab name="UpperZombiePit_Spirit" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="1" numTilesWide="24" numTilesHigh="24" tileWidth="32" tileHeight="32" exportScale="0.03125" mapWidthInPixels="768" mapHeightInPixels="768" backgroundColor="#808080">
     <Property name="BottomMap" value="Spirit_MineB2" />
     <Property name="Name" value="Spirit_UpperZombiePit" />
+    <Property name="DeadMap" value="Spirit_Spirit_UpperZombiePit" />
     <Property name="LivingMap" value="UpperZombiePit" />
     <GameObject name="Tile Layer 1" x="0" y="0" z="0">
       <TileLayer opacity="1" offsetX="0" offsetY="0" />

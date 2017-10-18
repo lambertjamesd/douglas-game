@@ -79,11 +79,13 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 				spawner.properties = keyValuePairs;
 			}
 
+			Debug.Log (gameObject.transform.rotation);
+
 			BoxCollider2D collider = gameObject.GetComponent<BoxCollider2D>();
 
             if (collider != null)
             {
-			    gameObject.transform.position = gameObject.transform.position + new Vector3(collider.offset.x, collider.offset.y, 0.0f);
+				spawner.size += new Vector3(collider.offset.x, collider.offset.y, 0.0f);
 			    Object.DestroyImmediate(collider);
             }
 
@@ -91,7 +93,7 @@ public class TiledObjectImporter : Tiled2Unity.ICustomTiledImporter {
 
             if (tileObject != null)
             {
-                gameObject.transform.position += new Vector3(tileObject.TileWidth * 0.5f, tileObject.TileHeight * 0.5f, 0.0f);
+				spawner.size += new Vector3(tileObject.TileWidth * 0.5f, tileObject.TileHeight * 0.5f, 0.0f);
                 Object.DestroyImmediate(tileObject);
             }
 

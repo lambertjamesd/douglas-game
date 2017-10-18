@@ -6,10 +6,11 @@ public class PrefabSpawner : MonoBehaviour {
     public string condition = "";
     public GameObject toSpawn;
 	public IDictionary<string, string> properties = new Dictionary<string, string>();
+	public Vector3 size = Vector3.zero;
 
     public void Start() {
         if (condition == "" || ConditionParser.parseCondition(condition).evaluate(new GameState(StoryManager.GetSingleton().GetStory()))) {
-            GameObject instance = Instantiate(toSpawn, transform.position, transform.rotation) as GameObject;
+			GameObject instance = Instantiate(toSpawn, transform.position + transform.TransformDirection(size), transform.rotation) as GameObject;
             instance.transform.parent = transform.parent;
 
 			if (properties.Count > 0)

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 10/12/2017 8:12:27 PM-->
+<!--Last exported: 10/17/2017 9:37:04 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="MineTileset" />
   <AssignMaterial mesh="mesh_0002" material="MineTileset" />
@@ -23,6 +23,7 @@
   <AssignMaterial mesh="mesh_tile_0260" material="PlaceObjects" />
   <Prefab name="MineTest_Spirit" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="1" numTilesWide="24" numTilesHigh="24" tileWidth="32" tileHeight="32" exportScale="0.03125" mapWidthInPixels="768" mapHeightInPixels="768" backgroundColor="#808080">
     <Property name="Name" value="Spirit_MineHideout" />
+    <Property name="DeadMap" value="Spirit_Spirit_MineHideout" />
     <Property name="LivingMap" value="MineHideout" />
     <GameObject name="Tile Layer 1" x="0" y="0" z="0">
       <TileLayer opacity="1" offsetX="0" offsetY="0" />
@@ -109,11 +110,18 @@
         <RectangleObjectComponent tmx-object-id="29" tmx-object-name="" tmx-object-type="" tmx-object-x="64" tmx-object-y="256" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" />
         <BoxCollider2D width="1" height="1" />
       </GameObject>
+      <GameObject name="TileObject" x="14" y="-12" rotation="-90" layer="" scaleX="1" scaleY="1">
+        <Property name="ObjectName" value="Reflector" />
+        <TileObjectComponent tmx-object-id="38" tmx-object-name="" tmx-object-type="" tmx-object-x="448" tmx-object-y="384" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="-90" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
+        <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
+          <GameObject name="tile_obj" copy="mesh_tile_0262" sortingLayerName="" sortingOrder="4" x="-0.5" y="0.5" />
+        </GameObject>
+      </GameObject>
       <GameObject name="TileObject" x="6" y="-13" rotation="-90" layer="" scaleX="1" scaleY="1">
         <Property name="ObjectName" value="Reflector" />
         <TileObjectComponent tmx-object-id="35" tmx-object-name="" tmx-object-type="" tmx-object-x="192" tmx-object-y="416" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="-90" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
-          <GameObject name="tile_obj" copy="mesh_tile_0262" sortingLayerName="" sortingOrder="4" x="-0.5" y="0.5" />
+          <GameObject name="tile_obj" copy="mesh_tile_0262" sortingLayerName="" sortingOrder="5" x="-0.5" y="0.5" />
         </GameObject>
       </GameObject>
       <GameObject name="TileObject" x="9" y="-14" rotation="0" layer="" scaleX="1" scaleY="1">
@@ -121,7 +129,14 @@
         <Property name="When" value="not player_is_dead" />
         <TileObjectComponent tmx-object-id="1" tmx-object-name="" tmx-object-type="" tmx-object-x="288" tmx-object-y="448" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
-          <GameObject name="tile_obj" copy="mesh_tile_0257" sortingLayerName="" sortingOrder="5" x="-0.5" y="0.5" />
+          <GameObject name="tile_obj" copy="mesh_tile_0257" sortingLayerName="" sortingOrder="6" x="-0.5" y="0.5" />
+        </GameObject>
+      </GameObject>
+      <GameObject name="TileObject" x="10" y="-14" rotation="0" layer="" scaleX="1" scaleY="1">
+        <Property name="ObjectName" value="Reflector" />
+        <TileObjectComponent tmx-object-id="37" tmx-object-name="" tmx-object-type="" tmx-object-x="320" tmx-object-y="448" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
+        <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
+          <GameObject name="tile_obj" copy="mesh_tile_0262" sortingLayerName="" sortingOrder="7" x="-0.5" y="0.5" />
         </GameObject>
       </GameObject>
       <GameObject name="TileObject" x="21" y="-19" rotation="0" layer="" scaleX="1" scaleY="1">
@@ -129,7 +144,7 @@
         <Property name="When" value="player_is_alive" />
         <TileObjectComponent tmx-object-id="31" tmx-object-name="" tmx-object-type="" tmx-object-x="672" tmx-object-y="608" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
-          <GameObject name="tile_obj" copy="mesh_tile_0261" sortingLayerName="" sortingOrder="6" x="-0.5" y="0.5" />
+          <GameObject name="tile_obj" copy="mesh_tile_0261" sortingLayerName="" sortingOrder="8" x="-0.5" y="0.5" />
         </GameObject>
       </GameObject>
       <GameObject name="TileObject" x="14" y="-20" rotation="0" layer="" scaleX="1" scaleY="1">
@@ -137,7 +152,7 @@
         <Property name="When" value="not player_is_dead" />
         <TileObjectComponent tmx-object-id="11" tmx-object-name="" tmx-object-type="" tmx-object-x="448" tmx-object-y="640" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
-          <GameObject name="tile_obj" copy="mesh_tile_0259" sortingLayerName="" sortingOrder="7" x="-0.5" y="0.5" />
+          <GameObject name="tile_obj" copy="mesh_tile_0259" sortingLayerName="" sortingOrder="9" x="-0.5" y="0.5" />
         </GameObject>
       </GameObject>
       <GameObject name="TileObject" x="20" y="-20" rotation="0" layer="" scaleX="1" scaleY="1">
@@ -145,7 +160,7 @@
         <Property name="When" value="player_is_alive" />
         <TileObjectComponent tmx-object-id="32" tmx-object-name="" tmx-object-type="" tmx-object-x="640" tmx-object-y="640" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
-          <GameObject name="tile_obj" copy="mesh_tile_0261" sortingLayerName="" sortingOrder="8" x="-0.5" y="0.5" />
+          <GameObject name="tile_obj" copy="mesh_tile_0261" sortingLayerName="" sortingOrder="10" x="-0.5" y="0.5" />
         </GameObject>
       </GameObject>
       <GameObject name="TileObject" x="21" y="-21" rotation="0" layer="" scaleX="1" scaleY="1">
@@ -153,7 +168,7 @@
         <Property name="When" value="not player_is_dead" />
         <TileObjectComponent tmx-object-id="9" tmx-object-name="" tmx-object-type="" tmx-object-x="672" tmx-object-y="672" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
-          <GameObject name="tile_obj" copy="mesh_tile_0260" sortingLayerName="" sortingOrder="9" x="-0.5" y="0.5" />
+          <GameObject name="tile_obj" copy="mesh_tile_0260" sortingLayerName="" sortingOrder="11" x="-0.5" y="0.5" />
         </GameObject>
       </GameObject>
       <GameObject name="TileObject" x="17" y="-21" rotation="0" layer="" scaleX="1" scaleY="1">
@@ -161,7 +176,7 @@
         <Property name="When" value="not player_is_dead" />
         <TileObjectComponent tmx-object-id="24" tmx-object-name="" tmx-object-type="" tmx-object-x="544" tmx-object-y="672" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
-          <GameObject name="tile_obj" copy="mesh_tile_0259" sortingLayerName="" sortingOrder="10" x="-0.5" y="0.5" />
+          <GameObject name="tile_obj" copy="mesh_tile_0259" sortingLayerName="" sortingOrder="12" x="-0.5" y="0.5" />
         </GameObject>
       </GameObject>
       <GameObject name="TileObject" x="14" y="-22" rotation="0" layer="" scaleX="1" scaleY="1">
@@ -169,7 +184,7 @@
         <Property name="When" value="not player_is_dead" />
         <TileObjectComponent tmx-object-id="22" tmx-object-name="" tmx-object-type="" tmx-object-x="448" tmx-object-y="704" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
-          <GameObject name="tile_obj" copy="mesh_tile_0259" sortingLayerName="" sortingOrder="11" x="-0.5" y="0.5" />
+          <GameObject name="tile_obj" copy="mesh_tile_0259" sortingLayerName="" sortingOrder="13" x="-0.5" y="0.5" />
         </GameObject>
       </GameObject>
       <GameObject name="TileObject" x="20" y="-22" rotation="0" layer="" scaleX="1" scaleY="1">
@@ -177,7 +192,7 @@
         <Property name="When" value="not player_is_dead" />
         <TileObjectComponent tmx-object-id="25" tmx-object-name="" tmx-object-type="" tmx-object-x="640" tmx-object-y="704" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
-          <GameObject name="tile_obj" copy="mesh_tile_0260" sortingLayerName="" sortingOrder="12" x="-0.5" y="0.5" />
+          <GameObject name="tile_obj" copy="mesh_tile_0260" sortingLayerName="" sortingOrder="14" x="-0.5" y="0.5" />
         </GameObject>
       </GameObject>
       <GameObject name="TileObject" x="21" y="-22" rotation="0" layer="" scaleX="1" scaleY="1">
@@ -185,7 +200,7 @@
         <Property name="When" value="not player_is_dead" />
         <TileObjectComponent tmx-object-id="26" tmx-object-name="" tmx-object-type="" tmx-object-x="672" tmx-object-y="704" tmx-object-width="32" tmx-object-height="32" tmx-object-rotation="0" tmx-tile-flip-horizontal="false" tmx-tile-flip-vertical="false" width="1" height="1" />
         <GameObject name="TileObject" x="0.5" y="0.5" scaleX="1" scaleY="1">
-          <GameObject name="tile_obj" copy="mesh_tile_0260" sortingLayerName="" sortingOrder="13" x="-0.5" y="0.5" />
+          <GameObject name="tile_obj" copy="mesh_tile_0260" sortingLayerName="" sortingOrder="15" x="-0.5" y="0.5" />
         </GameObject>
       </GameObject>
       <GameObject name="RectangleObject" x="4" y="-23" rotation="0" layer="">
