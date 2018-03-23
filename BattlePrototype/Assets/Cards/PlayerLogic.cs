@@ -91,7 +91,7 @@ public abstract class PlayerLogic {
         }
     }
 
-    public abstract IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot);
+    public abstract IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot, int currentTurn);
     public abstract TurnChoice TurnResult();
 }
 
@@ -99,26 +99,35 @@ public class HumanPlayerLogic : PlayerLogic
 {
     private Button foldButton;
     private Transform guiTransform;
-    private NumberSpinner spinner;
+    private Text bidPreview;
+    private RadioButtons multiplier;
     private IEnumerable<Button> cardSelection;
     private TurnChoice choice = null;
     private int cardChoice = -1;
     private bool takingTurn = false;
     private Card chosenCard;
+    private int minBid = 10;
 
     public HumanPlayerLogic(
         int index, 
         PlayerHand hand,
         Button foldButton,
         Transform guiTransform,
-        NumberSpinner spinner,
+        Text bidPreview,
+        RadioButtons multiplier,
         List<Button> cardSelection, 
         Text moneyLabel
     ) : base(index, hand, moneyLabel)  {
         this.foldButton = foldButton;
         this.guiTransform = guiTransform;
-        this.spinner = spinner;
+        this.bidPreview = bidPreview;
+        this.multiplier = multiplier;
         this.cardSelection = cardSelection;
+
+        this.multiplier.Change((multiplierIndex) =>
+        {
+            UpdateBid();
+        });
 
         foldButton.onClick.AddListener(() =>
         {
@@ -147,11 +156,21 @@ public class HumanPlayerLogic : PlayerLogic
 
         PositionGUI(0);
 
-        spinner.SetEnabled(useBid == -1);
+        multiplier.gameObject.SetActive(useBid == -1);
         if (useBid != -1)
         {
-            spinner.SetValue(useBid);
+            bidPreview.text = "$" + useBid.ToString();
         }
+    }
+
+    private void UpdateBid()
+    {
+        bidPreview.text = "$" + GetBid();
+    }
+
+    private int GetBid()
+    {
+        return Math.Min(money, minBid * (multiplier.Selected + 1));
     }
 
     private void BindCardClick(Button button, int index)
@@ -160,16 +179,16 @@ public class HumanPlayerLogic : PlayerLogic
         {
             Card pickedCard = index < hand.GetHand().Count ? hand.GetHand()[index] : null;
 
-            if (takingTurn && spinner.value > 0 && pickedCard != null)
+            if (takingTurn && pickedCard != null)
             {
                 if (choice == null)
                 {
-                    choice = new TurnChoice(spinner.value, pickedCard);
+                    choice = new TurnChoice(GetBid(), pickedCard);
                     chosenCard = pickedCard;
                 }
                 else if (choice.card != pickedCard)
                 {
-                    choice.bid = spinner.value;
+                    choice.bid = GetBid();
                     choice.extraCard = pickedCard;
                     chosenCard = pickedCard;
                 }
@@ -177,16 +196,15 @@ public class HumanPlayerLogic : PlayerLogic
         });
     }
 
-    public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot)
+    public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot, int currentTurn)
     {
         takingTurn = true;
         choice = null;
         cardChoice = -1;
 
-        int min = Math.Max(Math.Min((currentBid == -1) ? inPot / 2 : currentBid, money), 1);
-
-        spinner.SetMin(min);
-        spinner.SetMax(money);
+        multiplier.SetSelected(0);
+        UpdateBid();
+        minBid = Math.Max(Math.Min((currentBid == -1) ? inPot / 2 : currentBid, money), 1);
 
         SetGUIVisible(true, currentBid);
 
@@ -264,7 +282,7 @@ public class CardAIBase : PlayerLogic
         return 1.0f;
     }
 
-    public virtual float OponentFoldProbability()
+    public virtual float PlayerFoldProbability(IEnumerable<Card> showingCards, IEnumerable<Card> oponentShowingCards, int turn, int bid, int inPot, bool isOpening)
     {
         return 0.0f;
     }
@@ -284,7 +302,7 @@ public class CardAIBase : PlayerLogic
         return minBid;
     }
 
-    public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot)
+    public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot, int currentTurn)
     {
         if (onBoard[index].Count == 0)
         {
@@ -296,17 +314,21 @@ public class CardAIBase : PlayerLogic
         int minBid = inPot / 2;
         int bid = currentBid;
         bool shouldFold = false;
+        bool isOpening = currentBid == -1;
 
-        if (currentBid == -1)
+        var myHand = onBoard[index];
+        var theirHand = onBoard[1 - index];
+
+        if (isOpening)
         {
             bid = GetBid(minBid, handScore);
-            float expectedWinnings = ScoreOutcome(WinProbability(bid, handScore), OponentFoldProbability(), inPot, minBid);
+            float expectedWinnings = ScoreOutcome(WinProbability(bid, handScore), PlayerFoldProbability(theirHand, myHand, currentTurn, minBid, inPot, isOpening), inPot, minBid);
 
             shouldFold = expectedWinnings < 0.0f;
         }
         else
         {
-            shouldFold = ScoreOutcome(WinProbability(bid, handScore), OponentFoldProbability(), inPot, bid) < 0.0f;
+            shouldFold = ScoreOutcome(WinProbability(bid, handScore), PlayerFoldProbability(theirHand, myHand, currentTurn, currentBid, inPot, isOpening), inPot, bid) < 0.0f;
         }
 
         choice = shouldFold ? TurnChoice.Fold() : new TurnChoice(Math.Min(bid, money), PickCard());
@@ -422,5 +444,144 @@ public class CardAIBase : PlayerLogic
     public static float ScoreOutcome(float winProbability, float foldProbability, float potSize, float bid)
     {
         return foldProbability * potSize + (1.0f - foldProbability) * (winProbability * (potSize + bid) - (1.0f - winProbability) * bid * 2.0f);
+    }
+
+    public float ScoreOutcome(IEnumerable<Card> showingCards, IEnumerable<Card> oponentShowingCards, IEnumerable<Card> leftToPlay, float winProbability, int minBid, int moneyInPot, int turn, bool isOpening, out int bid)
+    {
+        bid = minBid;
+        if (isOpening)
+        {
+            float score = float.MinValue;
+            for (int i = 1; i <= 3; ++i)
+            {
+                float thisScore = ScoreOpeningOutcome(showingCards, oponentShowingCards, null, leftToPlay, false, winProbability, minBid, moneyInPot, turn);
+                if (thisScore > score)
+                {
+                    score = thisScore;
+                    bid = minBid * i;
+                }
+            }
+
+            return score;
+        }
+        else
+        {
+            return ScoreResponseOutcome(showingCards, oponentShowingCards, null, leftToPlay, false, winProbability, minBid, moneyInPot, turn);
+        }
+    }
+
+    public static float IncorporateFoldProbability(float foldProbability, int moneyInPot, int bid, float nextScore)
+    {
+        return foldProbability * moneyInPot - (1.0f - foldProbability) * (bid + nextScore);
+    }
+
+    public float ScoreOpeningOutcome(IEnumerable<Card> showingCards, IEnumerable<Card> oponentShowingCards, Card cardToPlay, IEnumerable<Card> leftToPlay, bool isOponent, float winProbability, int bid, int moneyInPot, int turn)
+    {
+        float next = float.MinValue;
+
+        int nextMoneyInPot = moneyInPot + bid;
+        int minBid = nextMoneyInPot / 2;
+
+        if (isOponent)
+        {
+            float nextScore = ScoreOpeningOutcome(
+                oponentShowingCards,
+                showingCards,
+                null,
+                leftToPlay,
+                false,
+                1.0f - winProbability,
+                minBid,
+                nextMoneyInPot,
+                turn + 1
+            );
+
+            next = IncorporateFoldProbability(PlayerFoldProbability(oponentShowingCards, showingCards, turn, minBid, nextMoneyInPot, false), moneyInPot, bid, nextScore);
+        }
+        else
+        {
+            foreach (Card toPlay in leftToPlay)
+            {
+                for (int multiplier = 1; multiplier <= 3; ++multiplier)
+                {
+                    float testOutcome = ScoreOpeningOutcome(
+                        oponentShowingCards,
+                        showingCards,
+                        toPlay,
+                        leftToPlay.Where((other) => other != toPlay),
+                        true,
+                        1.0f - winProbability,
+                        minBid * multiplier,
+                        nextMoneyInPot,
+                        turn + 1
+                       );
+
+                    float foldProbability = PlayerFoldProbability(oponentShowingCards, showingCards, turn, minBid * multiplier, nextMoneyInPot, false);
+
+                    next = Mathf.Max(IncorporateFoldProbability(foldProbability, moneyInPot, bid,  testOutcome), next);
+                }
+            }
+        }
+
+
+        return next;
+    }
+
+    public float ScoreResponseOutcome(IEnumerable<Card> showingCards, IEnumerable<Card> oponentShowingCards, Card cardPlayed, IEnumerable<Card> leftToPlay, bool isOponent, float winProbability, int bid, int moneyInPot, int turn)
+    {
+        if (turn == 2)
+        {
+            return moneyInPot * winProbability - (1.0f - winProbability) * bid;
+        }
+        else
+        {
+            float next = float.MinValue;
+
+            int nextMoneyInPot = moneyInPot + bid;
+            int minBid = nextMoneyInPot / 2;
+
+            if (isOponent)
+            {
+                float nextScore = ScoreOpeningOutcome(
+                    oponentShowingCards.Concat(new Card[] { cardPlayed }), 
+                    showingCards, 
+                    null, 
+                    leftToPlay,
+                    false, 
+                    1.0f - winProbability, 
+                    minBid, 
+                    nextMoneyInPot, 
+                    turn + 1
+                );
+
+                next = IncorporateFoldProbability(PlayerFoldProbability(oponentShowingCards, showingCards, turn + 1, minBid, nextMoneyInPot, true), moneyInPot, bid, nextScore);
+            }
+            else
+            {
+                foreach (Card toPlay in leftToPlay)
+                {
+                    float testOutcome = ScoreOpeningOutcome(
+                        oponentShowingCards, 
+                        showingCards.Concat(new Card[] { toPlay }), 
+                        null, 
+                        leftToPlay.Where((other) => other!= toPlay),
+                        true, 
+                        1.0f - winProbability, 
+                        minBid,
+                        nextMoneyInPot, 
+                        turn + 1
+                       );
+
+                    float scorenext = IncorporateFoldProbability(PlayerFoldProbability(oponentShowingCards, showingCards, turn + 1, minBid, nextMoneyInPot, true), moneyInPot, bid, testOutcome);
+
+                    if (scorenext > next)
+                    {
+                        next = scorenext;
+                    }
+                }
+            }
+
+            return next;
+        }
     }
 }

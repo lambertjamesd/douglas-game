@@ -12,7 +12,20 @@ public enum MapDirections
     Living,
 }
 
-public class WorldController : MonoBehaviour {
+public class MapPair
+{
+    public string normalizedName;
+    public Tiled2Unity.TiledMap livingMap;
+    public Tiled2Unity.TiledMap deadMap;
+
+    public MapPair(string normalizedName)
+    {
+        this.normalizedName = normalizedName;
+    }
+}
+
+public class WorldController : MonoBehaviour
+{
 	private Bounds worldBounds = new Bounds(Vector3.zero, Vector3.zero);
 	private MapAttachements currentAttachement = null;
 	public int PixelsPerUnit = 32;
@@ -22,8 +35,11 @@ public class WorldController : MonoBehaviour {
 	public MapPath startingLocation = new MapPath("default", "default");
 	public GameObject player;
 	public FollowCamera followCamera;
-	public List<Tiled2Unity.TiledMap> currentMaps = new List<Tiled2Unity.TiledMap>();
+	private MapPair currentMap = null;
     public StoryFunctionBindings storyFunctionBindings;
+    public bool isDead = false;
+
+    private static Vector3 UnusedOffset = new Vector3(65536.0f, 0.0f, 0.0f);
 
     private static Vector2[] currentBoundsAnchor = new Vector2[]{
 		new Vector2(0.0f, 1.0f),
@@ -71,51 +87,82 @@ public class WorldController : MonoBehaviour {
 		return from.transform.TransformPoint(localPosition);
 	}
 
-	public void AttachTilemap(Tiled2Unity.TiledMap from, Tiled2Unity.TiledMap tilemap, Vector3 direction) {
+	public void AttachTilemap(Tiled2Unity.TiledMap from, Tiled2Unity.TiledMap tilemap, Vector3 direction)
+    {
 	
 	}
 
 	public void Reset() {
-		foreach (Tiled2Unity.TiledMap map in currentMaps) {
-			Destroy(map.gameObject);
-		}
-		currentMaps = new List<Tiled2Unity.TiledMap>();
+		if (currentMap != null) {
+			Destroy(currentMap.deadMap.gameObject);
+            Destroy(currentMap.livingMap.gameObject);
+        }
+		currentMap = null;
 	}
 
-    public Tiled2Unity.TiledMap GetCurrentMap()
+    public MapPair GetCurrentMap()
     {
-        if (currentMaps.Count > 0)
-        {
-            return currentMaps[0];
-        }
-        else
-        {
-            return null;
-        }
+        return currentMap;
     }
 
-	public Tiled2Unity.TiledMap SpawnTilemap(Tiled2Unity.TiledMap from, Vector3 origin) {
+	private Tiled2Unity.TiledMap SpawnTilemap(Tiled2Unity.TiledMap from, Vector3 origin)
+    {
 		Tiled2Unity.TiledMap result = Instantiate(from);
-		currentMaps.Add(result);
+
 		result.transform.position = origin;
 		result.transform.parent = transform;
 
-		var min = LerpMap(result, Vector2.zero);
-		var max = LerpMap(result, Vector2.one);
-
-		worldBounds.min = Vector3.Min(min, max);
-		worldBounds.max = Vector3.Max(min, max);
-
-		if (followCamera != null) {
-			followCamera.bounds = worldBounds;
-		}
-
-		currentAttachement = result.gameObject.GetComponent<MapAttachements>();
-
-        Projectile.projectileParent = result.transform;
-
         return result;
 	}
+
+    private void SetActiveMap(Tiled2Unity.TiledMap map)
+    {
+        Projectile.projectileParent = map.transform;
+        currentAttachement = map.gameObject.GetComponent<MapAttachements>();
+    }
+
+    private MapPair SpawnMapPair(string mapName, Vector3 origin, Vector2 sizeLerp)
+    {
+        var mapEntry = mapNames.GetEntry(mapName);
+        var map = SpawnTilemap(mapEntry.tiled, Vector3.zero);
+        var mapSize = MapSize(map);
+        origin += new Vector3(sizeLerp.x * mapSize.x, sizeLerp.y * mapSize.y);
+        isDead = IsSpirit(mapName);
+        var mapPair = new MapPair(NormalizeName(mapName));
+
+        isDead = IsSpirit(mapName);
+
+        if (isDead)
+        {
+            var otherEntry = mapNames.GetEntry(NormalizeName(mapName));
+
+            mapPair.deadMap = map;
+            mapPair.livingMap = SpawnTilemap(otherEntry.tiled, UnusedOffset);
+        }
+        else
+        {
+            var otherEntry = mapNames.GetEntry(SpiritName(mapName));
+
+            mapPair.deadMap = SpawnTilemap(otherEntry.tiled, UnusedOffset);
+            mapPair.livingMap = map;
+        }
+
+        SetActiveMap(map);
+        currentMap = mapPair;
+
+        var min = LerpMap(map, Vector2.zero);
+        var max = LerpMap(map, Vector2.one);
+
+        worldBounds.min = Vector3.Min(min, max);
+        worldBounds.max = Vector3.Max(min, max);
+
+        if (followCamera != null)
+        {
+            followCamera.bounds = worldBounds;
+        }
+
+        return mapPair;
+    }
 
 	public void Start() {
 		if (followCamera != null && followCamera.target == null) {
@@ -158,15 +205,15 @@ public class WorldController : MonoBehaviour {
             {
 				if (currentAttachement.attachments[i] != null && currentAttachement.attachments[i] != "" && Vector2.Dot(minOffset, mapDirection[i]) > 0 && Vector2.Dot(maxOffset, mapDirection[i]) > 0)
                 {
-					Reset();
-					var map = mapNames.GetEntry(currentAttachement.attachments[i]);
-					Vector2 mapSize = MapSize(map.tiled);
-					SpawnTilemap(map.tiled,
+                    string nextMap = currentAttachement.attachments[i];
+                    Reset();
+                    SpawnMapPair(nextMap,
 						new Vector3(
-							Mathf.Lerp(worldBounds.min.x, worldBounds.max.x, currentBoundsAnchor[i].x) + mapSize.x * newBoundAnchor[i].x,
-							Mathf.Lerp(worldBounds.min.y, worldBounds.max.y, currentBoundsAnchor[i].y) + mapSize.y * newBoundAnchor[i].y,
+							Mathf.Lerp(worldBounds.min.x, worldBounds.max.x, currentBoundsAnchor[i].x),
+							Mathf.Lerp(worldBounds.min.y, worldBounds.max.y, currentBoundsAnchor[i].y),
 							0.0f
-						)
+						), 
+                        newBoundAnchor[i]
 					);
 					break;
 				}
@@ -176,26 +223,53 @@ public class WorldController : MonoBehaviour {
 
     public void SwitchTo(MapDirections direction)
     {
-        int directionAsInt = (int)direction;
-        if (currentAttachement != null && directionAsInt < currentAttachement.attachments.Length && currentAttachement.attachments[directionAsInt] != null)
+        if (direction == MapDirections.Living && isDead || direction == MapDirections.Dead && !isDead)
         {
-            var map = mapNames.GetEntry(currentAttachement.attachments[directionAsInt]);
-            Vector3 position = new Vector3(
-                worldBounds.min.x,
-                worldBounds.max.y,
-                0.0f
-            );
-            Reset();
-            SpawnTilemap(map.tiled, position);
+            if (isDead)
+            {
+                currentMap.deadMap.transform.localPosition += UnusedOffset;
+                currentMap.livingMap.transform.localPosition -= UnusedOffset;
+                SetActiveMap(currentMap.livingMap);
+            }
+            else
+            {
+                currentMap.deadMap.transform.localPosition -= UnusedOffset;
+                currentMap.livingMap.transform.localPosition += UnusedOffset;
+                SetActiveMap(currentMap.deadMap);
+            }
+            isDead = !isDead;
         }
+    }
+
+    private static bool IsSpirit(string name)
+    {
+        return name.StartsWith("Spirit_");
+    }
+
+    private static string NormalizeName(string name)
+    {
+        if (IsSpirit(name))
+        {
+            return name.Substring("Spirit_".Length);
+        }
+        else
+        {
+            return name;
+        }
+    }
+
+    public static string SpiritName(string name)
+    {
+        return "Spirit_" + name;
     }
 
 	public void Goto(MapPath location) {
 		Reset();
-		var mapEntry = mapNames.GetEntry(location.mapName);
-		var map = SpawnTilemap(mapEntry.tiled, Vector3.zero);
+        var mapPair = SpawnMapPair(location.mapName, Vector3.zero, Vector2.zero);
 
         if (player != null) {
+            var map = isDead ? mapPair.deadMap : mapPair.livingMap;
+
 			var staringPoints = map.GetComponentsInChildren<StartingPoint>();
 
 			StartingPoint start = null;

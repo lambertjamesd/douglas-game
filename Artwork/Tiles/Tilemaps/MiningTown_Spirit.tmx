@@ -7,6 +7,8 @@
     <property name="DeadMap" value="Spirit_Spirit_MiningTown" />
     <property name="LivingMap" value="MiningTown" />
     
+    
+    
  </properties>
  <tileset firstgid="1" source="../Tilesets/DessertSpirit.tsx" />
  <tileset firstgid="257" name="PlaceObjects" tilewidth="32" tileheight="32" tilecount="16" columns="4">

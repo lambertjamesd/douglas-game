@@ -4,6 +4,26 @@ using UnityEngine;
 
 public class DeathSequence : MonoBehaviour
 {
+    public static IEnumerator FlashTransition(MapDirections direction, DarknessOverlay darkness)
+    {
+        int animation = darkness.StartAnimation();
+        darkness.UpdateValues(Vector3.zero, 0.0f, animation);
+        darkness.SetColor(Color.white, animation);
+        GameObject.FindGameObjectWithTag("GameController").GetComponent<WorldController>().SwitchTo(direction);
+
+        float flashTime = 1.0f;
+        float animTime = 1.0f;
+
+        while (animTime > 0.0f)
+        {
+            yield return null;
+            darkness.SetColor(new Color(1.0f, 1.0f, 1.0f, animTime * animTime), animation);
+            animTime -= Time.deltaTime / flashTime;
+        }
+
+        darkness.EndAnimation(animation);
+    }
+
     public static IEnumerator Start(DarknessOverlay darkness, AnimationController playerAnimator, SpriteRenderer playerSpriteRenderer, Flasher damageFlasher)
     {
         damageFlasher.enabled = false;
@@ -22,7 +42,8 @@ public class DeathSequence : MonoBehaviour
 
         playerSpriteRenderer.sortingLayerName = "Overlay";
 
-        darkness.gameObject.SetActive(true);
+        int animation = darkness.StartAnimation();
+        darkness.SetColor(Color.black, animation);
 
         playerAnimator.SetFloat("Distance", 0.0f);
 
@@ -33,7 +54,7 @@ public class DeathSequence : MonoBehaviour
             spinRate += spinRateChange * Time.unscaledDeltaTime;
             spinTime -= Time.unscaledDeltaTime;
 
-            darkness.UpdateValues(playerAnimator.transform.position, darkesRadius);
+            darkness.UpdateValues(playerAnimator.transform.position, darkesRadius, animation);
 
             darkesRadius += radiusChangeRage * Time.unscaledDeltaTime;
 
@@ -52,12 +73,12 @@ public class DeathSequence : MonoBehaviour
         while (darkesRadius < startRadius)
         {
             darkesRadius -= 2.0f * radiusChangeRage * Time.unscaledDeltaTime;
-            darkness.UpdateValues(playerAnimator.transform.position, darkesRadius);
+            darkness.UpdateValues(playerAnimator.transform.position, darkesRadius, animation);
             yield return null;
         }
 
         playerAnimator.SetBool("Dead", false);
-        darkness.gameObject.SetActive(false);
+        darkness.EndAnimation(animation);
         playerSpriteRenderer.sortingLayerName = "Default";
         Time.timeScale = 1.0f;
         yield return null;

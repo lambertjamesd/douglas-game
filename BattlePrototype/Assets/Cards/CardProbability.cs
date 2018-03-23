@@ -2,8 +2,96 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.IO;
 
 public static class CardProbability {
+    public static float averageScore = 32.12842f;
+
+    public static float[] averageScoreFirstCard = new float[]
+    {
+        0f,
+        0f,
+        24.64319f,
+        25.63318f,
+        26.55847f,
+        27.62708f,
+        28.65527f,
+        29.7218f,
+        30.65833f,
+        31.63696f,
+        32.62732f,
+        33.61963f,
+        34.5675f,
+        35.63867f,
+        36.64722f,
+    };
+
+    public static float[] averageScoreSecondCard = new float[]
+    {
+        0f,
+        0f,
+        0f,
+        0f,
+        15.30481f,
+        16.25928f,
+        17.34204f,
+        18.28784f,
+        19.26099f,
+        20.26624f,
+        21.3125f,
+        22.33752f,
+        23.26575f,
+        24.30139f,
+        25.29431f,
+        26.29346f,
+        27.25842f,
+        28.28601f,
+        29.30408f,
+        30.26331f,
+        31.32471f,
+        32.29602f,
+        33.32495f,
+        34.31689f,
+        35.24829f,
+        36.27405f,
+        37.32288f,
+        38.33203f,
+        39.27783f,
+    };
+
+    public static float[] averageScoreSecondCardMatch = new float[]
+    {
+        0f,
+        0f,
+        0f,
+        0f,
+        19.4928f,
+        20.57434f,
+        21.48486f,
+        22.46106f,
+        23.38281f,
+        24.53564f,
+        25.57568f,
+        26.53845f,
+        27.6051f,
+        28.54163f,
+        29.67761f,
+        30.55554f,
+        31.53101f,
+        32.41882f,
+        33.56311f,
+        34.55371f,
+        35.49817f,
+        36.51099f,
+        37.49854f,
+        38.48486f,
+        39.51819f,
+        40.51563f,
+        41.52942f,
+        42.55408f,
+        43.50684f,
+    };
+
     public static float[] scoreProbability = new float[]{
         0f,
         0f,
@@ -143,5 +231,99 @@ public static class CardProbability {
         }
 
         return (float)numberOfWins / sampleCount;
+    }
+
+    public static float AverageHandScore(int sampleCount = 256)
+    {
+        float result = 0.0f;
+
+        Deck testDeck = new Deck(null);
+
+        for (int i = 0; i < sampleCount; ++i)
+        {
+            testDeck.Shuffle();
+            Card[] restOfHand = testDeck.Deal(5).ToArray();
+
+            result += CardAIBase.IdealScore(restOfHand, new Card[] { });
+
+            testDeck.Discard(restOfHand);
+
+        }
+
+        return result / sampleCount;
+    }
+
+    public delegate void PointCallback(int amount);
+
+    public static float AverageCardScore(int pointsShown, int cardsPlayed, bool suitesMatch, int sampleCount = 256)
+    {
+        float result = 0.0f;
+
+        SamplePlayedCardsScore(pointsShown, cardsPlayed, suitesMatch, (sample) => result += sample, sampleCount);
+
+        return result / sampleCount;
+    }
+
+    public static List<float> PointProbability(int pointsShown, int cardsPlayed, bool suitesMatch, int sampleCount = 256)
+    {
+        List<float> result = new List<float>();
+
+        SamplePlayedCardsScore(pointsShown, cardsPlayed, suitesMatch, (sample) =>
+        {
+            while (result.Count <= sample)
+            {
+                result.Add(0.0f);
+            }
+
+            result[sample] += 1.0f / sampleCount;
+        }, sampleCount);
+
+        return result;
+    } 
+
+    public static void SamplePlayedCardsScore(int pointsShown, int cardsPlayed, bool suitesMatch, PointCallback callback, int sampleCount = 256)
+    {
+        int cardsToPlay = 3 - cardsPlayed;
+
+        Deck testDeck = new Deck(null);
+
+        for (int i = 0; i < sampleCount; ++i)
+        {
+            testDeck.Shuffle();
+            Card[] restOfHand = testDeck.Deal(5 - cardsPlayed).ToArray();
+
+            System.Array.Sort(restOfHand, (a, b) => b.PointValue() - a.PointValue());
+
+            int rawPoints = restOfHand.Take(cardsToPlay).Select(card => card.PointValue()).Sum();
+
+            int tripleWinstonPoints = 0;
+
+            if (suitesMatch)
+            {
+                var tripleWinstonHand = restOfHand.Where(card => card.suite == Suite.Clubs).Take(cardsToPlay);
+                tripleWinstonPoints = tripleWinstonHand.Select(card => card.PointValue()).Sum() + restOfHand.Where(card => !tripleWinstonHand.Contains(card)).Take(1).Select(card => card.PointValue()).Sum();
+            }
+
+            testDeck.Discard(restOfHand);
+            
+            callback(Mathf.Max(rawPoints, tripleWinstonPoints) + pointsShown);
+        }
+    }
+
+    public static string PointProbabilityTable(int cardsPlayed, bool suitesMatch, int sampleCount = 256)
+    {
+        string result = "";
+
+        for (int i = 0; i < 2 * cardsPlayed; ++i)
+        {
+            result += "0\n";
+        }
+
+        for (int i = 2 * cardsPlayed; i <= 14 * cardsPlayed; ++i)
+        {
+            result += string.Join(",", PointProbability(i, cardsPlayed, suitesMatch, sampleCount).Select(probabilty => probabilty.ToString()).ToArray()) + "\n";
+        }
+
+        return result;
     }
 }

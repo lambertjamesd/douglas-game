@@ -67,7 +67,7 @@ public class StoryFunctionBindings : MonoBehaviour
 
         if (entry != null)
         {
-            GameObject result = GameObject.Instantiate(entry.prefab, new Vector3(x, y, 0.0f), Quaternion.identity, world.GetCurrentMap().transform);
+            GameObject result = GameObject.Instantiate(entry.prefab, new Vector3(x, y, 0.0f), Quaternion.identity, Projectile.projectileParent);
             namedObjects[splitName.Length > 1 ? splitName[1] : splitName[0]] = result;
 
             return true;

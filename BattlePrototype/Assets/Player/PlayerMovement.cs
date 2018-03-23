@@ -8,6 +8,7 @@ public class PlayerMovement : State {
     public ReloadGun reload;
     public UsingSights useSights;
 	public Transform direction;
+    public DarknessOverlay darkness;
 	public float bowSpeed = 2.0f;
     public float interactDistance = 0.5f;
     public float interactRadius = 0.5f;
@@ -68,6 +69,13 @@ public class PlayerMovement : State {
         {
             GunStats stats = inventory.GetCurrentGun();
             animator.SetInteger("GunType", stats.animationIndex);
+        }
+
+        if (Input.GetButtonDown("DeathJump"))
+        {
+            bool isDead = StoryManager.GetSingleton().GetBoolean("player_is_dead");
+            StartCoroutine(DeathSequence.FlashTransition(isDead ? MapDirections.Living : MapDirections.Dead, darkness));
+            StoryManager.GetSingleton().SetBoolean("player_is_dead", !isDead);
         }
 
         if (Input.GetButtonDown("Submit"))

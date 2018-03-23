@@ -19,7 +19,8 @@ public class CardGameLogic : MonoBehaviour {
 
     public Button foldButton;
     public Transform guiTransform;
-    public NumberSpinner spinner;
+    public RadioButtons multiplier;
+    public Text bidPreview;
     public List<Button> cardSelection;
     public Button playAgain;
     public Button stopPlaying;
@@ -60,17 +61,22 @@ public class CardGameLogic : MonoBehaviour {
 
         return defaultPlayer;
     }
-
-    // Use this for initialization
+   
+    
     void Start ()
     {
+        System.IO.File.WriteAllText("OnePlayedMatch.csv", CardProbability.PointProbabilityTable(1, true, 64));
+        //System.IO.File.WriteAllText("TwoPlayedMatch.csv", CardProbability.PointProbabilityTable(2, true, 2048 * 32));
+        //System.IO.File.WriteAllText("TwoPlayedNoMatch.csv", CardProbability.PointProbabilityTable(2, false, 2048 * 32));
+        Debug.Log("Write to " + System.IO.Directory.GetCurrentDirectory());
+
         CardGameVariables oponent = GetOponent(CardGameInitializer.playerName);
 
         deck = new Deck(oponent.deckSkin ?? deckSkin);
 
         players = new PlayerLogic[]
         {
-            new HumanPlayerLogic(0, playerHand, foldButton, guiTransform, spinner, cardSelection, playerMoney),
+            new HumanPlayerLogic(0, playerHand, foldButton, guiTransform, bidPreview, multiplier, cardSelection, playerMoney),
             BuildPlayerLogic(oponent)
         };
 
@@ -186,14 +192,12 @@ public class CardGameLogic : MonoBehaviour {
                     }
                     else
                     {
-                        player.StartTurn(playerHands, currentBid, 0);
-
                         float startTime = Time.time;
-
-                        yield return player.StartTurn(playerHands, currentBid, moneyInPot);
+                        
+                        yield return player.StartTurn(playerHands, currentBid, moneyInPot, round);
 
                         choiceInSeconds.Add(Time.time - startTime);
-
+                        
                         TurnChoice choice = player.TurnResult();
 
                         currentBid = System.Math.Max(choice.bid, currentBid);
@@ -230,7 +234,7 @@ public class CardGameLogic : MonoBehaviour {
                 int playerIndex = (currentTurn + i) % players.Length;
                 PlayerLogic player = players[playerIndex];
                 TurnChoice choice = choices[i];
-                RoundLogger.LogRound(
+                /*RoundLogger.LogRound(
                     round, 
                     playerIndex, 
                     choice.PlayedCards(), 
@@ -238,7 +242,7 @@ public class CardGameLogic : MonoBehaviour {
                     player.hand.UnplayedCards(), 
                     choiceInSeconds[i], 
                     player.money + choice.bid
-                );
+                );*/
 
                 if (!stillIn[playerIndex] && stillInCount == 1)
                 {

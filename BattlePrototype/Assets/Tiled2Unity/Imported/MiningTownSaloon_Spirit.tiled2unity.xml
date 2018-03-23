@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 10/17/2017 9:36:21 PM-->
+<!--Last exported: 2/7/2018 10:10:32 PM-->
 <Tiled2Unity version="1.0.10.1">
   <AssignMaterial mesh="mesh_0001" material="Interior" />
   <AssignMaterial mesh="mesh_0002" material="Interior" />
@@ -9,6 +9,7 @@
   <AssignMaterial mesh="mesh_tile_0257" material="PlaceObjects" />
   <Prefab name="MiningTownSaloon_Spirit" orientation="Orthogonal" staggerAxis="Y" staggerIndex="Odd" hexSideLength="0" numLayers="3" numTilesWide="9" numTilesHigh="8" tileWidth="32" tileHeight="32" exportScale="0.03125" mapWidthInPixels="288" mapHeightInPixels="256" backgroundColor="#808080">
     <Property name="Name" value="Spirit_MiningTownSaloon" />
+    <Property name="DeadMap" value="Spirit_Spirit_MiningTownSaloon" />
     <Property name="LivingMap" value="MiningTownSaloon" />
     <GameObject name="Base" x="0" y="0" z="0">
       <TileLayer opacity="1" offsetX="0" offsetY="0" />

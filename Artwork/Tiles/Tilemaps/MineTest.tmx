@@ -4,6 +4,8 @@
   
   <property name="Name" value="MineHideout" />
     <property name="DeadMap" value="Spirit_MineHideout" />
+    
+    
  </properties>
  <tileset firstgid="1" source="../Tilesets/MineTileset.tsx" />
  <tileset firstgid="257" source="../Tilesets/PlaceObjects.tsx" />

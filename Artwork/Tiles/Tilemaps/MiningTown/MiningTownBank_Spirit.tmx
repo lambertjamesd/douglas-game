@@ -3,7 +3,10 @@
  <properties>
   
   <property name="Name" value="Spirit_MiningTownBank" />
+    <property name="DeadMap" value="Spirit_Spirit_MiningTownBank" />
     <property name="LivingMap" value="MiningTownBank" />
+    
+    
     
     
     
