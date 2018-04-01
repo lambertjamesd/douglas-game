@@ -7,6 +7,9 @@ using System.IO;
 public static class CardProbability {
     public static float averageScore = 32.12842f;
 
+    public static int MinScore = 7;
+    public static int MaxScore = 53;
+
     public static float[] averageScoreFirstCard = new float[]
     {
         0f,
@@ -206,6 +209,30 @@ public static class CardProbability {
         0.999781f,
     };
 
+    public static float CalculateProbabilityOfWin(int myScore, int theirShowingScore, int cardsPlayed, bool doesMatch)
+    {
+        Card[] playedCards;
+
+        if (cardsPlayed == 1)
+        {
+            playedCards = new Card[] { new Card(null, Suite.Clubs, Card.PointsToType(theirShowingScore)) };
+        }
+        else if (cardsPlayed == 2)
+        {
+            playedCards = new Card[]
+            {
+                new Card(null,Suite.Clubs, Card.PointsToType(theirShowingScore / 2)),
+                new Card(null,doesMatch ? Suite.Clubs : Suite.Diamonds, Card.PointsToType((theirShowingScore + 1) / 2)),
+            };
+        }
+        else
+        {
+            throw new System.Exception("Invalid score setup");
+        }
+
+        return ProbabilityOfWin(myScore, new Card[] { }, playedCards);
+    }
+
     public static float ProbabilityOfWin(int myPoints, IEnumerable<Card> visibleCards, IEnumerable<Card> oponentPlayedCards)
     {
         int sampleCount = 256;
@@ -224,7 +251,9 @@ public static class CardProbability {
 
             int handScore = CardAIBase.ScoreHand(CardAIBase.IdealHand(remainingCards, oponentPlayedCards));
 
-            if (handScore > myPoints)
+            testDeck.Discard(remainingCards);
+
+            if (handScore < myPoints)
             {
                 ++numberOfWins;
             }

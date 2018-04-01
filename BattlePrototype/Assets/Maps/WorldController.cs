@@ -165,7 +165,7 @@ public class WorldController : MonoBehaviour
     }
 
 	public void Start() {
-		if (followCamera != null && followCamera.target == null) {
+        if (followCamera != null && followCamera.target == null) {
 			followCamera.target = player.transform;
 		}
 
@@ -182,8 +182,16 @@ public class WorldController : MonoBehaviour
         else if (startingLocation != null)
         {
 			Goto(startingLocation);
-		}
-	}
+        }
+
+        for (int myScore = CardProbability.MinScore; myScore <= CardProbability.MaxScore; ++myScore)
+        {
+            for (int i = 2; i <= 14; ++i)
+            {
+                Debug.Log(CardProbability.CalculateProbabilityOfWin(myScore, i, 1, true));
+            }
+        }
+    }
 
 
 

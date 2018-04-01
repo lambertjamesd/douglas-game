@@ -77,6 +77,22 @@ public class Card
             return (int)type + 1;
         }
     }
+
+    public static CardType PointsToType(int points)
+    {
+        if (points >= 2 && points <= 13)
+        {
+            return (CardType)(points - 1);
+        }
+        else if (points == 14)
+        {
+            return CardType._A;
+        }
+        else
+        {
+            throw new System.Exception("No such card");
+        }
+    }
 }
 
 public class DeckSkin : ScriptableObject {
