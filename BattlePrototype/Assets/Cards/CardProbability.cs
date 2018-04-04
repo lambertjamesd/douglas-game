@@ -7,8 +7,8 @@ using System.IO;
 public static class CardProbability {
     public static float averageScore = 32.12842f;
 
-    public static int MinScore = 7;
-    public static int MaxScore = 53;
+    public static int MinScore = Card.MIN_CARD_SCORE * 2 + Card.MIN_CARD_SCORE + 1;
+    public static int MaxScore = Card.MAX_CARD_SCORE + Card.MAX_CARD_SCORE - 1 + Card.MAX_CARD_SCORE - 2 + Card.MAX_CARD_SCORE;
 
     public static float[] averageScoreFirstCard = new float[]
     {
@@ -215,14 +215,14 @@ public static class CardProbability {
 
         if (cardsPlayed == 1)
         {
-            playedCards = new Card[] { new Card(null, Suite.Clubs, Card.PointsToType(theirShowingScore)) };
+            playedCards = new Card[] { new Card(null, Suite.Skulls, Card.PointsToType(theirShowingScore)) };
         }
         else if (cardsPlayed == 2)
         {
             playedCards = new Card[]
             {
-                new Card(null,Suite.Clubs, Card.PointsToType(theirShowingScore / 2)),
-                new Card(null,doesMatch ? Suite.Clubs : Suite.Diamonds, Card.PointsToType((theirShowingScore + 1) / 2)),
+                new Card(null,Suite.Skulls, Card.PointsToType(theirShowingScore / 2)),
+                new Card(null,doesMatch ? Suite.Skulls : Suite.Hearts, Card.PointsToType((theirShowingScore + 1) / 2)),
             };
         }
         else
@@ -329,7 +329,7 @@ public static class CardProbability {
 
             if (suitesMatch)
             {
-                var tripleWinstonHand = restOfHand.Where(card => card.suite == Suite.Clubs).Take(cardsToPlay);
+                var tripleWinstonHand = restOfHand.Where(card => card.suite == Suite.Skulls).Take(cardsToPlay);
                 tripleWinstonPoints = tripleWinstonHand.Select(card => card.PointValue()).Sum() + restOfHand.Where(card => !tripleWinstonHand.Contains(card)).Take(1).Select(card => card.PointValue()).Sum();
             }
 
@@ -348,7 +348,7 @@ public static class CardProbability {
             result += "0\n";
         }
 
-        for (int i = 2 * cardsPlayed; i <= 14 * cardsPlayed; ++i)
+        for (int i = Card.MIN_CARD_SCORE * cardsPlayed; i <= Card.MAX_CARD_SCORE * cardsPlayed; ++i)
         {
             result += string.Join(",", PointProbability(i, cardsPlayed, suitesMatch, sampleCount).Select(probabilty => probabilty.ToString()).ToArray()) + "\n";
         }

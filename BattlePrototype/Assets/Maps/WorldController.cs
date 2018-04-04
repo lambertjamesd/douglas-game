@@ -183,14 +183,6 @@ public class WorldController : MonoBehaviour
         {
 			Goto(startingLocation);
         }
-
-        for (int myScore = CardProbability.MinScore; myScore <= CardProbability.MaxScore; ++myScore)
-        {
-            for (int i = 2; i <= 14; ++i)
-            {
-                Debug.Log(CardProbability.CalculateProbabilityOfWin(myScore, i, 1, true));
-            }
-        }
     }
 
 

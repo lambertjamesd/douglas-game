@@ -10,16 +10,16 @@ using UnityEditor;
 
 public enum Suite
 {
-    Clubs,
-    Spades,
+    Skulls,
     Hearts,
-    Diamonds,
+    Stars,
+    Blossoms,
     Count,
 }
 
 public enum CardType
 {
-    _A,
+    _1,
     _2,
     _3,
     _4,
@@ -29,9 +29,6 @@ public enum CardType
     _8,
     _9,
     _10,
-    _J,
-    _Q,
-    _K,
     Count,
 }
 
@@ -68,40 +65,50 @@ public class Card
 
     public int PointValue()
     {
-        if (type == CardType._A)
-        {
-            return 14;
-        }
-        else
-        {
-            return (int)type + 1;
-        }
+        return (int)type + 1;
     }
 
     public static CardType PointsToType(int points)
     {
-        if (points >= 2 && points <= 13)
+        if (points >= 1 && points <= 10)
         {
             return (CardType)(points - 1);
-        }
-        else if (points == 14)
-        {
-            return CardType._A;
         }
         else
         {
             throw new System.Exception("No such card");
         }
     }
+
+    public static int MIN_CARD_SCORE = 1;
+    public static int MAX_CARD_SCORE = 10;
 }
 
 public class DeckSkin : ScriptableObject {
-    public Sprite[] cards;
+    public Texture2D image;
+    public Vector2 size;
     public Sprite back;
+
+    public Sprite[] CreateSprites()
+    {
+        Sprite[] cards = new Sprite[(int)Suite.Count * (int)CardType.Count];
+
+        int index = 0;
+        for (int suite = 0; suite < (int)Suite.Count; ++suite)
+        {
+            for (int type = 0; type < (int)CardType.Count; ++type)
+            {
+                cards[index] = Sprite.Create(image, new Rect(new Vector2(type * size.x, suite * size.y), size), new Vector2(0.5f, 0.5f));
+                ++index;
+            }
+        }
+
+        return cards;
+    }
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/Deck")]
-    static void CreateFont()
+    static void CreateDeck()
     {
         DeckSkin deck = ScriptableObject.CreateInstance<DeckSkin>();
 
@@ -132,11 +139,13 @@ public class Deck
 
     public Deck(DeckSkin skin)
     {
+        Sprite[] cardSprites = skin == null ? null : skin.CreateSprites();
+
         for (int suite = 0; suite < (int)Suite.Count; ++suite)
         {
             for (int type = 0; type < (int)CardType.Count; ++type)
             {
-                cards.Add(new Card(skin != null ? skin.cards[type + suite * (int)CardType.Count] : null, (Suite)suite, (CardType)type));
+                cards.Add(new Card(skin != null ? cardSprites[type + suite * (int)CardType.Count] : null, (Suite)suite, (CardType)type));
             }
         }
     }

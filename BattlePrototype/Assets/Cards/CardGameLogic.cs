@@ -20,6 +20,8 @@ public class CardGameLogic : MonoBehaviour {
     public Button foldButton;
     public Transform guiTransform;
     public RadioButtons multiplier;
+    public Image multiplierShow;
+    public Sprite[] multiplierImages;
     public Text bidPreview;
     public List<Button> cardSelection;
     public Button playAgain;
@@ -76,7 +78,7 @@ public class CardGameLogic : MonoBehaviour {
 
         players = new PlayerLogic[]
         {
-            new HumanPlayerLogic(0, playerHand, foldButton, guiTransform, bidPreview, multiplier, cardSelection, playerMoney),
+            new HumanPlayerLogic(0, playerHand, foldButton, guiTransform, bidPreview, multiplier, multiplierShow, multiplierImages, cardSelection, playerMoney),
             BuildPlayerLogic(oponent)
         };
 
@@ -177,6 +179,8 @@ public class CardGameLogic : MonoBehaviour {
             List<TurnChoice> choices = new List<TurnChoice>();
             List<float> choiceInSeconds = new List<float>();
 
+            int minBid = moneyInPot / 2;
+
             for (int i = 0; i < players.Length; ++i)
             {
                 int playerIndex = (currentTurn + i) % players.Length;
@@ -201,6 +205,8 @@ public class CardGameLogic : MonoBehaviour {
                         TurnChoice choice = player.TurnResult();
 
                         currentBid = System.Math.Max(choice.bid, currentBid);
+
+                        multiplierShow.sprite = multiplierImages[Mathf.Max(0, choice.bid / minBid - 1)];
 
                         if (choice.card == null)
                         {

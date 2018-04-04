@@ -101,6 +101,8 @@ public class HumanPlayerLogic : PlayerLogic
     private Transform guiTransform;
     private Text bidPreview;
     private RadioButtons multiplier;
+    private Image multiplierShow;
+    private Sprite[] multiplierSymbols;
     private IEnumerable<Button> cardSelection;
     private TurnChoice choice = null;
     private int cardChoice = -1;
@@ -115,6 +117,8 @@ public class HumanPlayerLogic : PlayerLogic
         Transform guiTransform,
         Text bidPreview,
         RadioButtons multiplier,
+        Image multiplierShow,
+        Sprite[] multiplierSymbols,
         List<Button> cardSelection, 
         Text moneyLabel
     ) : base(index, hand, moneyLabel)  {
@@ -122,6 +126,8 @@ public class HumanPlayerLogic : PlayerLogic
         this.guiTransform = guiTransform;
         this.bidPreview = bidPreview;
         this.multiplier = multiplier;
+        this.multiplierShow = multiplierShow;
+        this.multiplierSymbols = multiplierSymbols;
         this.cardSelection = cardSelection;
 
         this.multiplier.Change((multiplierIndex) =>
@@ -141,7 +147,7 @@ public class HumanPlayerLogic : PlayerLogic
         {
             BindCardClick(cardSelection[i], i);
         }
-        SetGUIVisible(false, -1);
+        SetGUIVisible(false, -1, 1);
     }
 
     private void PositionGUI(int slotOffset = 0)
@@ -149,7 +155,7 @@ public class HumanPlayerLogic : PlayerLogic
         guiTransform.position = hand.boardSlots[hand.GetPlayedCards().Count + slotOffset].transform.position;
     }
 
-    private void SetGUIVisible(bool value, int useBid)
+    private void SetGUIVisible(bool value, int useBid, int bidMultiplier)
     {
         guiTransform.gameObject.SetActive(value);
         foldButton.gameObject.SetActive(value);
@@ -157,9 +163,14 @@ public class HumanPlayerLogic : PlayerLogic
         PositionGUI(0);
 
         multiplier.gameObject.SetActive(useBid == -1);
+        multiplierShow.gameObject.SetActive(useBid != -1);
         if (useBid != -1)
         {
             bidPreview.text = "$" + useBid.ToString();
+        }
+        else
+        {
+            multiplierShow.sprite = multiplierSymbols[bidMultiplier - 1];
         }
     }
 
@@ -206,7 +217,7 @@ public class HumanPlayerLogic : PlayerLogic
         UpdateBid();
         minBid = Math.Max(Math.Min((currentBid == -1) ? inPot / 2 : currentBid, money), 1);
 
-        SetGUIVisible(true, currentBid);
+        SetGUIVisible(true, currentBid, 1);
 
         while (choice == null || (CanPlayExtraCard(choice.card) && choice.extraCard == null))
         {
@@ -220,7 +231,7 @@ public class HumanPlayerLogic : PlayerLogic
             yield return null;
         }
 
-        SetGUIVisible(false, -1);
+        SetGUIVisible(false, -1, 1);
 
         if (chosenCard != null)
         {
