@@ -209,20 +209,20 @@ public static class CardProbability {
         0.999781f,
     };
 
-    public static float CalculateProbabilityOfWin(int myScore, int theirShowingScore, int cardsPlayed, bool doesMatch)
+    public static Card[] FakeHand(int score, int cardsPlayed, bool doesMatch)
     {
         Card[] playedCards;
 
         if (cardsPlayed == 1)
         {
-            playedCards = new Card[] { new Card(null, Suite.Skulls, Card.PointsToType(theirShowingScore)) };
+            playedCards = new Card[] { new Card(null, Suite.Skulls, Card.PointsToType(score)) };
         }
         else if (cardsPlayed == 2)
         {
             playedCards = new Card[]
             {
-                new Card(null,Suite.Skulls, Card.PointsToType(theirShowingScore / 2)),
-                new Card(null,doesMatch ? Suite.Skulls : Suite.Hearts, Card.PointsToType((theirShowingScore + 1) / 2)),
+                new Card(null,Suite.Skulls, Card.PointsToType(score / 2)),
+                new Card(null,doesMatch ? Suite.Skulls : Suite.Hearts, Card.PointsToType((score + 1) / 2)),
             };
         }
         else
@@ -230,7 +230,45 @@ public static class CardProbability {
             throw new System.Exception("Invalid score setup");
         }
 
-        return ProbabilityOfWin(myScore, new Card[] { }, playedCards);
+        return playedCards;
+    }
+
+    public static float CalculateProbabilityOfWin(int myScore, int theirShowingScore, int cardsPlayed, bool doesMatch)
+    {
+        return ProbabilityOfWin(myScore, new Card[] { }, FakeHand(theirShowingScore, cardsPlayed, doesMatch));
+    }
+
+    public static float CalculateProbabilityOfFold(int cardsPlayed, int myScoreShowing, bool myMatch, int theirScoreShowing, bool theirMatch)
+    {
+        Card[] myShowing = FakeHand(myScoreShowing, cardsPlayed, myMatch);
+        Card[] theirShowing = FakeHand(theirScoreShowing, cardsPlayed, theirMatch);
+
+        int sampleCount = 256;
+
+        int remainingCardCount = 5 - cardsPlayed;
+        Deck testDeck = new Deck(null);
+
+        int numberOfWins = 0;
+
+        for (int i = 0; i < sampleCount; ++i)
+        {
+            testDeck.Shuffle();
+            var myRemaining = testDeck.Deal(remainingCardCount);
+            var theirRemaining = testDeck.Deal(remainingCardCount);
+
+            int myScore = CardAIBase.ScoreHand(CardAIBase.IdealHand(myRemaining, myShowing));
+            int theirScore = CardAIBase.ScoreHand(CardAIBase.IdealHand(theirRemaining, theirShowing));
+
+            testDeck.Discard(myRemaining);
+            testDeck.Discard(theirRemaining);
+
+            if (myScore > theirScore)
+            {
+                ++numberOfWins;
+            }
+        }
+
+        return (float)numberOfWins / sampleCount;
     }
 
     public static float ProbabilityOfWin(int myPoints, IEnumerable<Card> visibleCards, IEnumerable<Card> oponentPlayedCards)

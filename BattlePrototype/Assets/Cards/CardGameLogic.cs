@@ -67,6 +67,10 @@ public class CardGameLogic : MonoBehaviour {
     
     void Start ()
     {
+        shootout.TurnProbabilities probs = new shootout.TurnProbabilities();
+
+        probs.InitProbability();
+
         System.IO.File.WriteAllText("OnePlayedMatch.csv", CardProbability.PointProbabilityTable(1, true, 64));
         //System.IO.File.WriteAllText("TwoPlayedMatch.csv", CardProbability.PointProbabilityTable(2, true, 2048 * 32));
         //System.IO.File.WriteAllText("TwoPlayedNoMatch.csv", CardProbability.PointProbabilityTable(2, false, 2048 * 32));
