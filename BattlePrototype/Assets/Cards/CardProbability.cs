@@ -243,7 +243,7 @@ public static class CardProbability {
         Card[] myShowing = FakeHand(myScoreShowing, cardsPlayed, myMatch);
         Card[] theirShowing = FakeHand(theirScoreShowing, cardsPlayed, theirMatch);
 
-        int sampleCount = 256;
+        int sampleCount = 256 * 16;
 
         int remainingCardCount = 5 - cardsPlayed;
         Deck testDeck = new Deck(null);
@@ -273,7 +273,7 @@ public static class CardProbability {
 
     public static float ProbabilityOfWin(int myPoints, IEnumerable<Card> visibleCards, IEnumerable<Card> oponentPlayedCards)
     {
-        int sampleCount = 256;
+        int sampleCount = 256 * 16;
 
         Deck testDeck = new Deck(null);
         testDeck.Remove(visibleCards);

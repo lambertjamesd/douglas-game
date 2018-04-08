@@ -91,7 +91,7 @@ public abstract class PlayerLogic {
         }
     }
 
-    public abstract IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot, int currentTurn);
+    public abstract IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int currentBidScalar, int inPot, int currentTurn);
     public abstract TurnChoice TurnResult();
 }
 
@@ -207,7 +207,7 @@ public class HumanPlayerLogic : PlayerLogic
         });
     }
 
-    public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot, int currentTurn)
+    public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int currentBidScalar, int inPot, int currentTurn)
     {
         takingTurn = true;
         choice = null;
@@ -312,10 +312,10 @@ public class CardAIBase : PlayerLogic
     {
         return minBid;
     }
-
-    public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int inPot, int currentTurn)
+    
+    public virtual TurnChoice ChooseCard(IEnumerable<Card> myShowing, IEnumerable<Card> theirShowing, int inPot, int currentBid, int currentBidScalar, int currentTurn)
     {
-        if (onBoard[index].Count == 0)
+        if (myShowing.Count() == 0)
         {
             var pickedCardsList = PlayOrderCommon(IdealHand(hand.GetHand(), new Card[] { }));
             pickedCards = pickedCardsList.GetEnumerator();
@@ -327,22 +327,24 @@ public class CardAIBase : PlayerLogic
         bool shouldFold = false;
         bool isOpening = currentBid == -1;
 
-        var myHand = onBoard[index];
-        var theirHand = onBoard[1 - index];
-
         if (isOpening)
         {
             bid = GetBid(minBid, handScore);
-            float expectedWinnings = ScoreOutcome(WinProbability(bid, handScore), PlayerFoldProbability(theirHand, myHand, currentTurn, minBid, inPot, isOpening), inPot, minBid);
+            float expectedWinnings = ScoreOutcome(WinProbability(bid, handScore), PlayerFoldProbability(theirShowing, myShowing, currentTurn, minBid, inPot, isOpening), inPot, minBid);
 
             shouldFold = expectedWinnings < 0.0f;
         }
         else
         {
-            shouldFold = ScoreOutcome(WinProbability(bid, handScore), PlayerFoldProbability(theirHand, myHand, currentTurn, currentBid, inPot, isOpening), inPot, bid) < 0.0f;
+            shouldFold = ScoreOutcome(WinProbability(bid, handScore), PlayerFoldProbability(theirShowing, myShowing, currentTurn, currentBid, inPot, isOpening), inPot, bid) < 0.0f;
         }
 
-        choice = shouldFold ? TurnChoice.Fold() : new TurnChoice(Math.Min(bid, money), PickCard());
+        return shouldFold ? TurnChoice.Fold() : new TurnChoice(Math.Min(bid, money), PickCard());
+    }
+
+    public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int currentBidScalar, int inPot, int currentTurn)
+    {
+        choice = ChooseCard(onBoard[index], onBoard[1 - index], inPot, currentBid, currentBidScalar, currentTurn);
 
         yield return hand.PutCardOnTable(choice.card);
         

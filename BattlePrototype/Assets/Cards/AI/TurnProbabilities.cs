@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.IO;
 
 namespace shootout
 {
@@ -84,6 +85,34 @@ namespace shootout
             }
         }
 
+        public void Write(BinaryWriter output)
+        {
+            singleCardOpenWinProbability.Write(output);
+            for (int i = 0; i < singeCardResponseWinProbability.Length; ++i)
+            {
+                singeCardResponseWinProbability[i].Write(output);
+            }
+            singleCardOpenFoldProbability.Write(output);
+            for (int i = 0; i < singleCardResponseFoldProbability.Length; ++i)
+            {
+                singleCardResponseFoldProbability[i].Write(output);
+            }
+        }
+
+        public void Read(BinaryReader input)
+        {
+            singleCardOpenWinProbability.Read(input);
+            for (int i = 0; i < singeCardResponseWinProbability.Length; ++i)
+            {
+                singeCardResponseWinProbability[i].Read(input);
+            }
+            singleCardOpenFoldProbability.Read(input);
+            for (int i = 0; i < singleCardResponseFoldProbability.Length; ++i)
+            {
+                singleCardResponseFoldProbability[i].Read(input);
+            }
+        }
+
         public void InitProbability(int cardsPlayed, bool myMatches, bool theirMatches)
         {
             for (int myScore = CardProbability.MinScore; myScore <= CardProbability.MaxScore; ++myScore)
@@ -118,6 +147,32 @@ namespace shootout
             {new SingleTurnProbabilities(2), new SingleTurnProbabilities(2)},
             {new SingleTurnProbabilities(2), new SingleTurnProbabilities(2)},
         };
+
+        public void Write(BinaryWriter output)
+        {
+            output.Write(firstTurnFoldProbability[0]);
+            output.Write(firstTurnFoldProbability[1]);
+            output.Write(firstTurnFoldProbability[2]);
+
+            firstTurn.Write(output);
+            secondTurn[0, 0].Write(output);
+            secondTurn[0, 1].Write(output);
+            secondTurn[1, 0].Write(output);
+            secondTurn[1, 1].Write(output);
+        }
+
+        public void Read(BinaryReader input)
+        {
+            firstTurnFoldProbability[0] = input.ReadSingle();
+            firstTurnFoldProbability[1] = input.ReadSingle();
+            firstTurnFoldProbability[2] = input.ReadSingle();
+
+            firstTurn.Read(input);
+            secondTurn[0, 0].Read(input);
+            secondTurn[0, 1].Read(input);
+            secondTurn[1, 0].Read(input);
+            secondTurn[1, 1].Read(input);
+        }
 
         public void InitProbability()
         {
@@ -173,6 +228,181 @@ namespace shootout
             {
                 throw new System.Exception("Can't handle this number of cards");
             }
+        }
+    }
+
+    public class TurnProbability
+    {
+        private LearningProbability[] winProbability;
+        private LearningProbability[,] foldProbability;
+
+        private int cardsPlayed;
+
+        public TurnProbability(int remainingTurns)
+        {
+            winProbability = new LearningProbability[CardGameLogic.MAX_BID_SCALAR + 1];
+            foldProbability = new LearningProbability[CardGameLogic.MAX_BID_SCALAR + 1, remainingTurns];
+            cardsPlayed = 3 - remainingTurns;
+
+            for (int bid = 0; bid <= CardGameLogic.MAX_BID_SCALAR; ++bid)
+            {
+                winProbability[bid] = new LearningProbability(CardProbability.MaxScore, cardsPlayed * Card.MAX_CARD_SCORE);
+                for (int turn = 0; turn < remainingTurns; ++turn)
+                {
+                    foldProbability[bid, turn] = new LearningProbability(cardsPlayed * Card.MAX_CARD_SCORE, cardsPlayed * Card.MAX_CARD_SCORE);
+                }
+            }
+        }
+
+        /**
+         * if theirBidScalar is 0 then this player goes first
+         */
+        public float GetWinProbability(int myMaxScore, int theirBidScalar, int theirShowingScore)
+        {
+            return winProbability[theirBidScalar].GetProbability(myMaxScore, theirShowingScore);
+        }
+
+        /**
+         * if theirBidScalar is 0 then the other player goes first
+         */
+        public float GetFoldProbability(int cardsPlayed, int myScoreShowing, int myBidScalar, int theirShowingScore)
+        {
+            return foldProbability[myBidScalar, cardsPlayed - cardsPlayed].GetProbability(myScoreShowing, theirShowingScore);
+        }
+
+        public void FromOldStyle(TurnProbabilities old, bool meShowingMatch, bool themShowingMatch)
+        {
+            for (int bid = 0; bid <= CardGameLogic.MAX_BID_SCALAR; ++bid)
+            {
+                winProbability[bid] = new LearningProbability(CardProbability.MaxScore, cardsPlayed * Card.MAX_CARD_SCORE);
+                for (int myScore = 0; myScore <= CardProbability.MaxScore; ++myScore)
+                {
+                    for (int theirScore = 0; theirScore <= cardsPlayed * Card.MAX_CARD_SCORE; ++theirScore)
+                    {
+                        winProbability[bid].SetProbability(myScore, theirScore, old.GetWinProbability(cardsPlayed, myScore, false, theirScore, themShowingMatch, bid == 0, bid));
+                    }
+                }
+
+                int remainingTurns = 3 - cardsPlayed;
+
+                for (int turn = 0; turn < remainingTurns; ++turn)
+                {
+                    for (int myScore = 0; myScore <= cardsPlayed * Card.MAX_CARD_SCORE; ++myScore)
+                    {
+                        for (int theirScore = 0; theirScore <= cardsPlayed * Card.MAX_CARD_SCORE; ++theirScore)
+                        {
+                            foldProbability[bid, turn].SetProbability(myScore, theirScore, old.GetFoldProbability(cardsPlayed, myScore, meShowingMatch, theirScore, themShowingMatch, bid != 0, bid));
+                        }
+                    }
+                }
+            }
+        }
+
+        public void Write(BinaryWriter output)
+        {
+            for (int i = 0; i < winProbability.Length; ++i)
+            {
+                winProbability[i].Write(output);
+            }
+
+            for (int i = 0; i < foldProbability.GetLength(0); ++i)
+            {
+                for (int j = 0; j < foldProbability.GetLength(1); ++j)
+                {
+                    foldProbability[i, j].Write(output);
+                }
+            }
+        }
+
+        public void Read(BinaryReader input)
+        {
+            for (int i = 0; i < winProbability.Length; ++i)
+            {
+                winProbability[i].Read(input);
+            }
+
+            for (int i = 0; i < foldProbability.GetLength(0); ++i)
+            {
+                for (int j = 0; j < foldProbability.GetLength(1); ++j)
+                {
+                    foldProbability[i, j].Read(input);
+                }
+            }
+        }
+    }
+    
+    public class AllTurnProbabilities
+    {
+        private TurnProbability[] turns = new TurnProbability[]
+        {
+            new TurnProbability(3),
+            new TurnProbability(2),
+        };
+
+        private TurnProbability[,] turnThreeProbability = new TurnProbability[2, 2]
+        {
+            {new TurnProbability(1), new TurnProbability(1)},
+            {new TurnProbability(1), new TurnProbability(1)},
+        };
+        
+        /**
+         * if theirBidScalar is 0 then this player goes first
+         */
+        public float GetWinProbability(int currentTurn, int myMaxScore, int theirBidScalar, int theirShowingScore, bool theyShowingMatch)
+        {
+            if (currentTurn < 2)
+            {
+                return turns[currentTurn].GetWinProbability(myMaxScore, theirBidScalar, theirShowingScore);
+            }
+            else
+            {
+                return turnThreeProbability[0, theyShowingMatch ? 1 : 0].GetWinProbability(myMaxScore, theirBidScalar, theirShowingScore);
+            }
+        }
+
+        /**
+         * if theirBidScalar is 0 then the other player goes first
+         */
+        public float GetFoldProbability(int currentTurn, int cardsPlayed, int myScoreShowing, bool meShowingMatch, int myBidScalar, int theirShowingScore, bool theyShowingMatch)
+        {
+            if (currentTurn < 2)
+            {
+                return turns[currentTurn].GetFoldProbability(cardsPlayed, myScoreShowing, myBidScalar, theirShowingScore);
+            }
+            else
+            {
+                return turnThreeProbability[meShowingMatch ? 1 : 0, theyShowingMatch ? 1 : 0].GetFoldProbability(cardsPlayed, myScoreShowing, myBidScalar, theirShowingScore);
+            }
+        }
+
+        public void FromOldStyle(TurnProbabilities old)
+        {
+            turns[0].FromOldStyle(old, true, true);
+            turns[1].FromOldStyle(old, true, true);
+            turnThreeProbability[0, 0].FromOldStyle(old, false, false);
+            turnThreeProbability[0, 1].FromOldStyle(old, false, true);
+            turnThreeProbability[1, 0].FromOldStyle(old, true, false);
+            turnThreeProbability[1, 1].FromOldStyle(old, true, true);
+        }
+
+        public void Write(BinaryWriter output)
+        {
+            turns[0].Write(output);
+            turns[1].Write(output);
+            turnThreeProbability[0, 0].Write(output);
+            turnThreeProbability[0, 1].Write(output);
+            turnThreeProbability[1, 0].Write(output);
+            turnThreeProbability[1, 1].Write(output);
+        }
+
+        public void Read(BinaryReader input)
+        {
+            turns[0].Read(input);
+            turns[1].Read(input);
+            turnThreeProbability[0, 0].Read(input);
+            turnThreeProbability[0, 1].Read(input);
+            turnThreeProbability[1, 0].Read(input);
+            turnThreeProbability[1, 1].Read(input);
         }
     }
 }

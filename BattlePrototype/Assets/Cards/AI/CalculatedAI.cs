@@ -5,19 +5,22 @@ using UnityEngine.UI;
 
 public class CalculatedAI : CardAIBase
 {
-    public CalculatedAI(int index, PlayerHand hand, Text moneyLabel)
+    shootout.CardGameAI ai;
+
+    public CalculatedAI(int index, PlayerHand hand, Text moneyLabel, shootout.CardGameAI ai)
         : base(index, hand, moneyLabel)
     {
-
+        this.ai = ai;
     }
 
-    public override float PlayerFoldProbability(IEnumerable<Card> showingCards, IEnumerable<Card> oponentShowingCards, int turn, int bid, int inPot, bool isOpening)
+    public override TurnChoice ChooseCard(IEnumerable<Card> myShowing, IEnumerable<Card> theirShowing, int inPot, int currentBid, int currentBidScalar, int currentTurn)
     {
-        return 0.0f;
-    }
+        shootout.CardGameState state = new shootout.CardGameState(hand.UnplayedCards(), myShowing, theirShowing, currentBidScalar == 0, currentBidScalar == 0, inPot, Mathf.Max(currentBid, 0), currentBidScalar);
 
-    public override float WinProbability(int bid, int score)
-    {
-        return base.WinProbability(bid, score);
+        shootout.TurnResult result = state.CaclulateOptimalTurn(ai);
+        
+        TurnChoice choice = new TurnChoice(result.bid, result.chosenCard);
+        choice.extraCard = result.fourthCard;
+        return choice;
     }
 }

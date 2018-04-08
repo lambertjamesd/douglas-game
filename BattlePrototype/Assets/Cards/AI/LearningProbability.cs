@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 namespace shootout
 {
@@ -35,6 +36,39 @@ namespace shootout
                 for (int j = 0; j < Mathf.Min(probabilityMap.GetLength(1), other.probabilityMap.GetLength(1)); ++i)
                 {
                     probabilityMap[i, j] = other.probabilityMap[i, j];
+                }
+            }
+        }
+
+        public void Write(BinaryWriter output)
+        {
+            int myMaxScore = probabilityMap.GetLength(0);
+            int theirMaxScore = probabilityMap.GetLength(1);
+
+            output.Write((short)myMaxScore);
+            output.Write((short)theirMaxScore);
+
+            for (int myScore = 0; myScore < myMaxScore; ++myScore)
+            {
+                for (int theirScore = 0; theirScore < theirMaxScore; ++theirScore)
+                {
+                    output.Write(probabilityMap[myScore, theirScore]);
+                }
+            }
+        }
+
+        public void Read(BinaryReader input)
+        {
+            int myMaxScore = input.ReadInt16();
+            int theirMaxScore = input.ReadInt16();
+
+            probabilityMap = new float[myMaxScore, theirMaxScore];
+            
+            for (int myScore = 0; myScore < myMaxScore; ++myScore)
+            {
+                for (int theirScore = 0; theirScore < theirMaxScore; ++theirScore)
+                {
+                    probabilityMap[myScore, theirScore] = input.ReadSingle();
                 }
             }
         }

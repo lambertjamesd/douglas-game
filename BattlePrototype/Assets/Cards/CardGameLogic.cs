@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System.IO;
 
 public class CardGameLogic : MonoBehaviour {
     public DeckSkin deckSkin;
@@ -39,6 +40,8 @@ public class CardGameLogic : MonoBehaviour {
     public CardGameVariables defaultPlayer;
     public CardGameVariables[] cardPlayers;
 
+    public static int MAX_BID_SCALAR = 3;
+
     private int moneyInPot = 0;
 
     PlayerLogic BuildPlayerLogic(CardGameVariables variables)
@@ -67,11 +70,19 @@ public class CardGameLogic : MonoBehaviour {
     
     void Start ()
     {
-        shootout.TurnProbabilities probs = new shootout.TurnProbabilities();
+        shootout.AllTurnProbabilities turnProbs = new shootout.AllTurnProbabilities();
 
-        probs.InitProbability();
+        using (BinaryReader reader = new BinaryReader(File.Open("AllTurnsProbability.dat", FileMode.Open)))
+        {
+            turnProbs.Read(reader);
+        }
 
-        System.IO.File.WriteAllText("OnePlayedMatch.csv", CardProbability.PointProbabilityTable(1, true, 64));
+        //using (BinaryWriter writer = new BinaryWriter(File.Open("AllTurnsProbability.dat", FileMode.OpenOrCreate)))
+        //{
+        //    turnProbs.Write(writer);
+        //}
+
+           System.IO.File.WriteAllText("OnePlayedMatch.csv", CardProbability.PointProbabilityTable(1, true, 64));
         //System.IO.File.WriteAllText("TwoPlayedMatch.csv", CardProbability.PointProbabilityTable(2, true, 2048 * 32));
         //System.IO.File.WriteAllText("TwoPlayedNoMatch.csv", CardProbability.PointProbabilityTable(2, false, 2048 * 32));
         Debug.Log("Write to " + System.IO.Directory.GetCurrentDirectory());
@@ -179,6 +190,7 @@ public class CardGameLogic : MonoBehaviour {
         {
             var playerHands = players.Select(player => player.hand.GetPlayedCards()).ToList();
             int currentBid = -1;
+            int currentBidScalar = 0;
 
             List<TurnChoice> choices = new List<TurnChoice>();
             List<float> choiceInSeconds = new List<float>();
@@ -202,15 +214,16 @@ public class CardGameLogic : MonoBehaviour {
                     {
                         float startTime = Time.time;
                         
-                        yield return player.StartTurn(playerHands, currentBid, moneyInPot, round);
+                        yield return player.StartTurn(playerHands, currentBid, currentBidScalar, moneyInPot, round);
 
                         choiceInSeconds.Add(Time.time - startTime);
                         
                         TurnChoice choice = player.TurnResult();
-
+                        
                         currentBid = System.Math.Max(choice.bid, currentBid);
+                        currentBidScalar = Mathf.Max(1, currentBid / minBid);
 
-                        multiplierShow.sprite = multiplierImages[Mathf.Max(0, choice.bid / minBid - 1)];
+                        multiplierShow.sprite = multiplierImages[currentBidScalar - 1];
 
                         if (choice.card == null)
                         {

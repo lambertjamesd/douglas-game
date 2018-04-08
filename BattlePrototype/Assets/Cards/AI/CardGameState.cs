@@ -3,320 +3,404 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class AIPlayerState
+namespace shootout
 {
-    public Card[] hand = new Card[5];
-    public Card[] visibleCards = new Card[4];
-    public Card pendingCard = null;
-    public Card fourthCard = null;
-    public int cardsPlayed = 0;
-    public int visibleScore = 0;
-
-    public delegate void CardCallback(int index);
-
-    public void ForEachInHand(CardCallback callback)
+    public class AIPlayerState
     {
-        for (int i = 0; i < hand.Length; ++i)
+        public Card[] hand = new Card[5];
+        public Card[] visibleCards = new Card[4];
+        public Card pendingCard = null;
+        public Card fourthCard = null;
+        public int cardsPlayed = 0;
+        public int visibleScore = 0;
+        public bool allMatch = true;
+
+        public AIPlayerState()
         {
-            if (hand[i] != null)
+
+        }
+
+        public AIPlayerState(IEnumerable<Card> myHand, IEnumerable<Card> playedCards)
+        {
+            int i = 0;
+            foreach (Card card in myHand)
             {
-                callback(i);
+                hand[i] = card;
+            }
+            i = 0;
+            foreach (Card card in playedCards)
+            {
+                visibleCards[i] = card;
+                ++i;
+            }
+            cardsPlayed = i;
+            visibleScore = playedCards.Sum(item => item.PointValue());
+            allMatch = cardsPlayed == 2 ? visibleCards[0].suite == visibleCards[1].suite : true;
+        }
+
+        public delegate void CardCallback(int index);
+
+        public void ForEachInHand(CardCallback callback)
+        {
+            for (int i = 0; i < hand.Length; ++i)
+            {
+                if (hand[i] != null)
+                {
+                    callback(i);
+                }
             }
         }
-    }
 
-    public void CloneFrom(AIPlayerState source)
-    {
-        for (int i = 0; i < hand.Length; ++i)
+        public void CloneFrom(AIPlayerState source)
         {
-            hand[i] = source.hand[i];
-        }
-
-        for (int i = 0; i < visibleCards.Length; ++i)
-        {
-            visibleCards[i] = source.visibleCards[i];
-        }
-
-        pendingCard = source.pendingCard;
-        cardsPlayed = source.cardsPlayed;
-        visibleScore = source.visibleScore;
-    }
-
-    public bool CanPlayTriple()
-    {
-        if (visibleCards[0] != null)
-        {
-            for (int i = 1; i < visibleCards.Length && visibleCards[i] != null; ++i)
+            for (int i = 0; i < hand.Length; ++i)
             {
-                if (visibleCards[0].suite != visibleCards[i].suite)
+                hand[i] = source.hand[i];
+            }
+
+            for (int i = 0; i < visibleCards.Length; ++i)
+            {
+                visibleCards[i] = source.visibleCards[i];
+            }
+
+            pendingCard = source.pendingCard;
+            cardsPlayed = source.cardsPlayed;
+            visibleScore = source.visibleScore;
+            allMatch = source.allMatch;
+        }
+
+        public bool CanPlayTriple()
+        {
+            if (visibleCards[0] != null)
+            {
+                for (int i = 1; i < visibleCards.Length && visibleCards[i] != null; ++i)
+                {
+                    if (visibleCards[0].suite != visibleCards[i].suite)
+                    {
+                        return false;
+                    }
+                }
+
+                if (pendingCard != null && pendingCard.suite != visibleCards[0].suite)
                 {
                     return false;
                 }
             }
 
-            if (pendingCard != null && pendingCard.suite != visibleCards[0].suite)
+            return true;
+        }
+
+        public Card PlayCard(int index)
+        {
+            pendingCard = hand[index];
+            hand[index] = null;
+            return pendingCard;
+        }
+
+        public Card PlayFourthCard(int index)
+        {
+            fourthCard = hand[index];
+            hand[index] = null;
+            return fourthCard;
+        }
+
+        public void RevealCard()
+        {
+            visibleCards[cardsPlayed] = pendingCard;
+            visibleScore += pendingCard.PointValue();
+            pendingCard = null;
+            ++cardsPlayed;
+
+            for (int i = 1; i < cardsPlayed && allMatch; ++i)
             {
-                return false;
+                if (visibleCards[i].suite != visibleCards[0].suite)
+                {
+                    allMatch = false;
+                }
+            }
+
+            if (fourthCard != null)
+            {
+                visibleCards[cardsPlayed] = fourthCard;
+                visibleScore += fourthCard.PointValue();
+                fourthCard = null;
+                ++cardsPlayed;
+            }
+        }
+    }
+
+    public class OtherPlayerState
+    {
+        public Card[] visibleCards = new Card[4];
+        public int cardsPlayed = 0;
+        public int visibleScore = 0;
+        public bool allMatch = true;
+
+        public OtherPlayerState()
+        {
+
+        }
+
+        public OtherPlayerState(IEnumerable<Card> showing)
+        {
+            int i = 0;
+            foreach (Card card in showing)
+            {
+                visibleCards[i] = card;
+                ++i;
+            }
+            cardsPlayed = i;
+            visibleScore = showing.Sum(item => item.PointValue());
+            allMatch = cardsPlayed == 2 ? visibleCards[0].suite == visibleCards[1].suite : true;
+        }
+
+        public void CloneFrom(OtherPlayerState source)
+        {
+            for (int i = 0; i < visibleCards.Length; ++i)
+            {
+                visibleCards[i] = source.visibleCards[i];
+            }
+
+            visibleScore = source.visibleScore;
+            allMatch = source.allMatch;
+        }
+    }
+
+    public class TurnResult
+    {
+        public float value;
+        public Card chosenCard;
+        public int bid;
+        public Card fourthCard;
+    }
+
+    public class CardGameState
+    {
+        public AIPlayerState aiPlayer = new AIPlayerState();
+        public OtherPlayerState otherPlayer = new OtherPlayerState();
+
+        public int round = 0;
+        public bool isFirstTurn = true;
+        public bool isAIFirst = true;
+        public int amountInPot = 0;
+        public int currentBid = 0;
+        public int currentBidScalar = 0;
+
+        public static int checkCount = 0;
+
+        public CardGameState()
+        {
+
+        }
+
+        public CardGameState(IEnumerable<Card> hand, IEnumerable<Card> minePlayed, IEnumerable<Card> theirsPlayed, bool isMeFirst, bool isFirst, int pot, int bid, int bidScalar)
+        {
+            aiPlayer = new AIPlayerState(hand, minePlayed);
+            otherPlayer = new OtherPlayerState(theirsPlayed);
+            round = otherPlayer.cardsPlayed;
+            isFirstTurn = isFirst;
+            isAIFirst = isMeFirst;
+            amountInPot = pot;
+            currentBid = bid;
+            currentBidScalar = bidScalar;
+        }
+
+        public CardGameState Clone()
+        {
+            CardGameState result = new CardGameState();
+
+            result.aiPlayer.CloneFrom(aiPlayer);
+            result.otherPlayer.CloneFrom(otherPlayer);
+            result.round = round;
+            result.isFirstTurn = isFirstTurn;
+            result.isAIFirst = isAIFirst;
+            result.amountInPot = amountInPot;
+            result.currentBid = currentBid;
+            result.currentBidScalar = currentBidScalar;
+
+            return result;
+        }
+
+        public void AdvanceTurn()
+        {
+            if (isFirstTurn)
+            {
+                isFirstTurn = false;
+            }
+            else
+            {
+                ++round;
+                aiPlayer.RevealCard();
+                isAIFirst = !isAIFirst;
+                isFirstTurn = true;
             }
         }
 
-        return true;
-    }
-
-    public Card PlayCard(int index)
-    {
-        pendingCard = hand[index];
-        hand[index] = null;
-        return pendingCard;
-    }
-
-    public Card PlayFourthCard(int index)
-    {
-        fourthCard = hand[index];
-        hand[index] = null;
-        return fourthCard;
-    }
-
-    public void RevealCard()
-    {
-        visibleCards[cardsPlayed] = pendingCard;
-        visibleScore += pendingCard.PointValue();
-        pendingCard = null;
-        ++cardsPlayed;
-
-        if (fourthCard != null)
+        private float FinishAITurn(int bid, int bidScalar, CardGameAI ai)
         {
-            visibleCards[cardsPlayed] = fourthCard;
-            visibleScore += fourthCard.PointValue();
-            fourthCard = null;
-            ++cardsPlayed;
-        }
-    }
-}
+            currentBid = bid;
+            currentBidScalar = bidScalar;
+            amountInPot += currentBid;
+            AdvanceTurn();
 
-public class OtherPlayerState
-{
-    public Card[] visibleCards = new Card[4];
-    public int cardsPlayed = 0;
-    public int visibleScore = 0;
-    public bool canTriple = false;
+            TurnResult subResult = CaclulateOptimalTurn(ai);
 
-    public void CloneFrom(OtherPlayerState source)
-    {
-        for (int i = 0; i < visibleCards.Length; ++i)
-        {
-            visibleCards[i] = source.visibleCards[i];
+            return subResult.value - bid;
         }
 
-        visibleScore = source.visibleScore;
-        canTriple = source.canTriple;
-    }
-}
-
-public class TurnResult
-{
-    public float value;
-    public Card chosenCard;
-    public int bid;
-    public Card fourthCard;
-}
-
-public class CardGameState
-{
-    public AIPlayerState aiPlayer = new AIPlayerState();
-    public OtherPlayerState otherPlayer = new OtherPlayerState();
-
-    public int round = 0;
-    public bool isFirstTurn = true;
-    public bool isAIFirst = true;
-    public int amountInPot = 0;
-    public int currentBid = 0;
-
-    public static int checkCount = 0;
-
-    public CardGameState Clone()
-    {
-        CardGameState result = new CardGameState();
-
-        result.aiPlayer.CloneFrom(aiPlayer);
-        result.otherPlayer.CloneFrom(otherPlayer);
-        result.round = round;
-        result.isFirstTurn = isFirstTurn;
-        result.isAIFirst = isAIFirst;
-        result.amountInPot = amountInPot;
-        result.currentBid = currentBid;
-
-        return result;
-    }
-
-    public void AdvanceTurn()
-    {
-        if (isFirstTurn)
+        private TurnResult TakeAITurn(int bid, int bidScalar, CardGameAI ai)
         {
-            isFirstTurn = false;
-        }
-        else
-        {
-            ++round;
-            aiPlayer.RevealCard();
-            isAIFirst = !isAIFirst;
-            isFirstTurn = true;
-        }
-    }
-
-    private float FinishAITurn(int bid, CardGameAI ai)
-    {
-        currentBid = bid;
-        amountInPot += currentBid;
-        AdvanceTurn();
-
-        TurnResult subResult = CaclulateOptimalTurn(ai);
-
-        return subResult.value - bid;
-    }
-
-    private TurnResult TakeAITurn(int bid, CardGameAI ai)
-    {
-        TurnResult result = new TurnResult();
+            TurnResult result = new TurnResult();
         
 
-        aiPlayer.ForEachInHand((index) =>
-        {
-            CardGameState nextState = Clone();
-
-            Card cardPlayed = nextState.aiPlayer.PlayCard(index);
-
-            if (round == 2 && nextState.aiPlayer.CanPlayTriple())
+            aiPlayer.ForEachInHand((index) =>
             {
-                nextState.aiPlayer.ForEachInHand((fourthIndex) =>
+                CardGameState nextState = Clone();
+
+                Card cardPlayed = nextState.aiPlayer.PlayCard(index);
+
+                if (round == 2 && nextState.aiPlayer.CanPlayTriple())
                 {
-                    CardGameState fourthPlayState = nextState.Clone();
+                    nextState.aiPlayer.ForEachInHand((fourthIndex) =>
+                    {
+                        CardGameState fourthPlayState = nextState.Clone();
 
-                    Card fourthCard = fourthPlayState.aiPlayer.PlayFourthCard(fourthIndex);
+                        Card fourthCard = fourthPlayState.aiPlayer.PlayFourthCard(fourthIndex);
 
-                    float score = fourthPlayState.FinishAITurn(bid, ai);
+                        float score = fourthPlayState.FinishAITurn(bid, bidScalar, ai);
+
+                        if (score > result.value)
+                        {
+                            result.value = score;
+                            result.chosenCard = cardPlayed;
+                            result.bid = nextState.currentBid;
+                            result.fourthCard = fourthCard;
+                        }
+                    });
+                }
+                else
+                {
+                    float score = nextState.FinishAITurn(bid, bidScalar, ai);
 
                     if (score > result.value)
                     {
                         result.value = score;
                         result.chosenCard = cardPlayed;
                         result.bid = nextState.currentBid;
-                        result.fourthCard = fourthCard;
                     }
-                });
+                }
+            });
+
+            return result;
+        }
+
+        private float TakeOtherPlayerTurn(float foldProb, int bid, int bidScalar, CardGameAI ai)
+        {
+            // other player responds
+            CardGameState nextState = Clone();
+            nextState.currentBid = bid;
+            nextState.currentBidScalar = bidScalar;
+            nextState.amountInPot += bid;
+            nextState.AdvanceTurn();
+
+            TurnResult subResult = nextState.CaclulateOptimalTurn(ai);
+
+            return subResult.value * (1 - foldProb) + amountInPot * foldProb;
+        }
+
+        public TurnResult CaclulateOptimalTurn(CardGameAI ai)
+        {
+            TurnResult result = new TurnResult();
+
+            if (round == 3)
+            {
+                ++checkCount;
+                result.value = ai.winProbability(aiPlayer, otherPlayer, isAIFirst, currentBidScalar) * amountInPot;
             }
             else
             {
-                float score = nextState.FinishAITurn(bid, ai);
+                int minBid = amountInPot / 2;
+                int cardSlot = aiPlayer.cardsPlayed;
 
-                if (score > result.value)
+                if (isFirstTurn && isAIFirst)
                 {
-                    result.value = score;
-                    result.chosenCard = cardPlayed;
-                    result.bid = nextState.currentBid;
-                }
-            }
-        });
-
-        return result;
-    }
-
-    private float TakeOtherPlayerTurn(float foldProb, int bid, CardGameAI ai)
-    {
-        // other player responds
-        CardGameState nextState = Clone();
-        nextState.amountInPot += bid;
-        nextState.AdvanceTurn();
-
-        TurnResult subResult = nextState.CaclulateOptimalTurn(ai);
-
-        return subResult.value * (1 - foldProb) + amountInPot * foldProb;
-    }
-
-    public TurnResult CaclulateOptimalTurn(CardGameAI ai)
-    {
-        TurnResult result = new TurnResult();
-
-        if (round == 3)
-        {
-            ++checkCount;
-            result.value = ai.winProbability(aiPlayer, otherPlayer) * amountInPot;
-        }
-        else
-        {
-            int minBid = amountInPot / 2;
-            int cardSlot = aiPlayer.cardsPlayed;
-
-            if (isFirstTurn && isAIFirst)
-            {
-                // this player goes first
-                for (int bidScalar = 1; bidScalar <= 3; ++bidScalar)
-                {
-                    TurnResult subResult = TakeAITurn(bidScalar * minBid, ai);
-
-                    if (subResult.value > result.value)
+                    // this player goes first
+                    for (int bidScalar = 1; bidScalar <= 3; ++bidScalar)
                     {
-                        result = subResult;
+                        TurnResult subResult = TakeAITurn(bidScalar * minBid, bidScalar, ai);
+
+                        if (subResult.value > result.value)
+                        {
+                            result = subResult;
+                        }
                     }
                 }
-            }
-            else if (!isFirstTurn && isAIFirst)
-            {
-                // other player responds
-                float foldProb = ai.foldProbaility(aiPlayer, otherPlayer);
-                result.value = TakeOtherPlayerTurn(foldProb, currentBid, ai);
-            }
-            else if (!isFirstTurn && !isAIFirst)
-            {
-                // this player responds
-                result = TakeAITurn(currentBid, ai);
-            }
-            else
-            {
-                // other player goes first
-                float foldProb = ai.foldProbaility(aiPlayer, otherPlayer);
-
-                float scoreResult = float.PositiveInfinity;
-
-                for (int bidScalar = 1; bidScalar <= 3; ++bidScalar)
+                else if (!isFirstTurn && isAIFirst)
                 {
-                    float singleResult = TakeOtherPlayerTurn(foldProb, bidScalar * minBid, ai);
-
-                    if (singleResult < scoreResult)
-                    {
-                        scoreResult = singleResult;
-                    }
+                    // other player responds
+                    float foldProb = ai.foldProbaility(aiPlayer, otherPlayer, isAIFirst, currentBidScalar);
+                    result.value = TakeOtherPlayerTurn(foldProb, currentBid, currentBidScalar, ai);
                 }
+                else if (!isFirstTurn && !isAIFirst)
+                {
+                    // this player responds
+                    result = TakeAITurn(currentBid, currentBidScalar, ai);
+                }
+                else
+                {
+                    // other player goes first
+                    float foldProb = ai.foldProbaility(aiPlayer, otherPlayer, isAIFirst, currentBidScalar);
 
-                result.value = scoreResult;
+                    float scoreResult = float.PositiveInfinity;
+
+                    for (int bidScalar = 1; bidScalar <= 3; ++bidScalar)
+                    {
+                        float singleResult = TakeOtherPlayerTurn(foldProb, bidScalar * minBid, bidScalar, ai);
+
+                        if (singleResult < scoreResult)
+                        {
+                            scoreResult = singleResult;
+                        }
+                    }
+
+                    result.value = scoreResult;
+                }
             }
+
+            return result;
+        }
+    }
+
+    public class CardGameAI
+    {
+        public delegate float WinProbability(AIPlayerState myState, OtherPlayerState otherState, bool isFirst, int bidScalar);
+        public delegate float FoldProbability(AIPlayerState myState, OtherPlayerState otherState, bool isFirst, int bidScalar);
+
+        public WinProbability winProbability;
+        public FoldProbability foldProbaility;
+
+        public static CardGameAI DumbAI()
+        {
+            CardGameAI result = new CardGameAI();
+            result.winProbability = (me, them, isFirst, bidScalar) => 1;
+            result.foldProbaility = (me, them, isFirst, bidScalar) => 0;
+            return result;
         }
 
-        return result;
-    }
-}
+        public static CardGameAI CalculatedAI()
+        {
+            CardGameAI result = new CardGameAI();
+            result.winProbability = (me, them, isFirst, bidScalar) => CardProbability.winProbability[me.visibleScore];
+            result.foldProbaility = (me, them, isFirst, bidScalar) => 0;
+            return result;
+        }
 
-public class CardGameAI
-{
-    public delegate float WinProbability(AIPlayerState myState, OtherPlayerState otherState);
-    public delegate float FoldProbability(AIPlayerState myState, OtherPlayerState otherState);
-
-    public WinProbability winProbability;
-    public FoldProbability foldProbaility;
-
-    public static CardGameAI DumbAI()
-    {
-        CardGameAI result = new CardGameAI();
-        result.winProbability = (me, them) => 1;
-        result.foldProbaility = (me, them) => 0;
-        return result;
-    }
-
-    public static CardGameAI CalculatedAI()
-    {
-        CardGameAI result = new CardGameAI();
-        result.winProbability = (me, them) => CardProbability.winProbability[me.visibleScore];
-        result.foldProbaility = (me, them) => 0;
-        return result;
+        public static CardGameAI TurnProbability(AllTurnProbabilities probability)
+        {
+            CardGameAI result = new CardGameAI();
+            result.winProbability = (me, them, isFirst, bidScalar) => probability.GetWinProbability(them.cardsPlayed, me.visibleScore, isFirst ? 0 : bidScalar, them.visibleScore, them.allMatch);
+            result.foldProbaility = (me, them, isFirst, bidScalar) => probability.GetFoldProbability(them.cardsPlayed, me.cardsPlayed, me.visibleScore, me.allMatch, isFirst ? bidScalar : 0, them.visibleScore, them.allMatch);
+            return result;
+        }
     }
 }
