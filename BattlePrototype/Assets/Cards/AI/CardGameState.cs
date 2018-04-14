@@ -13,7 +13,9 @@ namespace shootout
         public Card fourthCard = null;
         public int cardsPlayed = 0;
         public int visibleScore = 0;
+        public int initialVisibleScore = 0;
         public bool allMatch = true;
+        public bool initialAllMatch = true;
 
         public AIPlayerState()
         {
@@ -26,6 +28,7 @@ namespace shootout
             foreach (Card card in myHand)
             {
                 hand[i] = card;
+                ++i;
             }
             i = 0;
             foreach (Card card in playedCards)
@@ -35,7 +38,9 @@ namespace shootout
             }
             cardsPlayed = i;
             visibleScore = playedCards.Sum(item => item.PointValue());
+            initialVisibleScore = visibleScore;
             allMatch = cardsPlayed == 2 ? visibleCards[0].suite == visibleCards[1].suite : true;
+            initialAllMatch = allMatch;
         }
 
         public delegate void CardCallback(int index);
@@ -66,7 +71,9 @@ namespace shootout
             pendingCard = source.pendingCard;
             cardsPlayed = source.cardsPlayed;
             visibleScore = source.visibleScore;
+            initialVisibleScore = source.initialVisibleScore;
             allMatch = source.allMatch;
+            initialAllMatch = source.initialAllMatch;
         }
 
         public bool CanPlayTriple()
@@ -160,7 +167,7 @@ namespace shootout
             {
                 visibleCards[i] = source.visibleCards[i];
             }
-
+            cardsPlayed = source.cardsPlayed;
             visibleScore = source.visibleScore;
             allMatch = source.allMatch;
         }
@@ -319,7 +326,7 @@ namespace shootout
             }
             else
             {
-                int minBid = amountInPot / 2;
+                int minBid = (amountInPot - currentBid) / 2;
                 int cardSlot = aiPlayer.cardsPlayed;
 
                 if (isFirstTurn && isAIFirst)
@@ -399,7 +406,7 @@ namespace shootout
         {
             CardGameAI result = new CardGameAI();
             result.winProbability = (me, them, isFirst, bidScalar) => probability.GetWinProbability(them.cardsPlayed, me.visibleScore, isFirst ? 0 : bidScalar, them.visibleScore, them.allMatch);
-            result.foldProbaility = (me, them, isFirst, bidScalar) => probability.GetFoldProbability(them.cardsPlayed, me.cardsPlayed, me.visibleScore, me.allMatch, isFirst ? bidScalar : 0, them.visibleScore, them.allMatch);
+            result.foldProbaility = (me, them, isFirst, bidScalar) => probability.GetFoldProbability(them.cardsPlayed, me.cardsPlayed, me.visibleScore, me.initialAllMatch, isFirst ? bidScalar : 0, them.visibleScore, them.allMatch);
             return result;
         }
     }

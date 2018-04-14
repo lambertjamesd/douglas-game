@@ -33,7 +33,7 @@ namespace shootout
         {
             for (int i = 0; i < Mathf.Min(probabilityMap.GetLength(0), other.probabilityMap.GetLength(0)); ++i)
             {
-                for (int j = 0; j < Mathf.Min(probabilityMap.GetLength(1), other.probabilityMap.GetLength(1)); ++i)
+                for (int j = 0; j < Mathf.Min(probabilityMap.GetLength(1), other.probabilityMap.GetLength(1)); ++j)
                 {
                     probabilityMap[i, j] = other.probabilityMap[i, j];
                 }

@@ -213,7 +213,11 @@ public static class CardProbability {
     {
         Card[] playedCards;
 
-        if (cardsPlayed == 1)
+        if (cardsPlayed == 0)
+        {
+            return new Card[0];
+        }
+        else if (cardsPlayed == 1)
         {
             playedCards = new Card[] { new Card(null, Suite.Skulls, Card.PointsToType(score)) };
         }
@@ -233,19 +237,21 @@ public static class CardProbability {
         return playedCards;
     }
 
-    public static float CalculateProbabilityOfWin(int myScore, int theirShowingScore, int cardsPlayed, bool doesMatch)
+    public static float CalculateProbabilityOfWin(int myScore, int theirShowingScore, int cardsPlayed, bool doesMatch, int sampleCount = 256)
     {
-        return ProbabilityOfWin(myScore, new Card[] { }, FakeHand(theirShowingScore, cardsPlayed, doesMatch));
+        return ProbabilityOfWin(myScore, new Card[] { }, FakeHand(theirShowingScore, cardsPlayed, doesMatch), sampleCount);
     }
 
-    public static float CalculateProbabilityOfFold(int cardsPlayed, int myScoreShowing, bool myMatch, int theirScoreShowing, bool theirMatch)
+    public static float MakeMoreLikely(float input, float amountMoreLikely)
+    {
+        return 1.0f - (1.0f - input) / amountMoreLikely;
+    }
+
+    public static float CalculateProbabilityOfFold(int cardsPlayed, int myScoreShowing, bool myMatch, int theirCardsPlayed, int theirScoreShowing, bool theirMatch, int sampleCount = 256)
     {
         Card[] myShowing = FakeHand(myScoreShowing, cardsPlayed, myMatch);
-        Card[] theirShowing = FakeHand(theirScoreShowing, cardsPlayed, theirMatch);
-
-        int sampleCount = 256 * 16;
-
-        int remainingCardCount = 5 - cardsPlayed;
+        Card[] theirShowing = FakeHand(theirScoreShowing, theirCardsPlayed, theirMatch);
+                
         Deck testDeck = new Deck(null);
 
         int numberOfWins = 0;
@@ -253,8 +259,8 @@ public static class CardProbability {
         for (int i = 0; i < sampleCount; ++i)
         {
             testDeck.Shuffle();
-            var myRemaining = testDeck.Deal(remainingCardCount);
-            var theirRemaining = testDeck.Deal(remainingCardCount);
+            var myRemaining = testDeck.Deal(5 - cardsPlayed);
+            var theirRemaining = testDeck.Deal(5 - theirCardsPlayed);
 
             int myScore = CardAIBase.ScoreHand(CardAIBase.IdealHand(myRemaining, myShowing));
             int theirScore = CardAIBase.ScoreHand(CardAIBase.IdealHand(theirRemaining, theirShowing));
@@ -271,10 +277,8 @@ public static class CardProbability {
         return (float)numberOfWins / sampleCount;
     }
 
-    public static float ProbabilityOfWin(int myPoints, IEnumerable<Card> visibleCards, IEnumerable<Card> oponentPlayedCards)
+    public static float ProbabilityOfWin(int myPoints, IEnumerable<Card> visibleCards, IEnumerable<Card> oponentPlayedCards, int sampleCount = 256)
     {
-        int sampleCount = 256 * 16;
-
         Deck testDeck = new Deck(null);
         testDeck.Remove(visibleCards);
 

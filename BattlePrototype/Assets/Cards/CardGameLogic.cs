@@ -50,7 +50,14 @@ public class CardGameLogic : MonoBehaviour {
         {
             case CardAIType.NeverFold:
             default:
-                return new DumbCardAIPlayer(1, oponentHand, oponentMoney);
+                shootout.AllTurnProbabilities turnProbs = new shootout.AllTurnProbabilities();
+
+                using (BinaryReader reader = new BinaryReader(File.Open("AllTurnsProbability.dat", FileMode.Open)))
+                {
+                    turnProbs.Read(reader);
+                }
+
+                return new CalculatedAI(1, oponentHand, oponentMoney, shootout.CardGameAI.TurnProbability(turnProbs));
         }
     }
 
@@ -70,19 +77,7 @@ public class CardGameLogic : MonoBehaviour {
     
     void Start ()
     {
-        shootout.AllTurnProbabilities turnProbs = new shootout.AllTurnProbabilities();
-
-        using (BinaryReader reader = new BinaryReader(File.Open("AllTurnsProbability.dat", FileMode.Open)))
-        {
-            turnProbs.Read(reader);
-        }
-
-        //using (BinaryWriter writer = new BinaryWriter(File.Open("AllTurnsProbability.dat", FileMode.OpenOrCreate)))
-        //{
-        //    turnProbs.Write(writer);
-        //}
-
-           System.IO.File.WriteAllText("OnePlayedMatch.csv", CardProbability.PointProbabilityTable(1, true, 64));
+        System.IO.File.WriteAllText("OnePlayedMatch.csv", CardProbability.PointProbabilityTable(1, true, 64));
         //System.IO.File.WriteAllText("TwoPlayedMatch.csv", CardProbability.PointProbabilityTable(2, true, 2048 * 32));
         //System.IO.File.WriteAllText("TwoPlayedNoMatch.csv", CardProbability.PointProbabilityTable(2, false, 2048 * 32));
         Debug.Log("Write to " + System.IO.Directory.GetCurrentDirectory());
@@ -180,6 +175,8 @@ public class CardGameLogic : MonoBehaviour {
 
         int stillInCount = players.Length;
 
+        int startingTurn = currentTurn;
+
         for (int i = 0; i < players.Length; ++i)
         {
             stillIn[i] = true;
@@ -219,6 +216,8 @@ public class CardGameLogic : MonoBehaviour {
                         choiceInSeconds.Add(Time.time - startTime);
                         
                         TurnChoice choice = player.TurnResult();
+
+                        Debug.Log("Turn " + playerIndex + " " + Card.ToString(choice.card) + " extra " + Card.ToString(choice.extraCard));
                         
                         currentBid = System.Math.Max(choice.bid, currentBid);
                         currentBidScalar = Mathf.Max(1, currentBid / minBid);
@@ -283,6 +282,8 @@ public class CardGameLogic : MonoBehaviour {
 
             currentTurn = (currentTurn + 1) % players.Length;
         }
+
+        currentTurn = (startingTurn + 1) % players.Length;
 
         var playersStillIn = players.Where(player => stillIn[player.Index]);
 

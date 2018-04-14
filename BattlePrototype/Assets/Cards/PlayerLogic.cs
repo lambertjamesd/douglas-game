@@ -348,7 +348,7 @@ public class CardAIBase : PlayerLogic
 
         yield return hand.PutCardOnTable(choice.card);
         
-        if (CanPlayExtraCard(choice.card))
+        if (CanPlayExtraCard(choice.card) && choice.extraCard == null)
         {
             choice.extraCard = PickCard();
         }

@@ -10,10 +10,10 @@ using UnityEditor;
 
 public enum Suite
 {
-    Skulls,
-    Hearts,
-    Stars,
     Blossoms,
+    Stars,
+    Hearts,
+    Skulls,
     Count,
 }
 
@@ -50,6 +50,18 @@ public class Card
     public Sprite sprite;
     public Suite suite;
     public CardType type;
+
+    public static string ToString(Card card)
+    {
+        if (card == null)
+        {
+            return null;
+        }
+        else
+        {
+            return card.suite + " " + card.type;
+        }
+    }
 
     public Card(Sprite sprite, Suite suite, CardType type)
     {

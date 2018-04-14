@@ -36,7 +36,7 @@ public class PlayerHand : MonoBehaviour {
     {
         int handIndex = hand.IndexOf(card);
 
-        if (handIndex != -1)
+        if (handIndex != -1 && card != null)
         {
             handSlots[handIndex].gameObject.SetActive(false);
             int boardSlot = playedCards.Count + (boardSlots[playedCards.Count].gameObject.activeSelf ? 1 : 0);
