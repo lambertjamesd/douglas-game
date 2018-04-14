@@ -5,42 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
-public class TurnChoice
-{
-    public int bid;
-    public Card card;
-    public Card extraCard;
-
-    public bool IsFold()
-    {
-        return card == null;
-    }
-
-    public TurnChoice(int bid, Card card)
-    {
-        this.bid = bid;
-        this.card = card;
-    }
-
-    public static TurnChoice Fold()
-    {
-        return new TurnChoice(0, null);
-    }
-
-    public IEnumerable<Card> PlayedCards()
-    {
-        if (card != null)
-        {
-            yield return card;
-        }
-
-        if (extraCard != null)
-        {
-            yield return extraCard;
-        }
-    }
-}
-
 public abstract class PlayerLogic {
     protected int index = 0;
     public PlayerHand hand = null;
@@ -79,20 +43,20 @@ public abstract class PlayerLogic {
         return next != null && hand.GetPlayedCards().TrueForAll(card => card.suite == next.suite) && hand.GetPlayedCards().Count == 2;
     }
 
-    public void ExecuteTurn(TurnChoice turn)
+    public void ExecuteTurn(shootout.TurnResult turn)
     {
-        if (turn.card != null)
+        if (turn.chosenCard != null)
         {
-            hand.PlayCard(turn.card);
-            if (turn.extraCard != null)
+            hand.PlayCard(turn.chosenCard);
+            if (turn.fourthCard != null)
             {
-                hand.PlayCard(turn.extraCard);
+                hand.PlayCard(turn.fourthCard);
             }
         }
     }
 
     public abstract IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int currentBidScalar, int inPot, int currentTurn);
-    public abstract TurnChoice TurnResult();
+    public abstract shootout.TurnResult TurnResult();
 }
 
 public class HumanPlayerLogic : PlayerLogic
@@ -104,7 +68,7 @@ public class HumanPlayerLogic : PlayerLogic
     private Image multiplierShow;
     private Sprite[] multiplierSymbols;
     private IEnumerable<Button> cardSelection;
-    private TurnChoice choice = null;
+    private shootout.TurnResult choice = null;
     private int cardChoice = -1;
     private bool takingTurn = false;
     private Card chosenCard;
@@ -139,7 +103,7 @@ public class HumanPlayerLogic : PlayerLogic
         {
             if (takingTurn)
             {
-                choice = TurnChoice.Fold();
+                choice = shootout.TurnResult.Fold();
             }
         });
 
@@ -194,13 +158,13 @@ public class HumanPlayerLogic : PlayerLogic
             {
                 if (choice == null)
                 {
-                    choice = new TurnChoice(GetBid(), pickedCard);
+                    choice = new shootout.TurnResult(GetBid(), pickedCard);
                     chosenCard = pickedCard;
                 }
-                else if (choice.card != pickedCard)
+                else if (choice.chosenCard != pickedCard)
                 {
                     choice.bid = GetBid();
-                    choice.extraCard = pickedCard;
+                    choice.fourthCard = pickedCard;
                     chosenCard = pickedCard;
                 }
             }
@@ -219,7 +183,7 @@ public class HumanPlayerLogic : PlayerLogic
 
         SetGUIVisible(true, currentBid, 1);
 
-        while (choice == null || (CanPlayExtraCard(choice.card) && choice.extraCard == null))
+        while (choice == null || (CanPlayExtraCard(choice.chosenCard) && choice.fourthCard == null))
         {
             if (chosenCard != null)
             {
@@ -235,7 +199,7 @@ public class HumanPlayerLogic : PlayerLogic
 
         if (chosenCard != null)
         {
-            if (chosenCard != choice.extraCard)
+            if (chosenCard != choice.fourthCard)
             {
                 yield return hand.PutCardOnTable(chosenCard);
             }
@@ -245,7 +209,7 @@ public class HumanPlayerLogic : PlayerLogic
         takingTurn = false;
     }
 
-    public override TurnChoice TurnResult()
+    public override shootout.TurnResult TurnResult()
     {
         return choice;
     }
@@ -253,7 +217,7 @@ public class HumanPlayerLogic : PlayerLogic
 
 public class CardAIBase : PlayerLogic
 {
-    TurnChoice choice = null;
+    shootout.TurnResult choice = null;
     IEnumerator<Card> pickedCards;
     int handScore = 0;
 
@@ -313,7 +277,7 @@ public class CardAIBase : PlayerLogic
         return minBid;
     }
     
-    public virtual TurnChoice ChooseCard(IEnumerable<Card> myShowing, IEnumerable<Card> theirShowing, int inPot, int currentBid, int currentBidScalar, int currentTurn)
+    public virtual shootout.TurnResult ChooseCard(IEnumerable<Card> myShowing, IEnumerable<Card> theirShowing, int inPot, int currentBid, int currentBidScalar, int currentTurn)
     {
         if (myShowing.Count() == 0)
         {
@@ -339,24 +303,24 @@ public class CardAIBase : PlayerLogic
             shouldFold = ScoreOutcome(WinProbability(bid, handScore), PlayerFoldProbability(theirShowing, myShowing, currentTurn, currentBid, inPot, isOpening), inPot, bid) < 0.0f;
         }
 
-        return shouldFold ? TurnChoice.Fold() : new TurnChoice(Math.Min(bid, money), PickCard());
+        return shouldFold ? shootout.TurnResult.Fold() : new shootout.TurnResult(Math.Min(bid, money), PickCard());
     }
 
     public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int currentBidScalar, int inPot, int currentTurn)
     {
         choice = ChooseCard(onBoard[index], onBoard[1 - index], inPot, currentBid, currentBidScalar, currentTurn);
 
-        yield return hand.PutCardOnTable(choice.card);
+        yield return hand.PutCardOnTable(choice.chosenCard);
         
-        if (CanPlayExtraCard(choice.card) && choice.extraCard == null)
+        if (CanPlayExtraCard(choice.chosenCard) && choice.fourthCard == null)
         {
-            choice.extraCard = PickCard();
+            choice.fourthCard = PickCard();
         }
 
         yield return null;
     }
 
-    public override TurnChoice TurnResult()
+    public override shootout.TurnResult TurnResult()
     {
         return choice;
     }

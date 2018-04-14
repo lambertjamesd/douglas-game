@@ -179,6 +179,22 @@ namespace shootout
         public Card chosenCard;
         public int bid;
         public Card fourthCard;
+
+        public TurnResult(int bid, Card chosenCard)
+        {
+            this.bid = bid;
+            this.chosenCard = chosenCard;
+        }
+
+        public bool IsFold()
+        {
+            return chosenCard == null;
+        }
+
+        public static TurnResult Fold()
+        {
+            return new TurnResult(0, null);
+        }
     }
 
     public class CardGameState
@@ -257,7 +273,7 @@ namespace shootout
 
         private TurnResult TakeAITurn(int bid, int bidScalar, CardGameAI ai)
         {
-            TurnResult result = new TurnResult();
+            TurnResult result = shootout.TurnResult.Fold();
         
 
             aiPlayer.ForEachInHand((index) =>
@@ -317,7 +333,7 @@ namespace shootout
 
         public TurnResult CaclulateOptimalTurn(CardGameAI ai)
         {
-            TurnResult result = new TurnResult();
+            TurnResult result = TurnResult.Fold();
 
             if (round == 3)
             {

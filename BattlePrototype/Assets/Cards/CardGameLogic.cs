@@ -189,7 +189,7 @@ public class CardGameLogic : MonoBehaviour {
             int currentBid = -1;
             int currentBidScalar = 0;
 
-            List<TurnChoice> choices = new List<TurnChoice>();
+            List<shootout.TurnResult> choices = new List<shootout.TurnResult>();
             List<float> choiceInSeconds = new List<float>();
 
             int minBid = moneyInPot / 2;
@@ -204,7 +204,7 @@ public class CardGameLogic : MonoBehaviour {
 
                     if (stillInCount == 1)
                     {
-                        choices.Add(new TurnChoice(moneyInPot / 2, player.hand.GetHand().Where(card => card != null).Take(1).ToArray()[0]));
+                        choices.Add(new shootout.TurnResult(moneyInPot / 2, player.hand.GetHand().Where(card => card != null).Take(1).ToArray()[0]));
                         choiceInSeconds.Add(0.0f);
                     }
                     else
@@ -214,17 +214,17 @@ public class CardGameLogic : MonoBehaviour {
                         yield return player.StartTurn(playerHands, currentBid, currentBidScalar, moneyInPot, round);
 
                         choiceInSeconds.Add(Time.time - startTime);
-                        
-                        TurnChoice choice = player.TurnResult();
 
-                        Debug.Log("Turn " + playerIndex + " " + Card.ToString(choice.card) + " extra " + Card.ToString(choice.extraCard));
+                        shootout.TurnResult choice = player.TurnResult();
+
+                        Debug.Log("Turn " + playerIndex + " " + Card.ToString(choice.chosenCard) + " extra " + Card.ToString(choice.fourthCard));
                         
                         currentBid = System.Math.Max(choice.bid, currentBid);
                         currentBidScalar = Mathf.Max(1, currentBid / minBid);
 
                         multiplierShow.sprite = multiplierImages[currentBidScalar - 1];
 
-                        if (choice.card == null)
+                        if (choice.IsFold())
                         {
                             stillIn[playerIndex] = false;
                         }
@@ -245,7 +245,7 @@ public class CardGameLogic : MonoBehaviour {
                 }
                 else
                 {
-                    choices.Add(TurnChoice.Fold());
+                    choices.Add(shootout.TurnResult.Fold());
                     --stillInCount;
                     choiceInSeconds.Add(0.0f);
                 }
@@ -255,7 +255,7 @@ public class CardGameLogic : MonoBehaviour {
             {
                 int playerIndex = (currentTurn + i) % players.Length;
                 PlayerLogic player = players[playerIndex];
-                TurnChoice choice = choices[i];
+                shootout.TurnResult choice = choices[i];
                 /*RoundLogger.LogRound(
                     round, 
                     playerIndex, 
@@ -270,11 +270,11 @@ public class CardGameLogic : MonoBehaviour {
                 {
                     break;
                 }
-                if (choices[i].card != null)
+                if (choices[i].chosenCard != null)
                 {
-                    if (choices[i].extraCard != null)
+                    if (choices[i].fourthCard != null)
                     {
-                        yield return player.hand.PutCardOnTable(choice.extraCard);
+                        yield return player.hand.PutCardOnTable(choice.fourthCard);
                     }
                     players[playerIndex].ExecuteTurn(choice);
                 }

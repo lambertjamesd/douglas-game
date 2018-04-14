@@ -14,7 +14,7 @@ public class CalculatedAI : CardAIBase
         this.ai = ai;
     }
 
-    public override TurnChoice ChooseCard(IEnumerable<Card> myShowing, IEnumerable<Card> theirShowing, int inPot, int currentBid, int currentBidScalar, int currentTurn)
+    public override shootout.TurnResult ChooseCard(IEnumerable<Card> myShowing, IEnumerable<Card> theirShowing, int inPot, int currentBid, int currentBidScalar, int currentTurn)
     {
         shootout.CardGameState state = new shootout.CardGameState(
             CardAIBase.IdealHand(hand.UnplayedCards(), myShowing).Except(myShowing), 
@@ -27,9 +27,6 @@ public class CalculatedAI : CardAIBase
             currentBidScalar
         );
         shootout.CardGameState.checkCount = 0;
-        shootout.TurnResult result = state.CaclulateOptimalTurn(ai);
-        TurnChoice choice = new TurnChoice(result.bid, result.chosenCard);
-        choice.extraCard = result.fourthCard;
-        return choice;
+        return state.CaclulateOptimalTurn(ai);
     }
 }
