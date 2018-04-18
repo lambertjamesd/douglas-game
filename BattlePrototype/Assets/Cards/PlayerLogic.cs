@@ -57,6 +57,11 @@ public abstract class PlayerLogic {
 
     public abstract IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int currentBidScalar, int inPot, int currentTurn);
     public abstract shootout.TurnResult TurnResult();
+
+    public virtual void Learn(List<shootout.TurnResult> turnResults, bool amIFirst, int myTopScore, int theirTopScore, bool myDouble, bool theirDouble)
+    {
+
+    }
 }
 
 public class HumanPlayerLogic : PlayerLogic
@@ -158,7 +163,7 @@ public class HumanPlayerLogic : PlayerLogic
             {
                 if (choice == null)
                 {
-                    choice = new shootout.TurnResult(GetBid(), pickedCard);
+                    choice = new shootout.TurnResult(GetBid(), multiplier.Selected + 1, pickedCard);
                     chosenCard = pickedCard;
                 }
                 else if (choice.chosenCard != pickedCard)
@@ -303,7 +308,7 @@ public class CardAIBase : PlayerLogic
             shouldFold = ScoreOutcome(WinProbability(bid, handScore), PlayerFoldProbability(theirShowing, myShowing, currentTurn, currentBid, inPot, isOpening), inPot, bid) < 0.0f;
         }
 
-        return shouldFold ? shootout.TurnResult.Fold() : new shootout.TurnResult(Math.Min(bid, money), PickCard());
+        return shouldFold ? shootout.TurnResult.Fold() : new shootout.TurnResult(Math.Min(bid, money), currentBidScalar, PickCard());
     }
 
     public override IEnumerator StartTurn(List<List<Card>> onBoard, int currentBid, int currentBidScalar, int inPot, int currentTurn)
@@ -353,7 +358,13 @@ public class CardAIBase : PlayerLogic
         var cardList = cards.ToList();
         cardList.Sort((a, b) => b.PointValue() - a.PointValue());
 
-        Suite suiteToUse = SuiteForCards(playedCards);
+        Suite suiteToUse = SuiteForCards(playedCards.Take(3));
+        int cardsPlayed = playedCards.Count();
+
+        if (cardsPlayed == 3 && suiteToUse == Suite.Count || cardsPlayed == 4)
+        {
+            return playedCards;
+        }
 
         for (int i = 0; suiteToUse == Suite.Count && i < cardList.Count; ++i)
         {

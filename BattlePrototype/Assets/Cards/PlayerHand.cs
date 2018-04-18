@@ -14,6 +14,8 @@ public class PlayerHand : MonoBehaviour {
     private List<Card> hand = new List<Card>();
     private List<Card> playedCards = new List<Card>();
 
+    public static float MONEY_ANIMATE_TIME = 0.25f;
+
     public IEnumerable<Card> UnplayedCards()
     {
         return hand.Where((card) => card != null);
@@ -42,7 +44,7 @@ public class PlayerHand : MonoBehaviour {
             int boardSlot = playedCards.Count + (boardSlots[playedCards.Count].gameObject.activeSelf ? 1 : 0);
             boardSlots[boardSlot].gameObject.SetActive(true);
             boardSlots[boardSlot].sprite = cardBack;
-            yield return TweenHelper.LerpPosition(handSlots[handIndex].transform.position, boardSlots[boardSlot].transform.position, 0.25f, (pos) => boardSlots[boardSlot].transform.position = pos);
+            yield return TweenHelper.LerpPosition(handSlots[handIndex].transform.position, boardSlots[boardSlot].transform.position, MONEY_ANIMATE_TIME, (pos) => boardSlots[boardSlot].transform.position = pos);
         }
     }
 
@@ -129,5 +131,15 @@ public class PlayerHand : MonoBehaviour {
         hand.Clear();
         playedCards.Clear();
         return result;
+    }
+
+    public int GetMaxScore()
+    {
+        return CardAIBase.IdealScore(UnplayedCards(), playedCards);
+    }
+
+    public bool ShowedDouble()
+    {
+        return playedCards.Count < 2 || playedCards[0].suite == playedCards[1].suite;
     }
 }

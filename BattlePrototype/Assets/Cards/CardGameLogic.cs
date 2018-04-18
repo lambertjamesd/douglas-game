@@ -35,30 +35,109 @@ public class CardGameLogic : MonoBehaviour {
     public Text positivePrefab;
     public Text negativePrefab;
 
+    public Text debugLog;
+
     public int buyInPrice = 10;
 
     public CardGameVariables defaultPlayer;
     public CardGameVariables[] cardPlayers;
 
+    public TextAsset defaultAIData;
+
     public static int MAX_BID_SCALAR = 3;
+
+    private Dictionary<string, shootout.AllTurnProbabilities> loadedAI = new Dictionary<string, shootout.AllTurnProbabilities>();
 
     private int moneyInPot = 0;
 
-    PlayerLogic BuildPlayerLogic(CardGameVariables variables)
+    static float CARD_ANIMATION_TIME = 0.5f;
+
+    public void DebugLog(string message)
+    {
+        //if (debugLog.text != null)
+        //{
+        //    debugLog.text = debugLog.text + "\n" + message;
+        //}
+        //else
+        //{
+        //    debugLog.text = message;
+        //}
+    }
+
+    PlayerLogic BuildPlayerLogic(PlayerHand hand, Text money, CardGameVariables variables, string savedName, TextAsset fallback)
     {
         switch (variables.aiType)
         {
             case CardAIType.NeverFold:
             default:
-                shootout.AllTurnProbabilities turnProbs = new shootout.AllTurnProbabilities();
+                shootout.AllTurnProbabilities turnProbs;
 
-                using (BinaryReader reader = new BinaryReader(File.Open("AllTurnsProbability.dat", FileMode.Open)))
+                if (loadedAI.ContainsKey(savedName))
                 {
-                    turnProbs.Read(reader);
+                    turnProbs = loadedAI[savedName];
+                }
+                else
+                {
+                    turnProbs = new shootout.AllTurnProbabilities();
+                    loadedAI[savedName] = turnProbs;
+                    string filename = Path.Combine(Application.persistentDataPath, savedName + ".ai");
+
+                    DebugLog("Loading AI from " + filename);
+
+
+                    if (File.Exists(filename))
+                    {
+                        DebugLog("Loading from file");
+                        using (BinaryReader reader = new BinaryReader(File.Open(filename, FileMode.Open)))
+                        {
+                            turnProbs.Read(reader);
+                        }
+                    }
+                    else
+                    {
+                        DebugLog("Loading for prefab");
+                        using (BinaryReader reader = new BinaryReader(new MemoryStream(fallback.bytes)))
+                        {
+                            turnProbs.Read(reader);
+                        }
+                    }
                 }
 
-                return new CalculatedAI(1, oponentHand, oponentMoney, shootout.CardGameAI.TurnProbability(turnProbs));
+                DebugLog("Loaded");
+
+
+                return new CalculatedAI(1, hand, money, shootout.CardGameAI.TurnProbability(turnProbs));
         }
+    }
+
+    public void OnApplicationPause(bool isPaused)
+    {
+        if (isPaused)
+        {
+            SaveAI();
+        }
+    }
+
+    public void OnDestroy()
+    {
+        SaveAI();
+    }
+
+    private void SaveAI()
+    {
+        DebugLog("Saving AI");
+        foreach (string savedName in loadedAI.Keys)
+        {
+            string filename = Path.Combine(Application.persistentDataPath, savedName + ".ai");
+
+            DebugLog(filename);
+
+            using (BinaryWriter writer = new BinaryWriter(File.Open(filename, FileMode.OpenOrCreate)))
+            {
+                loadedAI[savedName].Write(writer);
+            }
+        }
+        DebugLog("AI Saved");
     }
 
     public CardGameVariables GetOponent(string name)
@@ -77,19 +156,15 @@ public class CardGameLogic : MonoBehaviour {
     
     void Start ()
     {
-        System.IO.File.WriteAllText("OnePlayedMatch.csv", CardProbability.PointProbabilityTable(1, true, 64));
-        //System.IO.File.WriteAllText("TwoPlayedMatch.csv", CardProbability.PointProbabilityTable(2, true, 2048 * 32));
-        //System.IO.File.WriteAllText("TwoPlayedNoMatch.csv", CardProbability.PointProbabilityTable(2, false, 2048 * 32));
-        Debug.Log("Write to " + System.IO.Directory.GetCurrentDirectory());
-
         CardGameVariables oponent = GetOponent(CardGameInitializer.playerName);
 
         deck = new Deck(oponent.deckSkin ?? deckSkin);
 
         players = new PlayerLogic[]
         {
+            //BuildPlayerLogic(playerHand, playerMoney, oponent, "SmartAI", defaultAIData),
             new HumanPlayerLogic(0, playerHand, foldButton, guiTransform, bidPreview, multiplier, multiplierShow, multiplierImages, cardSelection, playerMoney),
-            BuildPlayerLogic(oponent)
+            BuildPlayerLogic(oponentHand, oponentMoney, oponent, "SmartAI", defaultAIData),
         };
 
         var story = StoryManager.GetSingleton().GetStory();
@@ -148,7 +223,7 @@ public class CardGameLogic : MonoBehaviour {
     {
         Text text = Instantiate(amount >= 0 ? positivePrefab : negativePrefab, from, Quaternion.identity, transform);
         text.text = "$" + System.Math.Abs(amount);
-        yield return TweenHelper.LerpPosition(from, to, 0.5f, (pos) => text.transform.position = pos);
+        yield return TweenHelper.LerpPosition(from, to, CARD_ANIMATION_TIME, (pos) => text.transform.position = pos);
         yield return new WaitForSeconds(0.5f);
         Destroy(text.gameObject);
     }
@@ -183,6 +258,8 @@ public class CardGameLogic : MonoBehaviour {
             players[i].hand.GiveHand(deck.Deal(5));
         }
 
+        List<shootout.TurnResult> allRoundChoices = new List<shootout.TurnResult>();
+
         for (int round = 0; stillInCount > 1 && round < 3; ++round)
         {
             var playerHands = players.Select(player => player.hand.GetPlayedCards()).ToList();
@@ -204,7 +281,7 @@ public class CardGameLogic : MonoBehaviour {
 
                     if (stillInCount == 1)
                     {
-                        choices.Add(new shootout.TurnResult(moneyInPot / 2, player.hand.GetHand().Where(card => card != null).Take(1).ToArray()[0]));
+                        choices.Add(new shootout.TurnResult(moneyInPot / 2, 1, player.hand.GetHand().Where(card => card != null).Take(1).ToArray()[0]));
                         choiceInSeconds.Add(0.0f);
                     }
                     else
@@ -251,6 +328,8 @@ public class CardGameLogic : MonoBehaviour {
                 }
             }
 
+            allRoundChoices.AddRange(choices);
+
             for (int i = 0; i < players.Length; ++i)
             {
                 int playerIndex = (currentTurn + i) % players.Length;
@@ -286,12 +365,17 @@ public class CardGameLogic : MonoBehaviour {
         currentTurn = (startingTurn + 1) % players.Length;
 
         var playersStillIn = players.Where(player => stillIn[player.Index]);
-
+        
         foreach (PlayerLogic player in players)
         {
+            PlayerHand thisHand = player.hand;
+            PlayerHand theirHand = players[1 - player.Index].hand;
+
+            player.Learn(allRoundChoices, startingTurn == player.Index, thisHand.GetMaxScore(), theirHand.GetMaxScore(), thisHand.ShowedDouble(), theirHand.ShowedDouble());
             player.hand.RevealHand();
         }
-        
+
+
         int maxScore = playersStillIn.Aggregate(0, (sum, player) => System.Math.Max(sum, player.hand.GetScore()));
         var winningPlayers = playersStillIn.Where(player => maxScore == player.hand.GetScore());
         int winningCount = winningPlayers.Count();
@@ -306,5 +390,7 @@ public class CardGameLogic : MonoBehaviour {
 
         playAgain.gameObject.SetActive(true);
         stopPlaying.gameObject.SetActive(true);
+
+        StartHand();
     }
 }

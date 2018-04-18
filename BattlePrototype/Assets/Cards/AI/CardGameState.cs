@@ -178,11 +178,13 @@ namespace shootout
         public float value;
         public Card chosenCard;
         public int bid;
+        public int bidScalar;
         public Card fourthCard;
 
-        public TurnResult(int bid, Card chosenCard)
+        public TurnResult(int bid, int bidScalar, Card chosenCard)
         {
             this.bid = bid;
+            this.bidScalar = bidScalar;
             this.chosenCard = chosenCard;
         }
 
@@ -193,7 +195,12 @@ namespace shootout
 
         public static TurnResult Fold()
         {
-            return new TurnResult(0, null);
+            return new TurnResult(0, 0, null);
+        }
+
+        public int PointValue()
+        {
+            return (chosenCard == null ? 0 : chosenCard.PointValue()) + (fourthCard == null ? 0 : fourthCard.PointValue());
         }
     }
 
@@ -398,9 +405,11 @@ namespace shootout
     {
         public delegate float WinProbability(AIPlayerState myState, OtherPlayerState otherState, bool isFirst, int bidScalar);
         public delegate float FoldProbability(AIPlayerState myState, OtherPlayerState otherState, bool isFirst, int bidScalar);
+        public delegate void Learn(List<TurnResult> turnResults, bool amIFirst, int myTopScore, int theirTopScore, bool myDouble, bool theirDouble);
 
         public WinProbability winProbability;
         public FoldProbability foldProbaility;
+        public Learn learn;
 
         public static CardGameAI DumbAI()
         {
@@ -423,6 +432,7 @@ namespace shootout
             CardGameAI result = new CardGameAI();
             result.winProbability = (me, them, isFirst, bidScalar) => probability.GetWinProbability(them.cardsPlayed, me.visibleScore, isFirst ? 0 : bidScalar, them.visibleScore, them.allMatch);
             result.foldProbaility = (me, them, isFirst, bidScalar) => probability.GetFoldProbability(them.cardsPlayed, me.cardsPlayed, me.visibleScore, me.initialAllMatch, isFirst ? bidScalar : 0, them.visibleScore, them.allMatch);
+            result.learn = (turnResults, amIFirst, myTopScore, theirTopScore, myDouble, theirDouble) => probability.Learn(turnResults, amIFirst, myTopScore, theirTopScore, myDouble, theirDouble);
             return result;
         }
     }

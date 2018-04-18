@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System.IO;
 
 public class CalculatedAI : CardAIBase
 {
@@ -28,5 +29,13 @@ public class CalculatedAI : CardAIBase
         );
         shootout.CardGameState.checkCount = 0;
         return state.CaclulateOptimalTurn(ai);
+    }
+
+    public override void Learn(List<shootout.TurnResult> turnResults, bool amIFirst, int myTopScore, int theirTopScore, bool myDouble, bool theirDouble)
+    {
+        if (ai.learn != null)
+        {
+            ai.learn(turnResults, amIFirst, myTopScore, theirTopScore, myDouble, theirDouble);
+        }
     }
 }

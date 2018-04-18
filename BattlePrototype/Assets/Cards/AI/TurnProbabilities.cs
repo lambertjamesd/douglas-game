@@ -142,6 +142,94 @@ namespace shootout
                 }
             }
         }
+
+        public static float WIN_LEARN_BIAS = 0.95f;
+        public static float FOLD_LEARN_BIAS = 0.95f;
+
+        public void Learn(List<TurnResult> turnResult, int theirMaxScore, bool amIFirst)
+        {
+            bool isItMyTurn = amIFirst;
+            bool isFirstTurn = true;
+
+            int myPendingScore = 0;
+            int theirPendingScore = 0;
+
+            int myScoreShowing = 0;
+            int theirScoreShowing = 0;
+
+            int currentRound = 0;
+
+            for (int i = 0; i < turnResult.Count; ++i)
+            {
+                if (isItMyTurn)
+                {
+                    myPendingScore = turnResult[i].PointValue();
+
+                    if (currentRound == cardsPlayed)
+                    {
+                        int bidScalar = isFirstTurn ? 0 : turnResult[i - 1].bidScalar;
+
+                        for (int myScore = 0; myScore <= CardProbability.MaxScore; ++myScore)
+                        {
+                            if (myScore > theirMaxScore)
+                            {
+                                winProbability[bidScalar].UpdateProbability(myScore, theirScoreShowing, true, WIN_LEARN_BIAS);
+                            }
+                            else if (myScore < theirScoreShowing)
+                            {
+                                winProbability[bidScalar].UpdateProbability(myScore, theirScoreShowing, false, WIN_LEARN_BIAS);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    theirPendingScore = turnResult[i].PointValue();
+
+                    if (currentRound >= cardsPlayed)
+                    {
+                        int bidScalar = isFirstTurn ? 0 : turnResult[i - 1].bidScalar;
+
+                        if (turnResult[i].IsFold())
+                        {
+                            for (int myScore = myScoreShowing; myScore <= Card.MAX_CARD_SCORE * currentRound; ++myScore)
+                            {
+                                for (int theirScore = 0; theirScore <= theirScoreShowing; ++theirScore)
+                                {
+                                    foldProbability[bidScalar, currentRound - cardsPlayed].UpdateProbability(myScore, theirScore, true, FOLD_LEARN_BIAS);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int myScore = 0; myScore <= myScoreShowing; ++myScore)
+                            {
+                                for (int theirScore = theirScoreShowing; theirScore <= Card.MAX_CARD_SCORE * cardsPlayed; ++theirScore)
+                                {
+                                    foldProbability[bidScalar, currentRound - cardsPlayed].UpdateProbability(myScore, theirScore, false, FOLD_LEARN_BIAS);
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                isFirstTurn = !isFirstTurn;
+
+                if (isFirstTurn)
+                {
+                    myScoreShowing += myPendingScore;
+                    if (currentRound < cardsPlayed)
+                    {
+                        theirScoreShowing += theirPendingScore;
+                    }
+                    ++currentRound;
+                }
+                else
+                {
+                    isItMyTurn = !isItMyTurn;
+                }
+            }
+        }
     }
     
     public class AllTurnProbabilities
@@ -227,6 +315,19 @@ namespace shootout
             turnThreeProbability[0, 1].ModifyByBid();
             turnThreeProbability[1, 0].ModifyByBid();
             turnThreeProbability[1, 1].ModifyByBid();
+        }
+
+        public void Learn(List<TurnResult> turnResults, bool amIFirst, int myTopScore, int theirTopScore, bool myDouble, bool theirDouble)
+        {
+            turns[0].Learn(turnResults, theirTopScore, amIFirst);
+            if (turnResults.Count >= 2)
+            {
+                turns[1].Learn(turnResults, theirTopScore, amIFirst);
+                if (turnResults.Count >= 4)
+                {
+                    turnThreeProbability[myDouble ? 1 : 0, theirDouble ? 1 : 0].Learn(turnResults, theirTopScore, amIFirst);
+                }
+            }
         }
     }
 }

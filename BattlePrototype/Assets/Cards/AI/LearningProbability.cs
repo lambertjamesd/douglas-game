@@ -7,26 +7,33 @@ namespace shootout
 {
     public class LearningProbability
     {
-        private float[,] probabilityMap;
+        private ProbabilityTracker[,] probabilityMap;
 
         public LearningProbability(int myMaxPoints, int theirMaxPoints)
         {
-            probabilityMap = new float[myMaxPoints + 1, theirMaxPoints + 1];
+            probabilityMap = new ProbabilityTracker[myMaxPoints + 1, theirMaxPoints + 1];
+            for (int i = 0; i <= myMaxPoints; ++i)
+            {
+                for (int j = 0; j <= theirMaxPoints; ++j)
+                {
+                    probabilityMap[i, j] = new ProbabilityTracker();
+                }
+            }
         }
 
         public float GetProbability(int myScore, int theirScore)
         {
-            return probabilityMap[myScore, theirScore];
+            return probabilityMap[myScore, theirScore].Get();
         }
 
         public void UpdateProbability(int myScore, int theirScore, bool isWin, float bias)
         {
-            probabilityMap[myScore, theirScore] = probabilityMap[myScore, theirScore] * (1.0f - bias) + (isWin ? bias : 0.0f);
+            probabilityMap[myScore, theirScore].Update(isWin, (ushort)((1.0f - bias) * ushort.MaxValue));
         }
 
         public void SetProbability(int myScore, int theirScore, float value)
         {
-            probabilityMap[myScore, theirScore] = value;
+            probabilityMap[myScore, theirScore].Set(value);
         }
 
         public void CopyFrom(LearningProbability other)
@@ -35,7 +42,7 @@ namespace shootout
             {
                 for (int j = 0; j < Mathf.Min(probabilityMap.GetLength(1), other.probabilityMap.GetLength(1)); ++j)
                 {
-                    probabilityMap[i, j] = other.probabilityMap[i, j];
+                    probabilityMap[i, j].Set(other.probabilityMap[i, j].Get());
                 }
             }
         }
@@ -52,7 +59,7 @@ namespace shootout
             {
                 for (int theirScore = 0; theirScore < theirMaxScore; ++theirScore)
                 {
-                    output.Write(probabilityMap[myScore, theirScore]);
+                    output.Write(probabilityMap[myScore, theirScore].Get());
                 }
             }
         }
@@ -62,13 +69,13 @@ namespace shootout
             int myMaxScore = input.ReadInt16();
             int theirMaxScore = input.ReadInt16();
 
-            probabilityMap = new float[myMaxScore, theirMaxScore];
+            probabilityMap = new ProbabilityTracker[myMaxScore, theirMaxScore];
             
             for (int myScore = 0; myScore < myMaxScore; ++myScore)
             {
                 for (int theirScore = 0; theirScore < theirMaxScore; ++theirScore)
                 {
-                    probabilityMap[myScore, theirScore] = input.ReadSingle();
+                    probabilityMap[myScore, theirScore] = new ProbabilityTracker(input.ReadSingle());
                 }
             }
         }
